@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CURVA - متجر أحذية كرة القدم</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Cairo', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #2c3e50 0%, #4a6741 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: #ffc107 !important;
+        }
+        
+        .hero-section {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400"><rect fill="%234a6741" width="1200" height="400"/><circle fill="%23ffffff" opacity="0.1" cx="200" cy="200" r="100"/><circle fill="%23ffffff" opacity="0.05" cx="800" cy="150" r="150"/></svg>');
+            background-size: cover;
+            padding: 60px 0;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .sidebar {
+            background: rgba(0,0,0,0.7);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .sidebar h5 {
+            color: #ffc107;
+            border-bottom: 2px solid #ffc107;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .sidebar .form-check-label {
+            font-size: 0.9rem;
+        }
+        
+        .product-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+        
+        .product-image {
+            position: relative;
+            overflow: hidden;
+            height: 200px;
+        }
+        
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .product-card:hover .product-image img {
+            transform: scale(1.1);
+        }
+        
+        .product-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #dc3545;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .product-info {
+            padding: 15px;
+            color: #333;
+        }
+        
+        .product-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+        
+        .product-price {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #e74c3c;
+        }
+        
+        .old-price {
+            text-decoration: line-through;
+            color: #95a5a6;
+            font-size: 0.9rem;
+            margin-left: 10px;
+        }
+        
+        .btn-cart {
+            background: linear-gradient(45deg, #ffc107, #ff8c00);
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 8px 15px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-cart:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255,193,7,0.4);
+            color: white;
+        }
+        
+        .pagination {
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .pagination .page-link {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            margin: 0 2px;
+            border-radius: 8px;
+        }
+        
+        .pagination .page-link:hover,
+        .pagination .page-item.active .page-link {
+            background: #ffc107;
+            border-color: #ffc107;
+            color: #000;
+        }
+        
+        .footer {
+            background: rgba(0,0,0,0.9);
+            padding: 40px 0 20px;
+            margin-top: 50px;
+        }
+        
+        .footer h6 {
+            color: #ffc107;
+            margin-bottom: 15px;
+        }
+        
+        .footer a {
+            color: #ccc;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        .footer a:hover {
+            color: #ffc107;
+        }
+        
+        .social-links a {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: rgba(255,193,7,0.2);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            margin: 0 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            background: #ffc107;
+            color: #000;
+            transform: translateY(-3px);
+        }
+        
+        .breadcrumb {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 10px 15px;
+        }
+        
+        .breadcrumb-item a {
+            color: #ffc107;
+            text-decoration: none;
+        }
+        
+        .search-box {
+            position: relative;
+        }
+        
+        .search-box input {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            border-radius: 25px;
+            padding: 8px 40px 8px 15px;
+        }
+        
+        .search-box input::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .search-box button {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #ffc107;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">CURVA</a>
+            
+            <div class="d-flex align-items-center order-lg-last">
+                <div class="search-box me-3">
+                    <input type="text" class="form-control" placeholder="البحث عن المنتجات...">
+                    <button type="button"><i class="fas fa-search"></i></button>
+                </div>
+                <a href="#" class="text-warning me-3"><i class="fas fa-heart"></i></a>
+                <a href="#" class="text-warning me-3 position-relative">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">3</span>
+                </a>
+                <a href="#" class="text-warning"><i class="fas fa-user"></i></a>
+            </div>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="#">الرئيسية</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="#">أحذية كرة القدم</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">الملابس الرياضية</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">الإكسسوارات</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">العروض</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="container">
+            <h1 class="display-4 fw-bold mb-3">أحذية كرة القدم الاحترافية</h1>
+            <p class="lead">اكتشف مجموعتنا الحصرية من أحذية كرة القدم من أفضل العلامات التجارية</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">الرئيسية</a></li>
+                <li class="breadcrumb-item active" aria-current="page">أحذية كرة القدم</li>
+            </ol>
+        </nav>
+
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3">
+                <div class="sidebar">
+                    <h5><i class="fas fa-filter me-2"></i>تصفية المنتجات</h5>
+                    
+                    <div class="mb-4">
+                        <h6>العلامة التجارية</h6>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="nike">
+                            <label class="form-check-label" for="nike">Nike</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="adidas">
+                            <label class="form-check-label" for="adidas">Adidas</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="puma">
+                            <label class="form-check-label" for="puma">Puma</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="umbro">
+                            <label class="form-check-label" for="umbro">Umbro</label>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h6>المقاس</h6>
+                        <select class="form-select">
+                            <option>اختر المقاس</option>
+                            <option value="39">39</option>
+                            <option value="40">40</option>
+                            <option value="41">41</option>
+                            <option value="42">42</option>
+                            <option value="43">43</option>
+                            <option value="44">44</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h6>نوع الملعب</h6>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="surface" id="fg">
+                            <label class="form-check-label" for="fg">العشب الطبيعي (FG)</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="surface" id="ag">
+                            <label class="form-check-label" for="ag">العشب الصناعي (AG)</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="surface" id="tf">
+                            <label class="form-check-label" for="tf">الملاعب الترابية (TF)</label>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h6>السعر</h6>
+                        <div class="row">
+                            <div class="col-6">
+                                <input type="number" class="form-control form-control-sm" placeholder="من">
+                            </div>
+                            <div class="col-6">
+                                <input type="number" class="form-control form-control-sm" placeholder="إلى">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-cart w-100">تطبيق الفلتر</button>
+                </div>
+            </div>
+
+            <!-- Products Grid -->
+            <div class="col-lg-9">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4>أحذية كرة القدم (245 منتج)</h4>
+                    <select class="form-select w-auto">
+                        <option>ترتيب حسب: الأحدث</option>
+                        <option>السعر: من الأقل للأعلى</option>
+                        <option>السعر: من الأعلى للأقل</option>
+                        <option>الأكثر مبيعاً</option>
+                    </select>
+                </div>
+
+                <div class="row">
+                    <!-- Product 1 -->
+                    <div class="col-md-4 col-sm-6">
+                        <div class="product-card">
+                            <div class="product-image">
+                                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%23ff6b35' d='M50 100 Q150 50 250 100 Q150 150 50 100'/><circle fill='%23ffffff' cx='100' cy='80' r='15'/><circle fill='%23ffffff' cx='200' cy='120' r='15'/></svg>" alt="حذاء كرة قدم نايك">
+                                <div class="product-badge">خصم 25%</div>
+                            </div>
+                            <div class="product-info">
+                                <h6 class="product-title">حذاء نايك ميركوريال سوبرفلاي 9 إليت</h6>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="product-price">
+                                        745 ر.س
+                                        <span class="old-price">995 ر.س</span>
+                                    </div>
+                                    <button class="btn btn-cart">
+                                        <i class="fas fa-shopping-cart me-1"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 2 -->
+                    <div class="col-md-4 col-sm-6">
+                        <div class="product-card">
+                            <div class="product-image">
+                                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%2300aaff' d='M50 100 Q150 60 250 100 Q150 140 50 100'/><circle fill='%23ffffff' cx='90' cy='90' r='12'/><circle fill='%23ffffff' cx='210' cy='110' r='12'/></svg>" alt="حذاء كرة قدم أديداس">
+                                <div class="product-badge">جديد</div>
+                            </div>
+                            <div class="product-info">
+                                <h6 class="product-title">حذاء أديداس إكس سبيدبورتال.1</h6>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="product-price">850 ر.س</div>
+                                    <button class="btn btn-cart">
+                                        <i class="fas fa-shopping-cart me-1"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 3 -->
+                    <div class="col-md-4 col-sm-6">
+                        <div class="product-card">
+                            <div class="product-image">
+                                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%2300ff44' d='M60 110 Q150 70 240 110 Q150 150 60 110'/><circle fill='%23000000' cx='110' cy='95' r='10'/><circle fill='%23000000' cx='190' cy='125' r='10'/></svg>" alt="حذاء كرة قدم بوما">
+                            </div>
+                            <div class="product-image">
+                                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%2300ff44' d='M60 110 Q150 70 240 110 Q150 150 60 110'/><circle fill='%23000000' cx='110' cy='95' r='10'/><circle fill='%23000000' cx='190' cy='125' r='10'/></svg>" alt="حذاء كرة قدم بوما">
+                            </div>
+                            <div class="product-info">
+                                <h6 class="product-title">حذاء بوما فيوتشر Z 1.2</h6>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="product-price">
+                                        520 ر.س
+                                        <span class="old-price">650 ر.س</span>
+                                    </div>
+                                    <button class="btn btn-cart">
+                                        <i class="fas fa-shopping-cart me-1"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 4 -->
+                    <div class="col-md-4 col-sm-6">
+                        <div class="product-card">
+                            <div class="product-image">
+                                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%23333333' d='M70 105 Q150 65 230 105 Q150 145 70 105'/><circle fill='%23ffffff' cx='120' cy='85' r='8'/><circle fill='%23ffffff' cx='180' cy='125' r='8'/></svg>" alt="حذاء كرة قدم أمبرو">
+                            </div>
+                            <div class="product-info">
+                                <h6 class="product-title">حذاء أمبرو فيلوسيتا 7 برو</h6>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="product-price">385 ر.س</div>
+                                    <button class="btn btn-cart">
+                                        <i class="fas fa-shopping-cart me-1"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 5 -->
+                    <div class="col-md-4 col-sm-6">
+                        <div class="product-card">
+                            <div class="product-image">
+                                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%23ff1744' d='M55 100 Q150 55 245 100 Q150 145 55 100'/><circle fill='%23ffffff' cx='95' cy='85' r='12'/><circle fill='%23ffffff' cx='205' cy='115' r='12'/></svg>" alt="حذاء كرة قدم نايك">
+                                <div class="product-badge">خصم 30%</div>
+                            </div>
+                            <div class="product-info">
+                                <h6 class="product-title">حذاء نايك فانتوم جي تي 2 إليت</h6>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="product-price">
+                                        680 ر.س
+                                        <span class="old-price">970 ر.س</span>
+                                    </div>
+                                    <button class="btn btn-cart">
+                                        <i class="fas fa-shopping-cart me-1"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 6 -->
+                    <div class="col-md-4 col-sm-6">
+                        <div class="product-card">
+                            <div class="product-image">
+                                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%2300d4ff' d='M65 95 Q150 55 235 95 Q150 135 65 95'/><circle fill='%23000000' cx='105' cy='75' r='10'/><circle fill='%23000000' cx='195' cy='115' r='10'/></svg>" alt="حذاء كرة قدم أديداس">
+                            </div>
+                            <div class="product-info">
+                                <h6 class="product-title">حذاء أديداس كوبا سينس.1</h6>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="product-price">920 ر.س</div>
+                                    <button class="btn btn-cart">
+                                        <i class="fas fa-shopping-cart me-1"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional products (repeat pattern) -->
+                    <div class="col-md-4 col-sm-6">
+                        <div class="product-card">
+                            <div class="product-image">
+                                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%23ff9800' d='M50 110 Q150 70 250 110 Q150 150 50 110'/><circle fill='%23ffffff' cx='100' cy='90' r='10'/><circle fill='%23ffffff' cx='200' cy='130' r='10'/></svg>" alt="حذاء كرة قدم">
+                                <div class="product-badge">محدود</div>
+                            </div>
+                            <div class="product-info">
+                                <h6 class="product-title">حذاء نايك تيم إصدار خاص</h6>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="product-price">1250 ر.س</div>
+                                    <button class="btn btn-cart">
+                                        <i class="fas fa-shopping-cart me-1"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 col-sm-6">
+                        <div class="product-card">
+                            <div class="product-image">
+                                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%23e91e63' d='M60 100 Q150 60 240 100 Q150 140 60 100'/><circle fill='%23ffffff' cx='90' cy='80' r='8'/><circle fill='%23ffffff' cx='210' cy='120' r='8'/></svg>" alt="حذاء كرة قدم">
+                            </div>
+                            <div class="product-info">
+                                <h6 class="product-title">حذاء بوما كينغ بلاتينيوم</h6>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="product-price">
+                                        450 ر.س
+                                        <span class="old-price">580 ر.س</span>
+                                    </div>
+                                    <button class="btn btn-cart">
+                                        <i class="fas fa-shopping-cart me-1"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 col-sm-6">
+                        <div class="product-card">
+                            <div class="product-image">
+                                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%23795548' d='M55 105 Q150 65 245 105 Q150 145 55 105'/><circle fill='%23ffeb3b' cx='110' cy='85' r='12'/><circle fill='%23ffeb3b' cx='190' cy='125' r='12'/></svg>" alt="حذاء كرة قدم">
+                            </div>
+                            <div class="product-info">
+                                <h6 class="product-title">حذاء أديداس بريداتور فرياك</h6>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="product-price">780 ر.س</div>
+                                    <button class="btn btn-cart">
+                                        <i class="fas fa-shopping-cart me-1"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <nav aria-label="Page navigation" class="mt-4">
+                    <ul class="pagination">
+                        <li class="page-item">
+                            <a class="page-link" href="#" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item"><a class="page-link" href="#">4</a></li>
+                        <li class="page-item"><a class="page-link" href="#">5</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h6><i class="fas fa-store me-2"></i>CURVA</h6>
+                    <p class="small">متجرك الأول لأحذية كرة القدم والمعدات الرياضية. نوفر لك أفضل المنتجات بأعلى جودة وأفضل الأسعار.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h6>روابط سريعة</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#">الرئيسية</a></li>
+                        <li class="mb-2"><a href="#">المنتجات</a></li>
+                        <li class="mb-2"><a href="#">العروض</a></li>
+                        <li class="mb-2"><a href="#">من نحن</a></li>
+                        <li class="mb-2"><a href="#">اتصل بنا</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h6>الفئات</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#">أحذية نايك</a></li>
+                        <li class="mb-2"><a href="#">أحذية أديداس</a></li>
+                        <li class="mb-2"><a href="#">أحذية بوما</a></li>
+                        <li class="mb-2"><a href="#">أحذية أمبرو</a></li>
+                        <li class="mb-2"><a href="#">الإكسسوارات</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h6>خدمة العملاء</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#">سياسة الإرجاع</a></li>
+                        <li class="mb-2"><a href="#">الشحن والتوصيل</a></li>
+                        <li class="mb-2"><a href="#">طرق الدفع</a></li>
+                        <li class="mb-2"><a href="#">الأسئلة الشائعة</a></li>
+                        <li class="mb-2"><a href="#">الدعم الفني</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h6>تواصل معنا</h6>
+                    <div class="mb-2">
+                        <i class="fas fa-map-marker-alt me-2"></i>
+                        <span class="small">الرياض، المملكة العربية السعودية</span>
+                    </div>
+                    <div class="mb-2">
+                        <i class="fas fa-phone me-2"></i>
+                        <span class="small">+966 50 123 4567</span>
+                    </div>
+                    <div class="mb-2">
+                        <i class="fas fa-envelope me-2"></i>
+                        <span class="small">info@curva.com</span>
+                    </div>
+                    <div class="mb-3">
+                        <i class="fas fa-clock me-2"></i>
+                        <span class="small">24/7 خدمة العملاء</span>
+                    </div>
+                </div>
+            </div>
+            
+            <hr class="my-4" style="border-color: rgba(255,255,255,0.2);">
+            
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="small mb-0">&copy; 2025 CURVA. جميع الحقوق محفوظة.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <div class="d-inline-flex align-items-center">
+                        <span class="small me-3">طرق الدفع المقبولة:</span>
+                        <i class="fab fa-cc-visa me-2" style="font-size: 1.5rem;"></i>
+                        <i class="fab fa-cc-mastercard me-2" style="font-size: 1.5rem;"></i>
+                        <i class="fab fa-cc-apple-pay me-2" style="font-size: 1.5rem;"></i>
+                        <i class="fas fa-money-bill-wave" style="font-size: 1.2rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Add to cart functionality
+        document.querySelectorAll('.btn-cart').forEach(button => {
+            button.addEventListener('click', function() {
+                // Add animation effect
+                this.innerHTML = '<i class="fas fa-check me-1"></i>';
+                this.style.background = '#28a745';
+                
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fas fa-shopping-cart me-1"></i>';
+                    this.style.background = 'linear-gradient(45deg, #ffc107, #ff8c00)';
+                }, 1500);
+                
+                // Update cart counter
+                const cartBadge = document.querySelector('.fa-shopping-cart + .badge');
+                let currentCount = parseInt(cartBadge.textContent);
+                cartBadge.textContent = currentCount + 1;
+                cartBadge.style.animation = 'pulse 0.5s';
+            });
+        });
+        
+        // Search functionality
+        document.querySelector('.search-box button').addEventListener('click', function() {
+            const searchInput = document.querySelector('.search-box input');
+            if (searchInput.value.trim()) {
+                // Simulate search
+                alert('البحث عن: ' + searchInput.value);
+            }
+        });
+        
+        // Filter functionality
+        document.querySelector('.sidebar .btn-cart').addEventListener('click', function() {
+            this.textContent = 'جاري التطبيق...';
+            setTimeout(() => {
+                this.textContent = 'تطبيق الفلتر';
+                alert('تم تطبيق الفلتر بنجاح');
+            }, 1000);
+        });
+        
+        // Smooth scrolling for internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Add CSS animation for cart badge pulse
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.2); }
+                100% { transform: scale(1); }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Wishlist functionality
+        document.querySelectorAll('.fa-heart').forEach(heart => {
+            heart.addEventListener('click', function(e) {
+                e.preventDefault();
+                this.classList.toggle('fas');
+                this.classList.toggle('far');
+                if (this.classList.contains('fas')) {
+                    this.style.color = '#e74c3c';
+                } else {
+                    this.style.color = '';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

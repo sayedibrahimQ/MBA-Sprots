@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سلة التسوق - CURVA</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Cairo', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d3748 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,193,7,0.3);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: #ffc107 !important;
+        }
+        
+        .nav-link {
+            color: rgba(255,255,255,0.8) !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: #ffc107 !important;
+        }
+        
+        .breadcrumb {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 10px 20px;
+            margin: 20px 0;
+        }
+        
+        .breadcrumb-item a {
+            color: #ffc107;
+            text-decoration: none;
+        }
+        
+        .breadcrumb-item.active {
+            color: rgba(255,255,255,0.8);
+        }
+        
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #ffc107;
+            margin-bottom: 40px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(45deg, #ffc107, #ff8c00);
+            border-radius: 2px;
+        }
+        
+        .cart-container {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255,193,7,0.2);
+        }
+        
+        .cart-item {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,193,7,0.1);
+        }
+        
+        .cart-item:hover {
+            transform: translateX(-5px);
+            border-color: rgba(255,193,7,0.3);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+        
+        .cart-item-image {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 2px solid rgba(255,193,7,0.3);
+        }
+        
+        .product-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #ffc107;
+            margin-bottom: 10px;
+        }
+        
+        .product-details {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .product-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #28a745;
+        }
+        
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 5px;
+            width: fit-content;
+        }
+        
+        .quantity-btn {
+            width: 35px;
+            height: 35px;
+            border: none;
+            background: transparent;
+            color: #ffc107;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+        }
+        
+        .quantity-btn:hover {
+            background: #ffc107;
+            color: #000;
+        }
+        
+        .quantity-input {
+            width: 50px;
+            text-align: center;
+            border: none;
+            background: transparent;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .remove-btn {
+            background: transparent;
+            border: 2px solid #dc3545;
+            color: #dc3545;
+            padding: 8px 15px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .remove-btn:hover {
+            background: #dc3545;
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        .cart-summary {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            position: sticky;
+            top: 100px;
+            border: 2px solid rgba(255,193,7,0.3);
+        }
+        
+        .summary-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffc107;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .summary-row:last-of-type {
+            border-bottom: none;
+            margin-bottom: 25px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid rgba(255,193,7,0.3);
+        }
+        
+        .summary-label {
+            color: rgba(255,255,255,0.8);
+            font-weight: 500;
+        }
+        
+        .summary-value {
+            color: white;
+            font-weight: 600;
+        }
+        
+        .total-label {
+            font-size: 1.3rem;
+            color: #ffc107;
+            font-weight: 700;
+        }
+        
+        .total-value {
+            font-size: 1.5rem;
+            color: #28a745;
+            font-weight: 700;
+        }
+        
+        .btn-checkout {
+            background: linear-gradient(45deg, #ffc107, #ff8c00);
+            border: none;
+            color: #000;
+            font-weight: 700;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            width: 100%;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-checkout:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255,193,7,0.4);
+            color: #000;
+        }
+        
+        .btn-continue {
+            background: transparent;
+            border: 2px solid rgba(255,255,255,0.3);
+            color: rgba(255,255,255,0.8);
+            font-weight: 600;
+            padding: 12px 25px;
+            border-radius: 25px;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-continue:hover {
+            border-color: #ffc107;
+            color: #ffc107;
+            background: rgba(255,193,7,0.1);
+        }
+        
+        .promo-section {
+            background: rgba(255,193,7,0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 25px;
+            border: 1px solid rgba(255,193,7,0.3);
+        }
+        
+        .promo-input {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        
+        .promo-input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .btn-apply-promo {
+            background: #ffc107;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-apply-promo:hover {
+            background: #ff8c00;
+            transform: scale(1.02);
+        }
+        
+        .empty-cart {
+            text-align: center;
+            padding: 80px 20px;
+        }
+        
+        .empty-cart-icon {
+            font-size: 5rem;
+            color: rgba(255,193,7,0.3);
+            margin-bottom: 30px;
+        }
+        
+        .empty-cart-title {
+            font-size: 1.8rem;
+            color: #ffc107;
+            margin-bottom: 15px;
+        }
+        
+        .empty-cart-text {
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 30px;
+        }
+        
+        .footer {
+            background: rgba(0,0,0,0.9);
+            border-top: 1px solid rgba(255,193,7,0.3);
+            padding: 40px 0 20px;
+            margin-top: 60px;
+        }
+        
+        .footer h6 {
+            color: #ffc107;
+            margin-bottom: 20px;
+        }
+        
+        .footer a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer a:hover {
+            color: #ffc107;
+        }
+        
+        @media (max-width: 768px) {
+            .cart-item-image {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .product-name {
+                font-size: 1rem;
+            }
+            
+            .cart-summary {
+                position: relative;
+                top: 0;
+                margin-top: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="#">CURVA</a>
+        
+        <div class="d-flex align-items-center order-lg-last">
+            <a href="#" class="nav-link me-3"><i class="fas fa-search"></i></a>
+            <a href="#" class="nav-link me-3"><i class="heart"></i></a>
+            <a href="#" class="nav-link me-3 position-relative">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">2</span>
+            </a>
+            <a href="#" class="nav-link"><i class="fas fa-user"></i></a>
+        </div>
+        
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" href="#">الرئيسية</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">المنتجات</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">الماركات</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">الفرق</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">عروض</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">الرئيسية</a></li>
+            <li class="breadcrumb-item active" aria-current="page">سلة التسوق</li>
+        </ol>
+    </nav>
+
+    <!-- Page Title -->
+    <h1 class="page-title">سلة التسوق</h1>
+
+    <div class="row">
+        <!-- Cart Items -->
+        <div class="col-lg-8">
+            <div class="cart-container">
+                <!-- Cart Item 1 -->
+                <div class="cart-item">
+                    <div class="row align-items-center">
+                        <div class="col-md-2 col-4">
+                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Crect fill='%23ffffff' width='120' height='120'/%3E%3Ccircle fill='%23ffc107' cx='30' cy='30' r='15'/%3E%3Ctext x='60' y='65' text-anchor='middle' fill='%23000' font-size='10' font-weight='bold'%3EREAL MADRID%3C/text%3E%3Ctext x='60' y='80' text-anchor='middle' fill='%23000' font-size='8'%3E2025%3C/text%3E%3C/svg%3E" 
+                                 alt="قميص ريال مدريد" class="cart-item-image">
+                        </div>
+                        <div class="col-md-5 col-8">
+                            <h3 class="product-name">قميص ريال مدريد الجديد 2025</h3>
+                            <p class="product-details">المقاس: XL</p>
+                            <p class="product-details">اللون: أبيض</p>
+                            <p class="product-details">رقم اللاعب: بدون</p>
+                        </div>
+                        <div class="col-md-2 col-6 text-center">
+                            <div class="quantity-controls mx-auto">
+                                <button class="quantity-btn" onclick="decreaseQuantity('item1')">-</button>
+                                <input type="number" id="item1" class="quantity-input" value="1" min="1" max="10" readonly>
+                                <button class="quantity-btn" onclick="increaseQuantity('item1')">+</button>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-4 text-center">
+                            <p class="product-price">300 جنيه</p>
+                        </div>
+                        <div class="col-md-1 col-2 text-center">
+                            <button class="remove-btn" onclick="removeItem(this)">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cart Item 2 -->
+                <div class="cart-item">
+                    <div class="row align-items-center">
+                        <div class="col-md-2 col-4">
+                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Crect fill='%23000000' width='120' height='120'/%3E%3Ccircle fill='%23ffc107' cx='30' cy='30' r='15'/%3E%3Ctext x='60' y='65' text-anchor='middle' fill='%23fff' font-size='10' font-weight='bold'%3EREAL MADRID%3C/text%3E%3Ctext x='60' y='80' text-anchor='middle' fill='%23fff' font-size='8'%3ETRAINING%3C/text%3E%3C/svg%3E" 
+                                 alt="قميص تدريب" class="cart-item-image">
+                        </div>
+                        <div class="col-md-5 col-8">
+                            <h3 class="product-name">قميص ريال مدريد تدريب 2025</h3>
+                            <p class="product-details">المقاس: L</p>
+                            <p class="product-details">اللون: أسود</p>
+                            <p class="product-details">رقم اللاعب: رونالدو 7</p>
+                        </div>
+                        <div class="col-md-2 col-6 text-center">
+                            <div class="quantity-controls mx-auto">
+                                <button class="quantity-btn" onclick="decreaseQuantity('item2')">-</button>
+                                <input type="number" id="item2" class="quantity-input" value="1" min="1" max="10" readonly>
+                                <button class="quantity-btn" onclick="increaseQuantity('item2')">+</button>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-4 text-center">
+                            <p class="product-price">125 جنيه</p>
+                        </div>
+                        <div class="col-md-1 col-2 text-center">
+                            <button class="remove-btn" onclick="removeItem(this)">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cart Summary -->
+        <div class="col-lg-4">
+            <div class="cart-summary">
+                <h2 class="summary-title">ملخص الطلب</h2>
+                
+                <div class="summary-row">
+                    <span class="summary-label">المجموع الفرعي</span>
+                    <span class="summary-value">425 جنيه</span>
+                </div>
+                
+                <div class="summary-row">
+                    <span class="summary-label">الشحن</span>
+                    <span class="summary-value">50 جنيه</span>
+                </div>
+                
+                <div class="summary-row">
+                    <span class="summary-label">الخصم</span>
+                    <span class="summary-value text-success">- 0 جنيه</span>
+                </div>
+                
+                <div class="summary-row">
+                    <span class="total-label">المجموع الكلي</span>
+                    <span class="total-value">475 جنيه</span>
+                </div>
+                
+                <button class="btn-checkout" onclick="proceedToCheckout()">
+                    <i class="fas fa-credit-card me-2"></i>إتمام الشراء
+                </button>
+                
+                <button class="btn-continue" onclick="continueShopping()">
+                    <i class="fas fa-shopping-bag me-2"></i>متابعة التسوق
+                </button>
+                
+                <!-- Promo Code Section -->
+                <div class="promo-section">
+                    <h6 class="mb-3">
+                        <i class="fas fa-tag me-2"></i>كود الخصم
+                    </h6>
+                    <input type="text" class="promo-input" placeholder="أدخل كود الخصم" id="promoCode">
+                    <button class="btn-apply-promo" onclick="applyPromo()">
+                        تطبيق الكود
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty Cart State (Hidden by default) -->
+    <div class="empty-cart" style="display: none;">
+        <div class="empty-cart-icon">
+            <i class="fas fa-shopping-cart"></i>
+        </div>
+        <h2 class="empty-cart-title">سلة التسوق فارغة</h2>
+        <p class="empty-cart-text">لم تقم بإضافة أي منتجات إلى السلة بعد</p>
+        <button class="btn-checkout" onclick="window.location.href='#'">
+            <i class="fas fa-shopping-bag me-2"></i>ابدأ التسوق الآن
+        </button>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 col-md-6 mb-4">
+                <h6>عن CURVA</h6>
+                <p class="small text-muted">متجرك المتخصص في أجود قمصان كرة القدم. نوفر لك أحدث التصاميم بأفضل الأسعار وضمان الجودة.</p>
+            </div>
+            
+            <div class="col-lg-3 col-md-6 mb-4">
+                <h6>روابط سريعة</h6>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="#">عن المتجر</a></li>
+                    <li class="mb-2"><a href="#">سياسة الخصوصية</a></li>
+                    <li class="mb-2"><a href="#">الشروط والأحكام</a></li>
+                </ul>
+            </div>
+            
+            <div class="col-lg-3 col-md-6 mb-4">
+                <h6>خدمة العملاء</h6>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="#">تتبع الطلب</a></li>
+                    <li class="mb-2"><a href="#">دليل المقاسات</a></li>
+                    <li class="mb-2"><a href="#">اتصل بنا</a></li>
+                </ul>
+            </div>
+            
+            <div class="col-lg-3 col-md-6 mb-4">
+                <h6>تواصل معنا</h6>
+                <div class="social-links mt-3">
+                    <a href="#" class="me-2"><i class="fab fa-facebook fa-lg"></i></a>
+                    <a href="#" class="me-2"><i class="fab fa-instagram fa-lg"></i></a>
+                    <a href="#" class="me-2"><i class="fab fa-twitter fa-lg"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp fa-lg"></i></a>
+                </div>
+            </div>
+        </div>
+        
+        <hr class="my-4 border-secondary">
+        
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <p class="mb-0 small text-muted">&copy; 2024 CURVA. جميع الحقوق محفوظة.</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Update cart totals
+    function updateCartTotals() {
+        const cartItems = document.querySelectorAll('.cart-item');
+        let subtotal = 0;
+        
+        cartItems.forEach(item => {
+            const priceText = item.querySelector('.product-price').textContent;
+            const price = parseInt(priceText.replace(' جنيه', ''));
+            const quantityInput = item.querySelector('.quantity-input');
+            const quantity = parseInt(quantityInput.value);
+            
+            subtotal += price * quantity;
+        });
+        
+        const shipping = subtotal > 0 ? 50 : 0;
+        const discount = 0; // This would be calculated based on promo codes
+        const total = subtotal + shipping - discount;
+        
+        // Update summary values
+        document.querySelector('.summary-row:nth-child(1) .summary-value').textContent = subtotal + ' جنيه';
+        document.querySelector('.summary-row:nth-child(2) .summary-value').textContent = shipping + ' جنيه';
+        document.querySelector('.summary-row:nth-child(3) .summary-value').textContent = '- ' + discount + ' جنيه';
+        document.querySelector('.total-value').textContent = total + ' جنيه';
+        
+        // Update cart badge
+        const badge = document.querySelector('.badge');
+        if (badge) {
+            badge.textContent = cartItems.length;
+        }
+        
+        // Show empty cart if no items
+        if (cartItems.length === 0) {
+            document.querySelector('.cart-container').parentElement.parentElement.style.display = 'none';
+            document.querySelector('.empty-cart').style.display = 'block';
+        }
+    }
+    
+    // Increase quantity
+    function increaseQuantity(itemId) {
+        const input = document.getElementById(itemId);
+        const currentValue = parseInt(input.value);
+        if (currentValue < 10) {
+            input.value = currentValue + 1;
+            updateCartTotals();
+            showNotification('تم تحديث الكمية');
+        }
+    }
+    
+    // Decrease quantity
+    function decreaseQuantity(itemId) {
+        const input = document.getElementById(itemId);
+        const currentValue = parseInt(input.value);
+        if (currentValue > 1) {
+            input.value = currentValue - 1;
+            updateCartTotals();
+            showNotification('تم تحديث الكمية');
+        }
+    }
+    
+    // Remove item from cart
+    function removeItem(button) {
+        const cartItem = button.closest('.cart-item');
+        
+        // Animate removal
+        cartItem.style.transform = 'translateX(100%)';
+        cartItem.style.opacity = '0';
+        
+        setTimeout(() => {
+            cartItem.remove();
+            updateCartTotals();
+            showNotification('تم حذف المنتج من السلة', 'warning');
+        }, 300);
+    }
+    
+    // Apply promo code
+    function applyPromo() {
+        const promoInput = document.getElementById('promoCode');
+        const promoCode = promoInput.value.trim();
+        
+        if (!promoCode) {
+            showNotification('الرجاء إدخال كود الخصم', 'error');
+            return;
+        }
+        
+        // Simulate promo code validation
+        if (promoCode === 'CURVA10') {
+            showNotification('تم تطبيق كود الخصم بنجاح! خصم 10%', 'success');
+            // Apply 10% discount
+            const subtotalElement = document.querySelector('.summary-row:nth-child(1) .summary-value');
+            const subtotal = parseInt(subtotalElement.textContent.replace(' جنيه', ''));
+            const discount = Math.round(subtotal * 0.1);
+            
+            document.querySelector('.summary-row:nth-child(3) .summary-value').textContent = '- ' + discount + ' جنيه';
+            updateCartTotals();
+        } else {
+            showNotification('كود الخصم غير صالح', 'error');
+        }
+    }
+    
+    // Proceed to checkout
+    function proceedToCheckout() {
+        const cartItems = document.querySelectorAll('.cart-item');
+        if (cartItems.length === 0) {
+            showNotification('السلة فارغة!', 'error');
+            return;
+        }
+        
+        // Show loading
+        const checkoutBtn = event.target;
+        const originalContent = checkoutBtn.innerHTML;
+        checkoutBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>جاري المعالجة...';
+        checkoutBtn.disabled = true;
+        
+        // Simulate processing
+        setTimeout(() => {
+            checkoutBtn.innerHTML = originalContent;
+            checkoutBtn.disabled = false;
+            showNotification('جاري توجيهك لصفحة الدفع...', 'success');
+            // Redirect to checkout page
+            // window.location.href = '/checkout';
+        }, 1500);
+    }
+    
+    // Continue shopping
+    function continueShopping() {
+        window.location.href = '/';
+    }
+    
+    // Show notification
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        const alertClass = type === 'error' ? 'danger' : type;
+        notification.className = `alert alert-${alertClass} position-fixed top-0 start-50 translate-middle-x mt-3`;
+        notification.style.zIndex = '9999';
+        notification.style.minWidth = '300px';
+        notification.style.transition = 'all 0.3s ease';
+        notification.style.opacity = '0';
+        
+        const icon = type === 'success' ? 'check-circle' : 
+                     type === 'error' ? 'exclamation-circle' : 
+                     type === 'warning' ? 'exclamation-triangle' : 'info-circle';
+        
+        notification.innerHTML = `
+            <div class="d-flex align-items-center">
+                <i class="fas fa-${icon} me-2"></i>
+                <span>${message}</span>
+            </div>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Fade in
+        setTimeout(() => {
+            notification.style.opacity = '1';
+        }, 10);
+        
+        // Fade out and remove
+        setTimeout(() => {
+            notification.style.opacity = '0';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+    
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', function() {
+        updateCartTotals();
+        
+        // Add hover effects to cart items
+        document.querySelectorAll('.cart-item').forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateX(-5px)';
+            });
+            
+            item.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateX(0)';
+            });
+        });
+        
+        // Handle quantity input changes
+        document.querySelectorAll('.quantity-input').forEach(input => {
+            input.addEventListener('change', function() {
+                const value = parseInt(this.value);
+                if (value < 1) this.value = 1;
+                if (value > 10) this.value = 10;
+                updateCartTotals();
+            });
+        });
+        
+        // Promo code input enter key
+        document.getElementById('promoCode').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                applyPromo();
+            }
+        });
+    });
+    
+    // Save cart to localStorage
+    function saveCart() {
+        const cartData = [];
+        document.querySelectorAll('.cart-item').forEach(item => {
+            const productName = item.querySelector('.product-name').textContent;
+            const quantity = item.querySelector('.quantity-input').value;
+            const price = item.querySelector('.product-price').textContent;
+            
+            cartData.push({
+                name: productName,
+                quantity: quantity,
+                price: price
+            });
+        });
+        
+        localStorage.setItem('curvaCart', JSON.stringify(cartData));
+    }
+    
+    // Load cart from localStorage
+    function loadCart() {
+        const savedCart = localStorage.getItem('curvaCart');
+        if (savedCart) {
+            const cartData = JSON.parse(savedCart);
+            // Rebuild cart items from saved data
+            console.log('Cart loaded:', cartData);
+        }
+    }
+    
+    // Call save cart on any changes
+    window.addEventListener('beforeunload', saveCart);
+</script>
+
+</body>
+</html>
