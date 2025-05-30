@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سلة التسوق - CURVA</title>
+    <title>سلة التسوق - MBA</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
@@ -40,32 +40,51 @@
             color: #ffc107 !important;
         }
         
-        .breadcrumb {
-            background: rgba(255,255,255,0.1);
-            border-radius: 10px;
-            padding: 10px 20px;
-            margin: 20px 0;
+        .breadcrumb-custom {
+            background: transparent; 
+            padding: 10px 0; 
+            margin: 25px 0;
+            display: flex; 
+            align-items: center;
+            font-size: 0.9rem;
         }
-        
-        .breadcrumb-item a {
-            color: #ffc107;
+        .breadcrumb-custom .breadcrumb-item {
+            display: flex;
+            align-items: center;
+        }
+        .breadcrumb-custom .breadcrumb-item a {
+            color: #ffc107; 
             text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .breadcrumb-custom .breadcrumb-item a:hover {
+            color: #ffdb6a; 
+        }
+        .breadcrumb-custom .breadcrumb-item.active {
+            color: rgba(255,255,255,0.8);
+        }
+        .breadcrumb-custom .breadcrumb-item + .breadcrumb-item::before {
+            padding: 0 0.5rem;
+            color: rgba(255,255,255,0.5);
+            content: ">"; 
         }
         
-        .breadcrumb-item.active {
-            color: rgba(255,255,255,0.8);
+        .breadcrumb {
+            display: none;
         }
         
         .page-title {
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             font-weight: 700;
             color: #ffc107;
             margin-bottom: 40px;
-            text-align: center;
             position: relative;
+            padding-right: 20px;
+            text-align: center;
         }
         
-        .page-title::after {
+        .page-title::before {
             content: '';
             position: absolute;
             bottom: -15px;
@@ -76,54 +95,58 @@
             background: linear-gradient(45deg, #ffc107, #ff8c00);
             border-radius: 2px;
         }
+        .page-title::after {
+            display: none;
+        }
         
         .cart-container {
-            background: rgba(255,255,255,0.05);
+            background: rgba(0,0,0,0.7);
             backdrop-filter: blur(10px);
-            border-radius: 20px;
+            border-radius: 15px;
             padding: 30px;
             margin-bottom: 30px;
             border: 1px solid rgba(255,193,7,0.2);
         }
         
         .cart-item {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05);
             border-radius: 15px;
             padding: 20px;
             margin-bottom: 20px;
             transition: all 0.3s ease;
-            border: 1px solid rgba(255,193,7,0.1);
+            border: 1px solid rgba(255,193,7,0.15);
         }
         
         .cart-item:hover {
-            transform: translateX(-5px);
-            border-color: rgba(255,193,7,0.3);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transform: translateX(0);
+            border-color: #ffc107;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            background: rgba(255,193,7,0.08);
         }
         
         .cart-item-image {
-            width: 120px;
-            height: 120px;
+            width: 100px;
+            height: 100px;
             object-fit: cover;
             border-radius: 10px;
-            border: 2px solid rgba(255,193,7,0.3);
+            border: 1px solid rgba(255,193,7,0.2);
         }
         
         .product-name {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 600;
             color: #ffc107;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
         
         .product-details {
-            color: rgba(255,255,255,0.7);
-            font-size: 0.9rem;
-            margin-bottom: 5px;
+            color: rgba(255,255,255,0.75);
+            font-size: 0.85rem;
+            margin-bottom: 4px;
         }
         
         .product-price {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 700;
             color: #28a745;
         }
@@ -131,23 +154,27 @@
         .quantity-controls {
             display: flex;
             align-items: center;
-            background: rgba(255,255,255,0.1);
-            border-radius: 10px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 20px;
             padding: 5px;
             width: fit-content;
+            border: 1px solid rgba(255,193,7,0.2);
         }
         
         .quantity-btn {
-            width: 35px;
-            height: 35px;
+            width: 30px;
+            height: 30px;
             border: none;
             background: transparent;
             color: #ffc107;
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
-            border-radius: 8px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .quantity-btn:hover {
@@ -156,44 +183,50 @@
         }
         
         .quantity-input {
-            width: 50px;
+            width: 40px;
             text-align: center;
             border: none;
             background: transparent;
             color: white;
             font-weight: 600;
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
         
         .remove-btn {
             background: transparent;
-            border: 2px solid #dc3545;
-            color: #dc3545;
-            padding: 8px 15px;
-            border-radius: 10px;
+            border: 2px solid #ffc107;
+            color: #ffc107;
+            padding: 6px 12px;
+            border-radius: 20px;
             font-weight: 600;
             transition: all 0.3s ease;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .remove-btn i {
+            /* color: #ffc107; Ensured by parent color */
         }
         
         .remove-btn:hover {
-            background: #dc3545;
-            color: white;
-            transform: scale(1.05);
+            background: #ffc107;
+            color: #000;
         }
         
         .cart-summary {
-            background: rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.7);
             backdrop-filter: blur(10px);
-            border-radius: 20px;
+            border-radius: 15px;
             padding: 30px;
             position: sticky;
-            top: 100px;
-            border: 2px solid rgba(255,193,7,0.3);
+            top: 20px;
+            border: 1px solid rgba(255,193,7,0.2);
         }
         
         .summary-title {
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             font-weight: 700;
             color: #ffc107;
             margin-bottom: 25px;
@@ -238,78 +271,85 @@
             font-weight: 700;
         }
         
-        .btn-checkout {
+        .btn-checkout,
+        .btn-continue {
             background: linear-gradient(45deg, #ffc107, #ff8c00);
             border: none;
             color: #000;
             font-weight: 700;
-            padding: 15px 30px;
+            padding: 12px 30px;
             border-radius: 25px;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             width: 100%;
             margin-bottom: 15px;
             transition: all 0.3s ease;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
-        .btn-checkout:hover {
+        .btn-checkout:hover,
+        .btn-continue:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 25px rgba(255,193,7,0.4);
             color: #000;
         }
         
-        .btn-continue {
+        .btn-continue-outline {
             background: transparent;
-            border: 2px solid rgba(255,255,255,0.3);
-            color: rgba(255,255,255,0.8);
+            border: 2px solid #ffc107;
+            color: #ffc107;
             font-weight: 600;
-            padding: 12px 25px;
+            padding: 10px 28px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 15px;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-continue-outline:hover {
+            background: #ffc107;
+            color: #000;
+            transform: translateY(-3px);
+        }
+        
+        .promo-section {
+            margin-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 25px;
+        }
+        
+        .promo-section h6 {
+            color: #ffc107;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .promo-section .form-control {
+            margin-bottom: 10px;
+        }
+        
+        .btn-apply-promo {
+            background: #ffc107;
+            border: none;
+            color: #000;
+            font-weight: 600;
+            padding: 10px 20px;
             border-radius: 25px;
             width: 100%;
             transition: all 0.3s ease;
         }
         
-        .btn-continue:hover {
-            border-color: #ffc107;
-            color: #ffc107;
-            background: rgba(255,193,7,0.1);
-        }
-        
-        .promo-section {
-            background: rgba(255,193,7,0.1);
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 25px;
-            border: 1px solid rgba(255,193,7,0.3);
-        }
-        
-        .promo-input {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            color: white;
-            padding: 10px 15px;
-            border-radius: 10px;
-            width: 100%;
-            margin-bottom: 10px;
-        }
-        
-        .promo-input::placeholder {
-            color: rgba(255,255,255,0.5);
-        }
-        
-        .btn-apply-promo {
-            background: #ffc107;
-            color: #000;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 10px;
-            font-weight: 600;
-            width: 100%;
-            transition: all 0.3s ease;
-        }
-        
         .btn-apply-promo:hover {
-            background: #ff8c00;
-            transform: scale(1.02);
+            background: #ffdb6a;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255,193,7,0.3);
         }
         
         .empty-cart {
@@ -334,27 +374,83 @@
             margin-bottom: 30px;
         }
         
+        /* Footer */
         .footer {
-            background: rgba(0,0,0,0.9);
-            border-top: 1px solid rgba(255,193,7,0.3);
-            padding: 40px 0 20px;
-            margin-top: 60px;
+            background: rgba(0,0,0,0.9); 
+            backdrop-filter: blur(10px); 
+            color: rgba(255,255,255,0.8);
+            padding: 50px 0 20px; 
+            margin-top: 50px; 
+            border-top: 1px solid rgba(255,193,7,0.3); 
         }
-        
-        .footer h6 {
-            color: #ffc107;
+        .footer h5 { /* Changed from h6 to h5 for consistency */
+            color: #ffc107; 
             margin-bottom: 20px;
+            font-size: 1.1rem; 
+            font-weight: 600;
         }
-        
         .footer a {
             color: rgba(255,255,255,0.7);
             text-decoration: none;
+            font-size: 0.9rem;
+            line-height: 2;
             transition: color 0.3s ease;
         }
-        
         .footer a:hover {
-            color: #ffc107;
+            color: #ffc107; 
         }
+        .footer p {
+             color: rgba(255,255,255,0.7);
+             font-size: 0.9rem;
+             margin-bottom: 0.5rem;
+        }
+        .footer .app-download { 
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+        .footer .app-download img {
+            height: 40px;
+            border-radius: 5px;
+            border: 1px solid rgba(255,193,7,0.2); 
+            transition: transform 0.3s ease;
+        }
+        .footer .app-download img:hover {
+            transform: scale(1.05);
+        }
+        .footer .social-icons { 
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .footer .social-icons i {
+            font-size: 1.5rem; 
+            color: rgba(255,255,255,0.7);
+            cursor: pointer;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+        .footer .social-icons i:hover {
+            color: #ffc107; 
+            transform: scale(1.1);
+        }
+        .footer .copyright {
+            text-align: center;
+            margin-top: 40px; 
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,193,7,0.2); 
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+        }
+        /* For brand text/logo in footer */
+        .footer .navbar-brand-footer-text { 
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: #ffc107 !important; 
+            display: block;
+            margin-bottom: 15px;
+        }
+        /* End of New Footer CSS */
         
         @media (max-width: 768px) {
             .cart-item-image {
@@ -410,7 +506,7 @@
 <div class="container">
     <!-- Breadcrumb -->
     <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
+        <ol class="breadcrumb-custom">
             <li class="breadcrumb-item"><a href="#">الرئيسية</a></li>
             <li class="breadcrumb-item active" aria-current="page">سلة التسوق</li>
         </ol>
@@ -513,11 +609,13 @@
                 </div>
                 
                 <button class="btn-checkout" onclick="proceedToCheckout()">
-                    <i class="fas fa-credit-card me-2"></i>إتمام الشراء
+                    <i class="fas fa-credit-card me-2"></i> &nbsp;
+                    إتمام الشراء
                 </button>
                 
-                <button class="btn-continue" onclick="continueShopping()">
-                    <i class="fas fa-shopping-bag me-2"></i>متابعة التسوق
+                <button class="btn-continue-outline" onclick="continueShopping()">
+                    <i class="fas fa-shopping-bag me-2"></i> &nbsp;
+                        متابعة التسوق
                 </button>
                 
                 <!-- Promo Code Section -->
@@ -525,7 +623,7 @@
                     <h6 class="mb-3">
                         <i class="fas fa-tag me-2"></i>كود الخصم
                     </h6>
-                    <input type="text" class="promo-input" placeholder="أدخل كود الخصم" id="promoCode">
+                    <input type="text" class="form-control" placeholder="أدخل كود الخصم" id="promoCode">
                     <button class="btn-apply-promo" onclick="applyPromo()">
                         تطبيق الكود
                     </button>

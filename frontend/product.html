@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>قميص ريال مدريد الجديد 2025 - دراجون فيوتشر (أبيض خارجي) - CURVA</title>
+    <title>قميص ريال مدريد الجديد 2025 - دراجون فيوتشر (أبيض خارجي) - MBA</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             font-family: 'Cairo', sans-serif;
+            scroll-behavior: smooth;
         }
         
         body {
@@ -39,7 +40,7 @@
             color: #ffc107 !important;
         }
         
-        .breadcrumb {
+        .breadcrumb-custom {
             background: rgba(255,255,255,0.1);
             border-radius: 10px;
             padding: 10px 20px;
@@ -61,16 +62,21 @@
         
         .main-image {
             width: 100%;
-            height: 500px;
+            height: auto;
+            max-height: 550px;
             object-fit: cover;
             border-radius: 15px;
-            border: 3px solid rgba(255,193,7,0.3);
-            transition: all 0.3s ease;
+            border: 2px solid rgba(255,193,7,0.2);
+            transition: all 0.3s ease, opacity 0.4s ease;
         }
         
         .main-image:hover {
             border-color: #ffc107;
             box-shadow: 0 0 30px rgba(255,193,7,0.4);
+        }
+        
+        .main-image-fade {
+            opacity: 0;
         }
         
         .thumbnail-gallery {
@@ -95,10 +101,11 @@
         .thumbnail.active,
         .thumbnail:hover {
             border-color: #ffc107;
-            transform: scale(1.05);
+            transform: scale(1.08);
+            box-shadow: 0 0 15px rgba(255,193,7,0.25);
         }
         
-        .product-info {
+        .product-info-container {
             background: rgba(255,255,255,0.1);
             backdrop-filter: blur(10px);
             border-radius: 20px;
@@ -144,12 +151,24 @@
             font-weight: 600;
         }
         
-        .size-option:hover,
+        .size-option:hover {
+            border-color: #ffc107;
+            color: #ffc107;
+            transform: scale(1.05);
+            box-shadow: 0 0 10px rgba(255,193,7,0.2);
+        }
+        
         .size-option.active {
             border-color: #ffc107;
             background: #ffc107;
             color: #000;
-            transform: scale(1.1);
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255,193,7,0.3);
+        }
+        
+        .size-option:focus {
+            outline: none;
+            box-shadow: 0 0 0 0.2rem rgba(255,193,7,0.25);
         }
         
         .quantity-selector {
@@ -158,34 +177,65 @@
             margin-bottom: 25px;
         }
         
-        .quantity-btn {
-            width: 40px;
-            height: 40px;
-            border: 2px solid #ffc107;
+        .quantity-selector label { 
+            margin-left: 10px; /* Adjusted for RTL, this adds space to the left of the controls if label is first */
+            /* If label is to the right (like <label> <controls_div>): class="ms-3" on label or margin-right here */
+            font-weight: 600;
+            color: rgba(255,255,255,0.85);
+        }
+        .quantity-controls-product { 
+            display: flex;
+            align-items: center;
+            background: rgba(0,0,0,0.2);
+            border-radius: 22px; /* Adjusted for a tighter look with 30px buttons */
+            padding: 4px; /* Adjusted padding */
+            border: 1px solid rgba(255,193,7,0.25);
+        }
+        .quantity-btn-product { 
+            width: 30px; 
+            height: 30px;
+            border: none;
             background: transparent;
             color: #ffc107;
-            border-radius: 8px;
-            font-size: 1.2rem;
+            font-size: 1rem; /* Slightly adjusted */
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            line-height: 1; /* Ensure text is centered in button */
         }
         
-        .quantity-btn:hover {
-            background: #ffc107;
-            color: #000;
+        .quantity-btn-product:focus {
+            outline: none;
+            box-shadow: 0 0 0 0.2rem rgba(255,193,7,0.25); 
         }
-        
-        .quantity-input {
-            width: 60px;
-            height: 40px;
+        .quantity-input-product { 
+            width: 40px; /* Adjusted width */
             text-align: center;
-            border: 2px solid rgba(255,255,255,0.3);
-            background: transparent;
+            border: none; /* Removed border */
+            background: transparent; /* Removed background */
             color: white;
-            border-radius: 8px;
-            margin: 0 10px;
             font-weight: 600;
+            font-size: 0.95rem; /* Adjusted font size */
+            padding: 0 3px; 
+            /* Height will be implicitly handled by flexbox alignment and line-height */
+            /* No border-radius needed as it's borderless */
+            transition: box-shadow 0.3s ease; /* Only transition shadow if focus adds one directly to input */
+            -moz-appearance: textfield; 
+        }
+        .quantity-input-product::-webkit-outer-spin-button,
+        .quantity-input-product::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0; 
+        }
+        .quantity-input-product:focus {
+            outline: none;
+            /* No specific background/border change on focus if it's meant to be seamless */
+            /* Optional: could add a very subtle inner shadow or text shadow if needed */
+            box-shadow: none; /* Explicitly remove browser default focus ring if any remains */
         }
         
         .btn-add-cart {
@@ -202,9 +252,14 @@
         }
         
         .btn-add-cart:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(255,193,7,0.4);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 10px 20px rgba(255,193,7,0.35);
             color: #000;
+        }
+        
+        .btn-add-cart:focus {
+            outline: none;
+            box-shadow: 0 0 0 0.2rem rgba(255,193,7,0.3), 0 10px 20px rgba(255,193,7,0.3);
         }
         
         .btn-wishlist {
@@ -219,6 +274,18 @@
         }
         
         .btn-wishlist:hover {
+            background: #ffc107;
+            color: #000;
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 5px 15px rgba(255,193,7,0.25);
+        }
+        
+        .btn-wishlist:focus {
+            outline: none;
+            box-shadow: 0 0 0 0.2rem rgba(255,193,7,0.25);
+        }
+        
+        .btn-wishlist.active {
             background: #e74c3c;
             color: white;
         }
@@ -233,8 +300,16 @@
         .feature-item {
             display: flex;
             align-items: center;
-            margin-bottom: 10px;
-            padding: 8px 0;
+            margin-bottom: 12px;
+            padding: 10px 5px;
+            color: rgba(255,255,255,0.85);
+            font-size: 0.95rem;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .feature-item:hover {
+            background-color: rgba(255,193,7,0.08);
         }
         
         .feature-icon {
@@ -339,24 +414,89 @@
         
         .footer {
             background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(10px);
+            color: rgba(255,255,255,0.8);
+            padding: 50px 0 20px;
+            margin-top: 50px;
             border-top: 1px solid rgba(255,193,7,0.3);
-            padding: 40px 0 20px;
-            margin-top: 60px;
         }
         
-        .footer h6 {
+        .footer h5 {
             color: #ffc107;
             margin-bottom: 20px;
+            font-size: 1.1rem;
+            font-weight: 600;
         }
         
         .footer a {
             color: rgba(255,255,255,0.7);
             text-decoration: none;
+            font-size: 0.9rem;
+            line-height: 2;
             transition: color 0.3s ease;
         }
         
         .footer a:hover {
             color: #ffc107;
+        }
+        
+        .footer p {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer .app-download {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .footer .app-download img {
+            height: 40px;
+            border-radius: 5px;
+            border: 1px solid rgba(255,193,7,0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .footer .app-download img:hover {
+            transform: scale(1.05);
+        }
+        
+        .footer .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .footer .social-icons i {
+            font-size: 1.5rem;
+            color: rgba(255,255,255,0.7);
+            cursor: pointer;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+        
+        .footer .social-icons i:hover {
+            color: #ffc107;
+            transform: scale(1.1);
+        }
+        
+        .footer .copyright {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,193,7,0.2);
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+        }
+        
+        .footer .navbar-brand-footer-text {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: #ffc107 !important;
+            display: block;
+            margin-bottom: 15px;
         }
         
         .zoom-overlay {
@@ -380,20 +520,30 @@
         
         .zoom-close {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: 25px;
+            right: 25px;
             background: #ffc107;
             color: #000;
             border: none;
-            width: 50px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .zoom-close:hover {
+            background-color: #ffdb6a;
+            transform: scale(1.1);
         }
 
         @media (max-width: 768px) {
-            .product-info {
+            .product-info-container {
                 margin-right: 0;
                 margin-top: 20px;
             }
@@ -409,6 +559,284 @@
             .product-price {
                 font-size: 1.6rem;
             }
+        }
+
+        /* Tabs for Description, Reviews etc. */
+        .nav-tabs {
+            border-bottom: 2px solid rgba(255,193,7,0.3);
+            margin-bottom: 25px;
+        }
+        
+        .nav-tabs .nav-item {
+            margin-bottom: -2px;
+        }
+        
+        .nav-tabs .nav-link {
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: rgba(255,255,255,0.7);
+            font-weight: 600;
+            padding: 12px 20px;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+        
+        .nav-tabs .nav-link:hover {
+            color: #ffc107;
+            border-bottom-color: rgba(255,193,7,0.5);
+        }
+        
+        .nav-tabs .nav-link:focus {
+            outline: none;
+            color: #ffc107;
+            box-shadow: inset 0 -2px 0 0 #ffc107;
+        }
+        
+        .nav-tabs .nav-link.active {
+            color: #ffc107;
+            background: rgba(255,193,7,0.1);
+            border-color: transparent transparent #ffc107 transparent;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+        
+        .tab-content {
+            padding: 25px 0;
+            color: rgba(255,255,255,0.85);
+            line-height: 1.7;
+        }
+        
+        .tab-pane h5 {
+            color: #ffc107;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        .tab-pane ul {
+            padding-right: 20px;
+            list-style-type: "\f058";
+        }
+        .tab-pane ul li {
+            padding-left: 10px;
+            margin-bottom: 8px;
+        }
+
+        /* Notification Styling Refinements */
+        .alert.position-fixed {
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            border-radius: 10px;
+            border-left: 5px solid;
+            padding: 15px 20px;
+        }
+        .alert.alert-success { border-left-color: #28a745; }
+        .alert.alert-danger { border-left-color: #dc3545; }
+        .alert.alert-warning { border-left-color: #ffc107; }
+        .alert.alert-info { border-left-color: #17a2b8; }
+
+        .alert .d-flex {
+            align-items: center;
+        }
+        .alert .d-flex i {
+            font-size: 1.3em;
+            margin-right: 10px;
+            margin-left: 0;
+        }
+
+        /* Smooth transition for tab panes */
+        .tab-content > .tab-pane {
+            display: block;
+            height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out;
+        }
+
+        .tab-content > .tab-pane.active {
+            height: auto;
+            opacity: 1;
+        }
+        .tab-content > .tab-pane.active.show {
+            height: auto;
+            opacity: 1;
+        }
+
+        /* Styles for Product Cards (Copied from index.html) */
+        .product-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            margin-bottom: 30px; /* Consistent margin */
+            border: 1px solid rgba(255,193,7,0.2);
+            position: relative; /* For positioning child elements like wishlist icon */
+        }
+        
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4); /* Standardized shadow */
+            border-color: #ffc107; /* Gold border on hover */
+        }
+        
+        .product-card .wishlist-icon {
+            position: absolute;
+            top: 15px;
+            right: 15px; /* Adjusted for RTL if needed, but typically top-right */
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+        
+        .product-card .wishlist-icon i {
+             color: #ffc107; /* Icon color */
+        }
+
+        .product-card .wishlist-icon:hover {
+            background: #ffc107;
+            transform: scale(1.1);
+        }
+        
+        .product-card .wishlist-icon:hover i {
+            color: #000; /* Icon color on hover */
+        }
+
+        /* Specific class for product card image to avoid conflict with .main-image */
+        .product-card .product-card-img {
+            height: 250px; /* Or your desired height for related product cards */
+            object-fit: cover;
+            transition: transform 0.3s ease;
+            width: 100%; /* Ensure it spans the card width */
+        }
+        
+        .product-card:hover .product-card-img {
+            transform: scale(1.05);
+        }
+        
+        /* Using .product-info for consistency with index.html structure within card */
+        .product-card .product-info { 
+            padding: 20px;
+            text-align: right; /* RTL default */
+        }
+        
+        .product-card .product-info h5 { /* Product name/title in card */
+            font-size: 1.05rem; /* Adjusted size for product cards */
+            font-weight: 600;
+            margin-bottom: 10px;
+            line-height: 1.4;
+            color: #fff; /* Ensure text is white */
+            min-height: 44px; /* Approx 2 lines of text */
+        }
+        
+        .product-card .product-info .product-description-sm { /* Optional: for a shorter description line */
+            color: rgba(255,255,255,0.7);
+            font-size: 0.85rem;
+            margin-bottom: 12px;
+            min-height: 36px; /* Approx 2 lines */
+        }
+        
+        .product-card .price-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .product-card .price {
+            color: #28a745; /* Green price consistent with other pages */
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        .product-card .old-price {
+            text-decoration: line-through;
+            color: rgba(255,255,255,0.5);
+            font-size: 0.9rem;
+            margin-left: 8px; /* RTL: use margin-right */
+        }
+        
+        /* Add to cart button for product card */
+        .product-card .btn-add-to-cart-card {
+            background: #ffc107;
+            color: #000;
+            border: none;
+            border-radius: 20px; /* Rounded */
+            width: 100%; /* Full width */
+            padding: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        .product-card .btn-add-to-cart-card i {
+            margin-left: 8px; /* RTL: use margin-right */
+        }
+        
+        .product-card .btn-add-to-cart-card:hover {
+            background: #ff8c00; /* Darker gold on hover */
+            transform: scale(1.03);
+            box-shadow: 0 5px 15px rgba(255,193,7,0.25);
+        }
+
+        /* Sale Badge for product cards */
+        .product-card .sale-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px; /* RTL: use right: 10px */
+            background: #dc3545; /* Red for sale */
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            z-index: 5;
+        }
+
+        /* Overlay for Quick View / Add to Cart on hover (Optional - already defined earlier but ensure it targets .product-card if used) */
+        .product-card .related-card-overlay { /* If using the existing overlay, ensure it is styled within .product-card context or make it global */
+           /* Styles from previous step, or integrate them here */
+        }
+
+        /* Themed Content Card (based on profile.html's .profile-content-area) */
+        .content-card-themed {
+            background: rgba(0,0,0,0.75); /* Slightly adjusted opacity for distinct sections */
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.5);
+            backdrop-filter: blur(12px); /* Slightly more blur */
+            border: 1px solid rgba(255,193,7,0.25); /* Slightly more prominent border */
+            margin-bottom: 40px; /* Increased margin between cards */
+        }
+
+        /* Section Title for within Cards (based on profile.html) */
+        .section-title-card {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #ffc107;
+            margin-bottom: 30px; /* Increased margin */
+            padding-bottom: 15px; /* Increased padding */
+            border-bottom: 1px solid rgba(255,193,7,0.2);
+            position: relative;
+            text-align: right; 
+        }
+
+        .section-title-card::before {
+            content: '';
+            position: absolute;
+            right: 0; 
+            bottom: -1px; 
+            width: 80px; /* Slightly wider */
+            height: 3px;
+            background: linear-gradient(to left, #ffc107, #ff8c00); 
+            border-radius: 2px;
         }
     </style>
 </head>
@@ -447,7 +875,7 @@
     <div class="container">
         <!-- Breadcrumb -->
         <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
+            <ol class="breadcrumb-custom">
                 <li class="breadcrumb-item"><a href="#">الرئيسية</a></li>
                 <li class="breadcrumb-item"><a href="#">قمصان كرة القدم</a></li>
                 <li class="breadcrumb-item active" aria-current="page">قميص ريال مدريد 2025</li>
@@ -455,6 +883,7 @@
         </nav>
 
         <!-- Product Section -->
+        <div class="content-card-themed">
         <div class="row">
             <!-- Product Gallery -->
             <div class="col-lg-6">
@@ -464,13 +893,13 @@
                     
                     <div class="thumbnail-gallery">
                         <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'><rect fill='%23ffffff' width='80' height='80'/><circle fill='%23ffc107' cx='40' cy='40' r='15'/></svg>" 
-                             alt="صورة 1" class="thumbnail active" onclick="changeMainImage(this.src.replace('80', '400').replace('80', '500'))">
+                                 alt="صورة 1" class="thumbnail active" onclick="changeMainImage(this)">
                         <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'><rect fill='%23f8f9fa' width='80' height='80'/><text x='40' y='45' text-anchor='middle' fill='%23000' font-size='12'>خلف</text></svg>" 
-                             alt="صورة 2" class="thumbnail" onclick="changeMainImage(this.src.replace('80', '400').replace('80', '500'))">
+                                 alt="صورة 2" class="thumbnail" onclick="changeMainImage(this)">
                         <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'><rect fill='%23e9ecef' width='80' height='80'/><text x='40' y='45' text-anchor='middle' fill='%23000' font-size='10'>تفاصيل</text></svg>" 
-                             alt="صورة 3" class="thumbnail" onclick="changeMainImage(this.src.replace('80', '400').replace('80', '500'))">
+                                 alt="صورة 3" class="thumbnail" onclick="changeMainImage(this)">
                         <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'><rect fill='%23dee2e6' width='80' height='80'/><text x='40' y='45' text-anchor='middle' fill='%23000' font-size='8'>إضافية</text></svg>" 
-                             alt="صورة 4" class="thumbnail" onclick="changeMainImage(this.src.replace('80', '400').replace('80', '500'))">
+                                 alt="صورة 4" class="thumbnail" onclick="changeMainImage(this)">
                     </div>
                 </div>
                 
@@ -483,7 +912,7 @@
 
             <!-- Product Info -->
             <div class="col-lg-6">
-                <div class="product-info">
+                    <div class="product-info-container">
                     <h1 class="product-title">قميص ريال مدريد الجديد 2025 - دراجون فيوتشر (أبيض خارجي)</h1>
                     <div class="product-price">125.00 EGP</div>
                     
@@ -513,10 +942,12 @@
 
                     <!-- Quantity Selection -->
                     <div class="quantity-selector">
-                        <span class="me-3">الكمية:</span>
-                        <button class="quantity-btn" onclick="decreaseQuantity()">-</button>
-                        <input type="number" id="quantity" class="quantity-input" value="1" min="1" max="10">
-                        <button class="quantity-btn" onclick="increaseQuantity()">+</button>
+                            <label for="quantityProduct" class="me-3">الكمية:</label>
+                            <div class="quantity-controls-product">
+                                <button class="quantity-btn-product" onclick="decreaseQuantity('quantityProduct')">-</button>
+                                <input type="number" id="quantityProduct" class="quantity-input-product" value="1" min="1" max="10" aria-label="Product quantity">
+                                <button class="quantity-btn-product" onclick="increaseQuantity('quantityProduct')">+</button>
+                            </div>
                     </div>
 
                     <!-- Add to Cart Buttons -->
@@ -524,8 +955,8 @@
                         <i class="fas fa-shopping-cart me-2"></i>إضافة للسلة
                     </button>
                     
-                    <button class="btn-wishlist" onclick="addToWishlist()">
-                        <i class="fas fa-heart me-2"></i>إضافة للمفضلة
+                        <button class="btn-wishlist" onclick="toggleWishlist(this)">
+                            <i class="far fa-heart me-2"></i>إضافة للمفضلة
                     </button>
 
                     <!-- Product Features -->
@@ -545,127 +976,193 @@
                         <div class="feature-item">
                             <i class="fas fa-phone feature-icon"></i>
                             <span>خدمة عملاء 24/7</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- Product Description, Reviews, etc. Tabs -->
+        <div class="product-details-tabs content-card-themed">
+            <ul class="nav nav-tabs" id="productTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">المعلومات</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">تفاصيل</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">مواصفات</button>
+                </li>
+            </ul>
+            <div class="tab-content" id="productTabsContent">
+                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                    <!-- Home tab content -->
+                </div>
+                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                    <!-- Profile tab content -->
+                </div>
+                <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                    <!-- Contact tab content -->
+                </div>
+            </div>
+        </div>
+
         <!-- Related Products -->
-        <div class="related-products">
-            <h2 class="section-title">المنتجات المقترحة</h2>
+        <div class="related-products content-card-themed">
+            <h2 class="section-title-card">المنتجات المقترحة</h2>
             
             <div class="row">
                 <div class="col-lg-3 col-md-6">
-                    <div class="related-card">
-                        <div class="related-card-image">
-                            <div class="sale-badge">خصم</div>
-                            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 220'><rect fill='%23000000' width='300' height='220'/><circle fill='%23ffc107' cx='50' cy='50' r='20'/><text x='150' y='120' text-anchor='middle' fill='%23ffffff' font-size='16'>ريال مدريد</text><text x='150' y='140' text-anchor='middle' fill='%23ffffff' font-size='12'>أسود</text></svg>" alt="قميص أسود">
+                    <div class="product-card">
+                        <div class="wishlist-icon" onclick="toggleWishlistCard(this)">
+                            <i class="far fa-heart"></i>
                         </div>
-                        <div class="related-card-body">
-                            <h6 class="related-card-title">قميص ريال مدريد تدريب 2024/25 - أسود - للاعبين الاحتياطيين</h6>
-                            <div class="related-card-price">
-                                600 EGP
+                        <span class="sale-badge">خصم</span>
+                        <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 220'><rect fill='%23000000' width='300' height='220'/><circle fill='%23ffc107' cx='50' cy='50' r='20'/><text x='150' y='120' text-anchor='middle' fill='%23ffffff' font-size='16'>ريال مدريد</text><text x='150' y='140' text-anchor='middle' fill='%23ffffff' font-size='12'>أسود</text></svg>" class="product-card-img" alt="قميص أسود">
+                        <div class="product-info">
+                            <h5>قميص ريال مدريد تدريب 2024/25 - أسود - للاعبين الاحتياطيين</h5>
+                            <div class="price-area">
+                                <span class="price">600 EGP</span>
                                 <span class="old-price">800 EGP</span>
                             </div>
+                            <button class="btn-add-to-cart-card">
+                                <i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة
+                            </button>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-lg-3 col-md-6">
-                    <div class="related-card">
-                        <div class="related-card-image">
-                            <div class="sale-badge">خصم</div>
-                            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 220'><rect fill='%23e3f2fd' width='300' height='220'/><circle fill='%231976d2' cx='50' cy='50' r='20'/><text x='150' y='120' text-anchor='middle' fill='%23000' font-size='16'>ريال مدريد</text><text x='150' y='140' text-anchor='middle' fill='%23000' font-size='12'>أزرق فاتح</text></svg>" alt="قميص أزرق">
+                    <div class="product-card">
+                        <div class="wishlist-icon" onclick="toggleWishlistCard(this)">
+                            <i class="far fa-heart"></i>
                         </div>
-                        <div class="related-card-body">
-                            <h6 class="related-card-title">قميص ريال مدريد تدريب 2024/25 بدون أكمام - للاعبين الاحتياطيين</h6>
-                            <div class="related-card-price">
-                                450 EGP
+                        <span class="sale-badge">خصم</span>
+                        <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 220'><rect fill='%23e3f2fd' width='300' height='220'/><circle fill='%231976d2' cx='50' cy='50' r='20'/><text x='150' y='120' text-anchor='middle' fill='%23000' font-size='16'>ريال مدريد</text><text x='150' y='140' text-anchor='middle' fill='%23000' font-size='12'>أزرق فاتح</text></svg>" class="product-card-img" alt="قميص أزرق">
+                        <div class="product-info">
+                            <h5>قميص ريال مدريد تدريب 2024/25 بدون أكمام - للاعبين الاحتياطيين</h5>
+                            <div class="price-area">
+                                <span class="price">450 EGP</span>
                                 <span class="old-price">600 EGP</span>
                             </div>
+                            <button class="btn-add-to-cart-card">
+                                <i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة
+                            </button>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-lg-3 col-md-6">
-                    <div class="related-card">
-                        <div class="related-card-image">
-                            <div class="sale-badge">خصم</div>
-                            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 220'><rect fill='%23ffffff' width='300' height='220'/><text x='150' y='120' text-anchor='middle' fill='%23000' font-size='16'>شورت ريال</text><text x='150' y='140' text-anchor='middle' fill='%23000' font-size='12'>أبيض</text></svg>" alt="شورت أبيض">
+                    <div class="product-card">
+                        <div class="wishlist-icon" onclick="toggleWishlistCard(this)">
+                            <i class="far fa-heart"></i>
                         </div>
-                        <div class="related-card-body">
-                            <h6 class="related-card-title">شورت ريال مدريد جديد 2025 رونالدو</h6>
-                            <div class="related-card-price">
-                                450 EGP
+                        <span class="sale-badge">خصم</span>
+                        <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 220'><rect fill='%23ffffff' width='300' height='220'/><text x='150' y='120' text-anchor='middle' fill='%23000' font-size='16'>شورت ريال</text><text x='150' y='140' text-anchor='middle' fill='%23000' font-size='12'>أبيض</text></svg>" class="product-card-img" alt="شورت أبيض">
+                        <div class="product-info">
+                            <h5>شورت ريال مدريد جديد 2025 رونالدو</h5>
+                            <div class="price-area">
+                                <span class="price">450 EGP</span>
                                 <span class="old-price">550 EGP</span>
                             </div>
+                            <button class="btn-add-to-cart-card">
+                                <i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة
+                            </button>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-lg-3 col-md-6">
-                    <div class="related-card">
-                        <div class="related-card-image">
-                            <div class="sale-badge">خصم</div>
-                            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 220'><rect fill='%23ffffff' width='300' height='220'/><defs><pattern id='dragon2' patternUnits='userSpaceOnUse' width='50' height='50'><path d='M10,10 Q25,5 40,10 Q25,15 10,10' fill='%23001f3f' opacity='0.2'/></pattern></defs><rect fill='url(%23dragon2)' width='300' height='220'/><text x='150' y='120' text-anchor='middle' fill='%23000' font-size='14'>دراجون فيوتشر</text><text x='150' y='140' text-anchor='middle' fill='%23000' font-size='12'>أبيض</text></svg>" alt="قميص دراجون">
+                    <div class="product-card">
+                        <div class="wishlist-icon" onclick="toggleWishlistCard(this)">
+                            <i class="far fa-heart"></i>
                         </div>
-                        <div class="related-card-body">
-                            <h6 class="related-card-title">قميص ريال مدريد جديد الدراجون 2025 - دراجون فيوتشر (أبيض خارجي)</h6>
-                            <div class="related-card-price">
-                                300 EGP
+                        <span class="sale-badge">خصم</span>
+                        <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 220'><rect fill='%23ffffff' width='300' height='220'/><defs><pattern id='dragon2' patternUnits='userSpaceOnUse' width='50' height='50'><path d='M10,10 Q25,5 40,10 Q25,15 10,10' fill='%23001f3f' opacity='0.2'/></pattern></defs><rect fill='url(%23dragon2)' width='300' height='220'/><text x='150' y='120' text-anchor='middle' fill='%23000' font-size='14'>دراجون فيوتشر</text><text x='150' y='140' text-anchor='middle' fill='%23000' font-size='12'>أبيض</text></svg>" class="product-card-img" alt="قميص دراجون">
+                        <div class="product-info">
+                            <h5>قميص ريال مدريد جديد الدراجون 2025 - دراجون فيوتشر (أبيض خارجي)</h5>
+                            <div class="price-area">
+                                <span class="price">300 EGP</span>
                                 <span class="old-price">400 EGP</span>
                             </div>
+                            <button class="btn-add-to-cart-card">
+                                <i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة
+                            </button>
                         </div>
                     </div>
                 </div>
 
                 <!-- Second Row -->
                 <div class="col-lg-3 col-md-6">
-                    <div class="related-card">
-                        <div class="related-card-image">
-                            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 220'><rect fill='%234fc3f7' width='300' height='220'/><text x='150' y='120' text-anchor='middle' fill='%23000' font-size='16'>تيكا</text><text x='150' y='140' text-anchor='middle' fill='%23000' font-size='12'>1996/97</text></svg>" alt="قميص تيكا">
+                    <div class="product-card">
+                        <div class="wishlist-icon" onclick="toggleWishlistCard(this)">
+                            <i class="far fa-heart"></i>
                         </div>
-                        <div class="related-card-body">
-                            <h6 class="related-card-title">قميص ريال مدريد ريترو 1996/97 تيكا تشامبيونز</h6>
-                            <div class="related-card-price">300 EGP</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-3 col-md-6">
-                    <div class="related-card">
-                        <div class="related-card-image">
-                            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 220'><rect fill='%23ffffff' width='300' height='220'/><text x='150' y='100' text-anchor='middle' fill='%23000' font-size='14'>Emirates</text><text x='150' y='120' text-anchor='middle' fill='%23">
-                            000' font-size='12'>2017/18</text><text x='150' y='140' text-anchor='middle' fill='%23000' font-size='12'>الأبطال</text></svg>" alt="قميص الأبطال">
-                        </div>
-                        <div class="related-card-body">
-                            <h6 class="related-card-title">قميص ريال مدريد 2017/18 الأبطال نسخة اللاعبين</h6>
-                            <div class="related-card-price">350 EGP</div>
+                        <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 220'><rect fill='%234fc3f7' width='300' height='220'/><text x='150' y='120' text-anchor='middle' fill='%23000' font-size='16'>تيكا</text><text x='150' y='140' text-anchor='middle' fill='%23000' font-size='12'>1996/97</text></svg>" class="product-card-img" alt="قميص تيكا">
+                        <div class="product-info">
+                            <h5>قميص ريال مدريد ريترو 1996/97 تيكا تشامبيونز</h5>
+                            <div class="price-area">
+                                <span class="price">300 EGP</span>
+                            </div>
+                            <button class="btn-add-to-cart-card">
+                                <i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة
+                            </button>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-lg-3 col-md-6">
-                    <div class="related-card">
-                        <div class="related-card-image">
-                            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 220'><rect fill='%23ffffff' width='300' height='220'/><circle fill='%23ffc107' cx='50' cy='50' r='20'/><text x='150' y='120' text-anchor='middle' fill='%23000' font-size='16'>طقم كامل</text><text x='150' y='140' text-anchor='middle' fill='%23000' font-size='12'>2024/25</text></svg>" alt="طقم كامل">
+                    <div class="product-card">
+                        <div class="wishlist-icon" onclick="toggleWishlistCard(this)">
+                            <i class="far fa-heart"></i>
                         </div>
-                        <div class="related-card-body">
-                            <h6 class="related-card-title">طقم ريال مدريد الكامل 2024/25 - قميص + شورت + جوارب</h6>
-                            <div class="related-card-price">450 EGP</div>
+                        <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 220'><rect fill='%23ffffff' width='300' height='220'/><text x='150' y='100' text-anchor='middle' fill='%23000' font-size='14'>Emirates</text><text x='150' y='120' text-anchor='middle' fill='%23000' font-size='12'>2017/18</text><text x='150' y='140' text-anchor='middle' fill='%23000' font-size='12'>الأبطال</text></svg>" class="product-card-img" alt="قميص الأبطال">
+                        <div class="product-info">
+                            <h5>قميص ريال مدريد 2017/18 الأبطال نسخة اللاعبين</h5>
+                            <div class="price-area">
+                                <span class="price">350 EGP</span>
+                            </div>
+                            <button class="btn-add-to-cart-card">
+                                <i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة
+                            </button>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-lg-3 col-md-6">
-                    <div class="related-card">
-                        <div class="related-card-image">
-                            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 220'><rect fill='%23f5f5f5' width='300' height='220'/><text x='150' y='120' text-anchor='middle' fill='%23000' font-size='16'>جاكيت تدريب</text><text x='150' y='140' text-anchor='middle' fill='%23000' font-size='12'>2024/25</text></svg>" alt="جاكيت">
+                    <div class="product-card">
+                        <div class="wishlist-icon" onclick="toggleWishlistCard(this)">
+                            <i class="far fa-heart"></i>
                         </div>
-                        <div class="related-card-body">
-                            <h6 class="related-card-title">جاكيت تدريب ريال مدريد 2024/25 - نسخة اللاعبين</h6>
-                            <div class="related-card-price">550 EGP</div>
+                        <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 220'><rect fill='%23ffffff' width='300' height='220'/><circle fill='%23ffc107' cx='50' cy='50' r='20'/><text x='150' y='120' text-anchor='middle' fill='%23000' font-size='16'>طقم كامل</text><text x='150' y='140' text-anchor='middle' fill='%23000' font-size='12'>2024/25</text></svg>" class="product-card-img" alt="طقم كامل">
+                        <div class="product-info">
+                            <h5>طقم ريال مدريد الكامل 2024/25 - قميص + شورت + جوارب</h5>
+                            <div class="price-area">
+                                <span class="price">450 EGP</span>
+                            </div>
+                            <button class="btn-add-to-cart-card">
+                                <i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="product-card">
+                        <div class="wishlist-icon" onclick="toggleWishlistCard(this)">
+                            <i class="far fa-heart"></i>
+                        </div>
+                        <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 220'><rect fill='%23f5f5f5' width='300' height='220'/><text x='150' y='120' text-anchor='middle' fill='%23000' font-size='16'>جاكيت تدريب</text><text x='150' y='140' text-anchor='middle' fill='%23000' font-size='12'>2024/25</text></svg>" class="product-card-img" alt="جاكيت">
+                        <div class="product-info">
+                            <h5>جاكيت تدريب ريال مدريد 2024/25 - نسخة اللاعبين</h5>
+                            <div class="price-area">
+                                <span class="price">550 EGP</span>
+                            </div>
+                            <button class="btn-add-to-cart-card">
+                                <i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -677,46 +1174,63 @@
     <footer class="footer">
         <div class="container">
             <div class="row">
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <h6>عن CURVA</h6>
-                    <p class="small text-muted">متجرك المتخصص في أجود قمصان كرة القدم. نوفر لك أحدث التصاميم بأفضل الأسعار وضمان الجودة.</p>
-                    <div class="social-links mt-3">
-                        <a href="#" class="me-2"><i class="fab fa-facebook fa-lg"></i></a>
-                        <a href="#" class="me-2"><i class="fab fa-instagram fa-lg"></i></a>
-                        <a href="#" class="me-2"><i class="fab fa-twitter fa-lg"></i></a>
-                        <a href="#"><i class="fab fa-whatsapp fa-lg"></i></a>
+                <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                    <h5 class="navbar-brand-footer-text">MBA</h5>
+                    <p>متجرك الأول لأحدث وأجود الملابس الرياضية. نقدم منتجات أصلية من أفضل الماركات العالمية.</p>
+                    <div class="social-icons">
+                        <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" title="Snapchat"><i class="fab fa-snapchat-ghost"></i></a>
                     </div>
                 </div>
                 
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <h6>روابط سريعة</h6>
+                <div class="col-lg-2 col-md-6 mb-4 mb-lg-0">
+                    <h5>روابط مهمة</h5>
                     <ul class="list-unstyled">
-                        <li class="mb-2"><a href="#">عن المتجر</a></li>
-                        <li class="mb-2"><a href="#">سياسة الخصوصية</a></li>
-                        <li class="mb-2"><a href="#">الشروط والأحكام</a></li>
-                        <li class="mb-2"><a href="#">سياسة الإرجاع</a></li>
+                        <li><a href="#">عن MBA</a></li>
+                        <li><a href="#">الوظائف</a></li>
+                        <li><a href="#">سياسة الخصوصية</a></li>
+                        <li><a href="#">الشروط والأحكام</a></li>
+                        <li><a href="#">تواصل معنا</a></li>
                     </ul>
                 </div>
                 
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <h6>خدمة العملاء</h6>
+                <div class="col-lg-2 col-md-6 mb-4 mb-lg-0">
+                    <h5>حسابي</h5>
                     <ul class="list-unstyled">
-                        <li class="mb-2"><a href="#">تتبع الطلب</a></li>
-                        <li class="mb-2"><a href="#">دليل المقاسات</a></li>
-                        <li class="mb-2"><a href="#">الأسئلة الشائعة</a></li>
-                        <li class="mb-2"><a href="#">اتصل بنا</a></li>
+                        <li><a href="profile.html">ملفي الشخصي</a></li>
+                        <li><a href="cart.html">سلة التسوق</a></li>
+                        <li><a href="#">طلباتي</a></li>
+                        <li><a href="#">قائمة الأمنيات</a></li>
+                        <li><a href="#">تسجيل الخروج</a></li>
                     </ul>
                 </div>
                 
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <h6>النشرة البريدية</h6>
-                    <p class="small text-muted">اشترك ليصلك كل جديد من العروض والمنتجات</p>
-                    <form class="mt-3">
+                <div class="col-lg-2 col-md-6 mb-4 mb-lg-0">
+                    <h5>أقسام المتجر</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#">ملابس رياضية</a></li>
+                        <li><a href="#">أحذية</a></li>
+                        <li><a href="#">إكسسوارات</a></li>
+                        <li><a href="#">معدات رياضية</a></li>
+                        <li><a href="#">عروض وتخفيضات</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3 col-md-12">
+                    <h5>اشترك في النشرة البريدية</h5>
+                    <form class="mb-3">
                         <div class="input-group">
-                            <input type="email" class="form-control" placeholder="بريدك الإلكتروني">
-                            <button class="btn btn-warning" type="submit">اشترك</button>
+                            <input type="email" class="form-control" placeholder="ادخل بريدك الإلكتروني" style="border-top-left-radius: 0; border-bottom-left-radius: 0; border-top-right-radius: 20px; border-bottom-right-radius: 20px;">
+                            <button class="btn btn-gold" type="submit" style="border-top-left-radius: 20px; border-bottom-left-radius: 20px; border-top-right-radius: 0; border-bottom-right-radius: 0; margin-right: -1px;">اشترك</button>
                         </div>
                     </form>
+                    <p>تابعنا ليصلك كل جديد وعروض حصرية.</p>
+                    <div class="app-download">
+                        <a href="#"><img src="https://via.placeholder.com/120x40.png?text=App+Store" alt="App Store"></a>
+                        <a href="#"><img src="https://via.placeholder.com/120x40.png?text=Google+Play" alt="Google Play"></a>
+                    </div>
                 </div>
             </div>
             
@@ -740,18 +1254,29 @@
             <i class="fas fa-times"></i>
         </button>
     </div>
+
 <!-- JavaScript -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 <script>
     // Image Gallery Functions
-    function changeMainImage(src) {
-        document.getElementById('mainImage').src = src;
+    function changeMainImage(thumbnailElement) {
+        const mainImage = document.getElementById('mainImage');
+        const newSrc = thumbnailElement.src.replace('80', '400').replace('80', '500');
+
+        mainImage.classList.add('main-image-fade');
+
+        setTimeout(() => {
+            mainImage.src = newSrc;
+            mainImage.onload = () => {
+                mainImage.classList.remove('main-image-fade');
+            }
+            setTimeout(() => mainImage.classList.remove('main-image-fade'), 50);
+        }, 200);
         
-        // Update active thumbnail
         document.querySelectorAll('.thumbnail').forEach(thumb => {
             thumb.classList.remove('active');
         });
-        event.target.classList.add('active');
+        thumbnailElement.classList.add('active');
     }
 
     // Size Selection
@@ -763,18 +1288,18 @@
     });
 
     // Quantity Functions
-    function increaseQuantity() {
-        const quantityInput = document.getElementById('quantity');
+    function increaseQuantity(inputId) {
+        const quantityInput = document.getElementById(inputId);
         const currentValue = parseInt(quantityInput.value);
-        if (currentValue < 10) {
+        if (currentValue < parseInt(quantityInput.max || 10)) {
             quantityInput.value = currentValue + 1;
         }
     }
 
-    function decreaseQuantity() {
-        const quantityInput = document.getElementById('quantity');
+    function decreaseQuantity(inputId) {
+        const quantityInput = document.getElementById(inputId);
         const currentValue = parseInt(quantityInput.value);
-        if (currentValue > 1) {
+        if (currentValue > parseInt(quantityInput.min || 1)) {
             quantityInput.value = currentValue - 1;
         }
     }
@@ -788,19 +1313,16 @@
         }
         
         const selectedSize = selectedSizeElement.dataset.size;
-        const quantity = document.getElementById('quantity').value;
+        const quantity = document.getElementById('quantityProduct').value;
         
-        // Show success message
         showNotification('تمت إضافة المنتج للسلة بنجاح!', 'success');
         
-        // Update cart badge
         const cartBadge = document.querySelector('.badge');
         if (cartBadge) {
             const currentCount = parseInt(cartBadge.textContent);
             cartBadge.textContent = currentCount + parseInt(quantity);
         }
         
-        // Here you would typically send data to server
         console.log('Added to cart:', {
             product: 'قميص ريال مدريد 2025',
             size: selectedSize,
@@ -809,33 +1331,79 @@
         });
     }
 
-    function addToWishlist() {
-        showNotification('تمت إضافة المنتج للمفضلة!', 'info');
+    // Wishlist function for main product page
+    function toggleWishlist(buttonElement) {
+        const icon = buttonElement.querySelector('i');
+        const isInWishlist = buttonElement.classList.toggle('active');
+
+        if (isInWishlist) {
+            icon.classList.remove('far');
+            icon.classList.add('fas');
+            buttonElement.innerHTML = '<i class="fas fa-heart me-2"></i> في المفضلة';
+            showNotification('تمت إضافة المنتج للمفضلة!', 'success');
+        } else {
+            icon.classList.remove('fas');
+            icon.classList.add('far');
+            buttonElement.innerHTML = '<i class="far fa-heart me-2"></i> إضافة للمفضلة';
+            showNotification('تمت إزالة المنتج من المفضلة.', 'info');
+        }
+    }
+
+    // Wishlist function for product cards
+    function toggleWishlistCard(iconElement) {
+        const icon = iconElement.querySelector('i');
+        const isActive = iconElement.classList.toggle('active'); // Toggling active class on the div.wishlist-icon
+
+        if (isActive) {
+            icon.classList.remove('far'); 
+            icon.classList.add('fas'); 
+            // showNotification('أضيف للمفضلة!', 'success'); // Optional notification
+        } else {
+            icon.classList.remove('fas');
+            icon.classList.add('far');
+            // showNotification('أزيل من المفضلة.', 'info'); // Optional notification
+        }
+        // Add further logic here if needed (e.g., API calls, localStorage)
     }
 
     // Notification Function
     function showNotification(message, type) {
         const notification = document.createElement('div');
-        notification.className = `alert alert-${type} position-fixed top-0 start-50 translate-middle-x mt-3`;
-        notification.style.zIndex = '9999';
-        notification.style.transition = 'opacity 0.3s ease';
+        notification.className = `alert alert-${type} shadow-lg rounded-lg`;
+        notification.style.position = 'fixed';
+        notification.style.top = '20px';
+        notification.style.right = '20px';
+        notification.style.zIndex = '10000';
+        notification.style.minWidth = '300px';
+        notification.style.maxWidth = '400px';
+        notification.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
         notification.style.opacity = '0';
+        notification.style.transform = 'translateY(-20px)';
+        
+        const iconClass = type === 'success' ? 'fa-check-circle' :
+                          type === 'danger' ? 'fa-exclamation-circle' :
+                          type === 'warning' ? 'fa-exclamation-triangle' :
+                          'fa-info-circle';
+
         notification.innerHTML = `
-            <i class="fas fa-check-circle me-2"></i>${message}
+            <div class="d-flex align-items-center">
+                <i class="fas ${iconClass} me-2"></i>
+                <span>${message}</span>
+            </div>
         `;
         
         document.body.appendChild(notification);
         
-        // Fade in
         setTimeout(() => {
             notification.style.opacity = '1';
+            notification.style.transform = 'translateY(0)';
         }, 10);
         
-        // Fade out and remove
         setTimeout(() => {
             notification.style.opacity = '0';
-            setTimeout(() => notification.remove(), 300);
-        }, 3000);
+            notification.style.transform = 'translateY(-20px)';
+            setTimeout(() => notification.remove(), 350);
+        }, 3500);
     }
 
     // Zoom Functions
@@ -900,7 +1468,6 @@
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     const img = entry.target;
-                    // Only apply fade effect if image hasn't loaded yet
                     if (!img.complete) {
                         img.style.opacity = '0';
                         img.style.transition = 'opacity 0.5s';
@@ -918,13 +1485,35 @@
             });
         });
 
-        // Only observe images that need lazy loading
         document.querySelectorAll('img:not([data-no-lazy])').forEach(img => {
             if (!img.complete) {
                 imageObserver.observe(img);
             }
         });
     }
+
+    // Initialize Tabs for smooth transition (if using Bootstrap 5)
+    document.addEventListener('DOMContentLoaded', function () {
+        var tabTriggers = document.querySelectorAll('#productTabs button[data-bs-toggle="tab"]');
+        tabTriggers.forEach(function (tabTrigger) {
+            tabTrigger.addEventListener('shown.bs.tab', function (event) {
+            });
+        });
+
+        // Initialize wishlist button icon
+        document.querySelectorAll('.btn-wishlist').forEach(buttonElement => {
+            const icon = buttonElement.querySelector('i');
+            if (buttonElement.classList.contains('active')) {
+                icon.classList.remove('far');
+                icon.classList.add('fas');
+                buttonElement.innerHTML = '<i class="fas fa-heart me-2"></i> في المفضلة';
+            } else {
+                icon.classList.remove('fas');
+                icon.classList.add('far');
+                buttonElement.innerHTML = '<i class="far fa-heart me-2"></i> إضافة للمفضلة';
+            }
+        });
+    });
 </script>
 </body>
 </html>
