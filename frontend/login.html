@@ -3,815 +3,308 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تسجيل الدخول - CURVA</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>تسجيل الدخول - MBA</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap');
-        
         * {
             font-family: 'Cairo', sans-serif;
+            box-sizing: border-box;
         }
         
-        body {
-            background: linear-gradient(135deg, #2c3e35 0%, #1a1a1a 100%);
-            min-height: 100vh;
+        html, body {
+            height: 100%;
             margin: 0;
-            position: relative;
             overflow-x: hidden;
         }
-        
-        /* Background overlay with grass effect */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><path d="M0,400 Q300,200 600,400 T1200,400 L1200,800 L0,800 Z" fill="%23234a3a" opacity="0.3"/></svg>') no-repeat center bottom;
-            background-size: cover;
-            z-index: -1;
+
+        body {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d3748 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 100vh;
         }
         
-        /* Navbar */
-        .navbar {
-            background: rgba(42, 42, 42, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 0.5rem 0;
+        .simple-header {
+            width: 100%;
+            padding: 25px 0;
+            text-align: center;
         }
-        
-        .navbar-brand img {
-            height: 35px;
+        .simple-header .navbar-brand {
+            font-weight: 700;
+            font-size: 2.5rem;
+            color: #ffc107 !important;
+            text-decoration: none;
+            transition: opacity 0.3s ease;
         }
-        
-        .nav-link {
-            color: #fff !important;
-            font-size: 14px;
-            margin: 0 10px;
-            transition: color 0.3s;
+        .simple-header .navbar-brand:hover {
+            opacity: 0.85;
         }
-        
-        .nav-link:hover {
-            color: #d4a574 !important;
-        }
-        
-        .navbar-icons {
+
+        .auth-main-content {
+            flex-grow: 1;
             display: flex;
             align-items: center;
-            gap: 15px;
+            justify-content: center;
+            width: 100%;
+            padding: 20px;
         }
         
-        .navbar-icons i {
+        .auth-card {
+            background: rgba(0,0,0,0.75);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 45px rgba(0,0,0,0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,193,7,0.25);
+            width: 100%;
+            max-width: 450px;
+        }
+        
+        .form-card-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ffc107;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .form-label {
+            color: rgba(255,255,255,0.8);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        .form-control {
+            background-color: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,193,7,0.3);
             color: #fff;
-            font-size: 18px;
-            cursor: pointer;
-            transition: color 0.3s;
+            border-radius: 10px;
+            padding: 12px 15px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+            font-size: 0.95rem;
         }
-        
-        .navbar-icons i:hover {
-            color: #d4a574;
+        .form-control:focus {
+            background-color: rgba(255,255,255,0.12);
+            border-color: #ffc107;
+            box-shadow: 0 0 0 0.2rem rgba(255,193,7,0.25);
+            color: #fff;
         }
-        
-        .cart-badge {
+        .form-control::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+        .input-group {
             position: relative;
         }
-        
-        .cart-badge::after {
-            content: '0';
+        .input-group .form-control {
+            padding-left: 40px;
+        }
+        .password-toggle {
             position: absolute;
-            top: -8px;
-            right: -8px;
-            background: #d4a574;
-            color: white;
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            font-weight: bold;
-        }
-        
-        /* Main content */
-        .main-content {
-            min-height: calc(100vh - 200px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 50px 0;
-        }
-        
-        .login-container {
-            background: rgba(60, 60, 60, 0.9);
-            border-radius: 15px;
-            padding: 40px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            max-width: 400px;
-            width: 100%;
-        }
-        
-        .login-title {
-            color: #fff;
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 24px;
-            font-weight: 600;
-        }
-        
-        .login-subtitle {
-            color: #aaa;
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 14px;
-        }
-        
-        .btn-login {
-            background: #d4a574;
-            border: none;
-            color: white;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: 600;
-            width: 100%;
-            margin-bottom: 20px;
-            transition: background 0.3s;
-        }
-        
-        .btn-login:hover {
-            background: #c49660;
-            color: white;
-        }
-        
-        .login-options {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        
-        .login-options a {
-            color: #d4a574;
-            text-decoration: none;
-            font-size: 14px;
-        }
-        
-        .social-login {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
-        
-        .btn-google {
-            background: #dd4b39;
-            border: 1px solid #dd4b39;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-        
-        .btn-facebook {
-            background: #3b5998;
-            border: 1px solid #3b5998;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-        
-        /* Footer */
-        .footer {
-            background: rgba(30, 30, 30, 0.95);
-            color: #fff;
-            padding: 40px 0 20px;
-            margin-top: auto;
-        }
-        
-        .footer h5 {
-            color: #d4a574;
-            margin-bottom: 20px;
-            font-size: 16px;
-        }
-        
-        .footer a {
-            color: #ccc;
-            text-decoration: none;
-            font-size: 14px;
-            line-height: 2;
-            transition: color 0.3s;
-        }
-        
-        .footer a:hover {
-            color: #d4a574;
-        }
-        
-        .app-download {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        
-        .app-download img {
-            height: 40px;
-            border-radius: 5px;
-        }
-        
-        .social-icons {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-        }
-        
-        .social-icons i {
-            font-size: 20px;
-            color: #ccc;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255,255,255,0.6);
             cursor: pointer;
-            transition: color 0.3s;
+            transition: color 0.3s ease;
+            z-index: 100;
+        }
+        .password-toggle:hover {
+            color: #ffc107;
         }
         
-        .social-icons i:hover {
-            color: #d4a574;
+        .btn-gold {
+            background: linear-gradient(45deg, #ffc107, #ff8c00);
+            border: none;
+            color: #000;
+            font-weight: 700;
+            padding: 12px 25px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            font-size: 1.05rem;
         }
-        
-        .copyright {
+        .btn-gold:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 15px rgba(255,193,7,0.35);
+            color: #000;
+        }
+        .btn-gold:focus {
+            outline: none;
+            box-shadow: 0 0 0 0.2rem rgba(255,193,7,0.25), 0 8px 15px rgba(255,193,7,0.3);
+        }
+
+        .auth-links {
             text-align: center;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: #aaa;
-            font-size: 12px;
+            margin-top: 25px;
+        }
+        .auth-links a {
+            color: #ffc107;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin: 0 10px;
+            transition: color 0.3s ease, text-decoration 0.3s ease;
+        }
+        .auth-links a:hover {
+            color: #ffdb6a;
+            text-decoration: underline;
+        }
+        .auth-links .separator {
+            color: rgba(255,255,255,0.5);
         }
         
-        .breadcrumb-custom {
-            background: transparent;
+        .social-login-divider {
+            text-align: center;
+            color: rgba(255,255,255,0.6);
+            margin: 30px 0 20px;
+            position: relative;
+        }
+        .social-login-divider::before,
+        .social-login-divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: calc(50% - 30px);
+            height: 1px;
+            background-color: rgba(255,193,7,0.2);
+        }
+        .social-login-divider::before {
+            right: 0;
+        }
+        .social-login-divider::after {
+            left: 0;
+        }
+        .social-login-buttons .btn {
+            width: 100%;
+            margin-bottom: 10px;
+            font-weight: 500;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .social-login-buttons .btn i {
+            margin-left: 10px;
+        }
+        .social-login-buttons .btn-google {
+            background-color: rgba(221, 75, 57, 0.1);
+            border-color: rgba(221, 75, 57, 0.4);
+            color: #fff;
+        }
+        .social-login-buttons .btn-google:hover {
+            background-color: rgba(221, 75, 57, 0.2);
+            border-color: #dd4b39;
+            color: #fff;
+        }
+        .social-login-buttons .btn-facebook {
+            background-color: rgba(59, 89, 152, 0.1);
+            border-color: rgba(59, 89, 152, 0.4);
+            color: #fff;
+        }
+        .social-login-buttons .btn-facebook:hover {
+            background-color: rgba(59, 89, 152, 0.2);
+            border-color: #3b5998;
+            color: #fff;
+        }
+
+        .simple-footer {
+            width: 100%;
+            text-align: center;
             padding: 20px 0;
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
         }
-        
-        .breadcrumb-custom a {
-            color: #d4a574;
+        .simple-footer a {
+            color: #ffc107;
             text-decoration: none;
         }
-        
-        .breadcrumb-custom span {
-            color: #ccc;
-        }
-        
-        @media (max-width: 768px) {
-            .login-container {
-                margin: 20px;
-                padding: 30px 20px;
-            }
-            
-            .navbar-nav {
-                text-align: center;
-            }
-            
-            .social-login {
-                flex-direction: column;
-                gap: 10px;
-            }
+        .simple-footer a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg">
-        <div class="container">
-            <a class="navbar-brand" href="#">
-                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 30'><text x='5' y='20' fill='%23d4a574' font-family='Arial, sans-serif' font-size='16' font-weight='bold'>CURVA</text></svg>" alt="CURVA">
-            </a>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">الرئيسية</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">المنتجات</a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">جميع المنتجات</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">خدماتنا</a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">خدمة العملاء</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">من نحن</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">الخدمات</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">الملف</a>
-                    </li>
-                </ul>
-                
-                <div class="navbar-icons">
-                    <i class="fas fa-search"></i>
-                    <i class="fas fa-cog"></i>
-                    <i class="fas fa-globe"></i>
-                    <div class="cart-badge">
-                        <i class="fas fa-shopping-cart"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </nav>
+    <header class="simple-header">
+        <a class="navbar-brand" href="index.html">MBA</a>
+    </header>
 
-    <!-- Breadcrumb -->
-    <div class="container">
-        <div class="breadcrumb-custom">
-            <span>الرئيسية</span> &lt; <a href="#">تسجيل الدخول</a>
-        </div>
-    </div>
-
-    <!-- Main Content -->
-    <div class="main-content">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-md-6 col-lg-4">
-                    <div class="login-container">
-                        <h2 class="login-title">تسجيل الدخول</h2>
-                        <p class="login-subtitle">البريد الإلكتروني أو رقم التليفون</p>
-                        
-                        <button class="btn btn-login" onclick="showLoginForm()">
-                            تسجيل الدخول
-                        </button>
-                        
-                        <div class="login-options">
-                            <a href="#">ليس لديك حساب؟ سجل الآن</a>
-                        </div>
-                        
-                        <div class="login-options" style="margin-bottom: 20px;">
-                            <span style="color: #aaa; font-size: 14px;">أو سجل الدخول بواسطة</span>
-                        </div>
-                        
-                        <div class="social-login">
-                            <button class="btn btn-google" onclick="loginWithGoogle()">
-                                <i class="fab fa-google"></i> Google
-                            </button>
-                            <button class="btn btn-facebook" onclick="loginWithFacebook()">
-                                <i class="fab fa-facebook-f"></i> Facebook
-                            </button>
-                        </div>
+    <main class="auth-main-content">
+        <div class="auth-card">
+            <h1 class="form-card-title">تسجيل الدخول</h1>
+            <form>
+                <div class="mb-3">
+                    <label for="emailInput" class="form-label">البريد الإلكتروني</label>
+                    <input type="email" class="form-control" id="emailInput" placeholder="ادخل بريدك الإلكتروني" required>
+                </div>
+                <div class="mb-3">
+                    <label for="passwordInput" class="form-label">كلمة المرور</label>
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="passwordInput" placeholder="ادخل كلمة المرور" required>
+                        <span class="password-toggle" onclick="togglePasswordVisibility('passwordInput', this)">
+                            <i class="fas fa-eye"></i>
+                        </span>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-3">
-                    <h5>تحميل تطبيق كيرفا</h5>
-                    <div class="app-download">
-                        <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 40'><rect width='120' height='40' fill='%23000' rx='5'/><text x='60' y='15' fill='white' font-size='8' text-anchor='middle'>Download on the</text><text x='60' y='28' fill='white' font-size='12' text-anchor='middle' font-weight='bold'>App Store</text></svg>" alt="App Store">
-                        <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 40'><rect width='120' height='40' fill='%23000' rx='5'/><text x='60' y='15' fill='white' font-size='8' text-anchor='middle'>GET IT ON</text><text x='60' y='28' fill='white' font-size='12' text-anchor='middle' font-weight='bold'>Google Play</text></svg>" alt="Google Play">
-                    </div>
-                    <div class="social-icons">
-                        <i class="fab fa-linkedin"></i>
-                        <i class="fab fa-youtube"></i>
-                        <i class="fab fa-tiktok"></i>
-                        <i class="fab fa-whatsapp"></i>
-                        <i class="fab fa-instagram"></i>
-                        <i class="fab fa-facebook"></i>
-                    </div>
-                    <p style="margin-top: 20px; font-size: 12px; color: #aaa;">تابعنا على</p>
-                </div>
-                
-                <div class="col-md-3">
-                    <h5>تسجيل الدخول</h5>
-                    <div>
-                        <a href="#" class="d-block">تسجيل حساب جديد</a>
-                        <a href="#" class="d-block">الدخول</a>
-                        <a href="#" class="d-block">الموقع الرسمي</a>
-                        <a href="#" class="d-block">اتصل بنا</a>
-                    </div>
-                </div>
-                
-                <div class="col-md-3">
-                    <h5>المتاجر</h5>
-                    <div>
-                        <a href="#" class="d-block">الأردن</a>
-                        <a href="#" class="d-block">الامارات</a>
-                        <a href="#" class="d-block">كيرفا سعودي الجديد</a>
-                    </div>
-                </div>
-                
-                <div class="col-md-3">
-                    <h5>اتصل بنا</h5>
-                    <div>
-                        <p style="color: #ccc; font-size: 14px;">الجوالة: <span>+966123456789</span></p>
-                        <p style="color: #ccc; font-size: 14px;">الايميل:</p>
-                        <p style="color: #ccc; font-size: 12px;">curva@gmail.com</p>
-                        <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 30'><text x='5' y='20' fill='%23d4a574' font-family='Arial, sans-serif' font-size='16' font-weight='bold'>CURVA</text></svg>" alt="CURVA" style="margin-top: 20px; height: 25px;">
-                    </div>
-                </div>
-            </div>
-            
-            <div class="copyright">
-                كيرفا © 2024 جميع الحقوق محفوظة
-            </div>
-        </div>
-    </footer>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <script>
-        // Login functionality
-        function showLoginForm() {
-            // This would typically show a modal or redirect to login form
-            alert('سيتم توجيهك إلى صفحة تسجيل الدخول');
-        }
-        
-        function loginWithGoogle() {
-            // Google OAuth integration would go here
-            alert('تسجيل الدخول بواسطة Google');
-        }
-        
-        function loginWithFacebook() {
-            // Facebook OAuth integration would go here
-            alert('تسجيل الدخول بواسطة Facebook');
-        }
-        
-        // Navbar scroll effect
-        window.addEventListener('scroll', function() {
-            const navbar = document.querySelector('.navbar');
-            if (window.scrollY > 50) {
-                navbar.style.background = 'rgba(42, 42, 42, 0.98)';
-            } else {
-                navbar.style.background = 'rgba(42, 42, 42, 0.95)';
-            }
-        });
-        
-        // Search functionality
-        document.querySelector('.fa-search').addEventListener('click', function() {
-            const searchTerm = prompt('ادخل كلمة البحث:');
-            if (searchTerm) {
-                alert('البحث عن: ' + searchTerm);
-            }
-        });
-        
-        // Settings functionality
-        document.querySelector('.fa-cog').addEventListener('click', function() {
-            alert('إعدادات الموقع');
-        });
-        
-        // Language toggle
-        document.querySelector('.fa-globe').addEventListener('click', function() {
-            alert('تغيير اللغة');
-        });
-        
-        // Cart functionality
-        document.querySelector('.fa-shopping-cart').addEventListener('click', function() {
-            alert('عرض السلة');
-        });
-        
-        // Smooth scrolling for internal links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-        
-        // Form validation and submission
-        function validateLoginForm() {
-            const email = document.getElementById('loginEmail');
-            const password = document.getElementById('loginPassword');
-            
-            if (email && password) {
-                if (!email.value || !password.value) {
-                    alert('يرجى ملء جميع الحقول المطلوبة');
-                    return false;
-                }
-                
-                // Email validation
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailRegex.test(email.value)) {
-                    alert('يرجى إدخال بريد إلكتروني صحيح');
-                    return false;
-                }
-                
-                return true;
-            }
-            return false;
-        }
-        
-        // Dynamic login form creation
-        function createLoginForm() {
-            const loginContainer = document.querySelector('.login-container');
-            const existingForm = document.getElementById('loginForm');
-            
-            if (existingForm) {
-                existingForm.remove();
-            }
-            
-            const formHTML = `
-                <form id="loginForm" class="mt-3">
-                    <div class="mb-3">
-                        <input type="email" class="form-control" id="loginEmail" 
-                               placeholder="البريد الإلكتروني أو رقم الهاتف" 
-                               style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 12px; border-radius: 8px;">
-                    </div>
-                    <div class="mb-3">
-                        <input type="password" class="form-control" id="loginPassword" 
-                               placeholder="كلمة المرور" 
-                               style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 12px; border-radius: 8px;">
-                    </div>
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="rememberMe">
-                        <label class="form-check-label" for="rememberMe" style="color: #ccc; font-size: 14px;">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="rememberMeCheck" style="background-color: rgba(255,255,255,0.1); border-color: rgba(255,193,7,0.3);">
+                        <label class="form-check-label" for="rememberMeCheck" style="font-size: 0.9rem; color: rgba(255,255,255,0.8);">
                             تذكرني
                         </label>
-                        <a href="#" class="float-end" style="color: #d4a574; font-size: 14px; text-decoration: none;">
-                            نسيت كلمة المرور؟
-                        </a>
                     </div>
-                    <button type="submit" class="btn btn-login">
-                        دخول
-                    </button>
-                </form>
-            `;
-            
-            const loginButton = loginContainer.querySelector('.btn-login');
-            loginButton.insertAdjacentHTML('afterend', formHTML);
-            loginButton.style.display = 'none';
-            
-            // Add form submission handler
-            document.getElementById('loginForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                if (validateLoginForm()) {
-                    handleLogin();
-                }
-            });
-        }
-        
-        // Handle login submission
-        function handleLogin() {
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            const rememberMe = document.getElementById('rememberMe').checked;
-            
-            // Show loading state
-            const submitBtn = document.querySelector('#loginForm button[type="submit"]');
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحقق...';
-            submitBtn.disabled = true;
-            
-            // Simulate API call
-            setTimeout(() => {
-                // Reset button
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-                
-                // Simulate successful login
-                if (email && password) {
-                    alert('تم تسجيل الدخول بنجاح!');
-                    // Redirect or update UI
-                    window.location.href = '#dashboard';
-                } else {
-                    alert('خطأ في البيانات المدخلة');
-                }
-            }, 2000);
-        }
-        
-        // Update showLoginForm function
-        function showLoginForm() {
-            createLoginForm();
-        }
-        
-        // Add loading animations
-        function addLoadingAnimation(element) {
-            element.style.opacity = '0.7';
-            element.style.transform = 'scale(0.98)';
-            
-            setTimeout(() => {
-                element.style.opacity = '1';
-                element.style.transform = 'scale(1)';
-            }, 150);
-        }
-        
-        // Add click animations to buttons
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('btn') || e.target.closest('.btn')) {
-                const button = e.target.classList.contains('btn') ? e.target : e.target.closest('.btn');
-                addLoadingAnimation(button);
-            }
-        });
-        
-        // Social media login handlers
-        function loginWithGoogle() {
-            // Simulate Google OAuth
-            const popup = window.open('', 'google-login', 'width=500,height=600');
-            popup.document.write(`
-                <div style="display: flex; align-items: center; justify-content: center; height: 100vh; font-family: Arial;">
-                    <div style="text-align: center;">
-                        <h3>تسجيل الدخول بواسطة Google</h3>
-                        <p>جاري التحضير...</p>
-                        <div style="margin: 20px 0;">
-                            <div style="border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 40px; height: 40px; animation: spin 2s linear infinite; margin: 0 auto;"></div>
-                        </div>
-                    </div>
+                    <a href="#" class="auth-links" style="font-size: 0.9rem; margin: 0;">نسيت كلمة المرور؟</a>
                 </div>
-                <style>
-                    @keyframes spin {
-                        0% { transform: rotate(0deg); }
-                        100% { transform: rotate(360deg); }
-                    }
-                </style>
-            `);
+                <button type="submit" class="btn btn-gold mb-3">تسجيل الدخول</button>
+            </form>
             
-            setTimeout(() => {
-                popup.close();
-                alert('تم تسجيل الدخول بنجاح عبر Google!');
-            }, 3000);
-        }
-        
-        function loginWithFacebook() {
-            // Simulate Facebook OAuth
-            const popup = window.open('', 'facebook-login', 'width=500,height=600');
-            popup.document.write(`
-                <div style="display: flex; align-items: center; justify-content: center; height: 100vh; font-family: Arial; background: #3b5998; color: white;">
-                    <div style="text-align: center;">
-                        <h3>تسجيل الدخول بواسطة Facebook</h3>
-                        <p>جاري التحضير...</p>
-                        <div style="margin: 20px 0;">
-                            <div style="border: 4px solid rgba(255,255,255,0.3); border-top: 4px solid white; border-radius: 50%; width: 40px; height: 40px; animation: spin 2s linear infinite; margin: 0 auto;"></div>
-                        </div>
-                    </div>
-                </div>
-                <style>
-                    @keyframes spin {
-                        0% { transform: rotate(0deg); }
-                        100% { transform: rotate(360deg); }
-                    }
-                </style>
-            `);
+            <div class="social-login-divider"><span>أو</span></div>
             
-            setTimeout(() => {
-                popup.close();
-                alert('تم تسجيل الدخول بنجاح عبر Facebook!');
-            }, 3000);
-        }
-        
-        // Newsletter subscription
-        function subscribeNewsletter() {
-            const email = prompt('أدخل بريدك الإلكتروني للاشتراك في النشرة الإخبارية:');
-            if (email) {
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (emailRegex.test(email)) {
-                    alert('تم الاشتراك بنجاح! شكراً لك.');
-                } else {
-                    alert('يرجى إدخال بريد إلكتروني صحيح.');
-                }
+            <div class="social-login-buttons">
+                <button type="button" class="btn btn-google"><i class="fab fa-google"></i>متابعة باستخدام جوجل</button>
+                <button type="button" class="btn btn-facebook"><i class="fab fa-facebook-f"></i>متابعة باستخدام فيسبوك</button>
+            </div>
+
+            <div class="auth-links mt-4">
+                <span>ليس لديك حساب؟</span>
+                <a href="signup.html">إنشاء حساب جديد</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="simple-footer">
+        <p>&copy; 2024 MBA Sports. جميع الحقوق محفوظة. <a href="#">سياسة الخصوصية</a> | <a href="#">شروط الخدمة</a></p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function togglePasswordVisibility(inputId, toggleElement) {
+            const passwordInput = document.getElementById(inputId);
+            const icon = toggleElement.querySelector('i');
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = "password";
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
             }
         }
-        
-        // Add newsletter subscription to footer
-        document.addEventListener('DOMContentLoaded', function() {
-            const footerFirstCol = document.querySelector('.footer .col-md-3');
-            if (footerFirstCol) {
-                const newsletterHTML = `
-                    <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
-                        <h6 style="color: #d4a574; margin-bottom: 10px;">النشرة الإخبارية</h6>
-                        <button onclick="subscribeNewsletter()" class="btn" style="background: #d4a574; color: white; font-size: 12px; padding: 8px 15px; border-radius: 5px;">
-                            اشترك الآن
-                        </button>
-                    </div>
-                `;
-                footerFirstCol.insertAdjacentHTML('beforeend', newsletterHTML);
-            }
+
+        // Form submission simulation (replace with actual login logic)
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Add your login logic here (e.g., AJAX request)
+            alert('تم إرسال بيانات تسجيل الدخول! (محاكاة)');
+            // Example: Redirect to profile page on successful login
+            // window.location.href = 'profile.html';
         });
-        
-        // Add scroll to top functionality
-        function addScrollToTop() {
-            const scrollBtn = document.createElement('button');
-            scrollBtn.innerHTML = '<i class="fas fa-arrow-up"></i>';
-            scrollBtn.style.cssText = `
-                position: fixed;
-                bottom: 30px;
-                right: 30px;
-                background: #d4a574;
-                color: white;
-                border: none;
-                border-radius: 50%;
-                width: 50px;
-                height: 50px;
-                display: none;
-                z-index: 1000;
-                cursor: pointer;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-                transition: all 0.3s ease;
-            `;
-            
-            scrollBtn.addEventListener('click', () => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
-            
-            scrollBtn.addEventListener('mouseenter', () => {
-                scrollBtn.style.background = '#c49660';
-                scrollBtn.style.transform = 'scale(1.1)';
-            });
-            
-            scrollBtn.addEventListener('mouseleave', () => {
-                scrollBtn.style.background = '#d4a574';
-                scrollBtn.style.transform = 'scale(1)';
-            });
-            
-            document.body.appendChild(scrollBtn);
-            
-            // Show/hide scroll button
-            window.addEventListener('scroll', () => {
-                if (window.scrollY > 300) {
-                    scrollBtn.style.display = 'block';
-                } else {
-                    scrollBtn.style.display = 'none';
-                }
-            });
-        }
-        
-        // Initialize scroll to top
-        addScrollToTop();
-        
-        // Add keyboard navigation
-        document.addEventListener('keydown', function(e) {
-            // ESC key to close any open forms
-            if (e.key === 'Escape') {
-                const loginForm = document.getElementById('loginForm');
-                if (loginForm) {
-                    loginForm.remove();
-                    document.querySelector('.btn-login').style.display = 'block';
-                }
-            }
-            
-            // Enter key on login button
-            if (e.key === 'Enter' && document.activeElement.classList.contains('btn-login')) {
-                showLoginForm();
-            }
-        });
-        
-        // Add responsive menu toggle animation
-        const navbarToggler = document.querySelector('.navbar-toggler');
-        if (navbarToggler) {
-            navbarToggler.addEventListener('click', function() {
-                this.style.transform = this.style.transform === 'rotate(90deg)' ? 'rotate(0deg)' : 'rotate(90deg)';
-            });
-        }
-        
-        // Add hover effects to navigation items
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-2px)';
-                this.style.transition = 'transform 0.3s ease';
-            });
-            
-            link.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0)';
-            });
-        });
-        
-        // Add loading state to page
-        window.addEventListener('load', function() {
-            document.body.style.opacity = '0';
-            document.body.style.transition = 'opacity 0.5s ease';
-            
-            setTimeout(() => {
-                document.body.style.opacity = '1';
-            }, 100);
-        });
-        
-        // Console welcome message
-        console.log(`
-        🎉 مرحباً بك في موقع CURVA
-        
-        هذا الموقع تم تطويره باستخدام:
-        - Bootstrap 5.3.0
-        - Font Awesome 6.0.0
-        - JavaScript ES6+
-        - CSS3 مع التأثيرات المتقدمة
-        
-        جميع الحقوق محفوظة © 2024
-        `);
     </script>
 </body>
 </html>

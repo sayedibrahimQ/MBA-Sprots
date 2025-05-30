@@ -23,34 +23,80 @@
             background: rgba(0,0,0,0.9);
             backdrop-filter: blur(10px);
             border-bottom: 1px solid rgba(255,193,7,0.3);
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
         }
         
         .navbar-brand {
             font-weight: 700;
             font-size: 1.8rem;
             color: #ffc107 !important;
+            transition: opacity 0.3s ease, transform 0.3s ease;
         }
-        .nav-link {
+        .navbar-brand:hover {
+            opacity: 0.85;
+            transform: scale(1.02);
+        }
+        .navbar-nav .nav-link {
             color: rgba(255,255,255,0.8) !important;
             font-weight: 500;
-            transition: all 0.3s ease;
+            transition: color 0.3s ease, transform 0.3s ease;
+            padding-top: 0.8rem;
+            padding-bottom: 0.8rem;
+            position: relative;
         }
-        .nav-link:hover {
+        .navbar-nav .nav-link:hover,
+        .navbar-nav .nav-link:focus {
             color: #ffc107 !important;
+            transform: translateY(-2px);
+        }
+        .navbar-nav .nav-item .nav-link.active {
+            color: #ffc107 !important;
+            font-weight: 600;
+        }
+        .navbar-nav .nav-item .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%; 
+            height: 2.5px;
+            background-color: #ffc107;
+            border-radius: 2px;
         }
         .navbar-icons {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
         }
-        .navbar-icons i {
-            color: rgba(255,255,255,0.8);
-            font-size: 18px;
+        .navbar-icons .nav-link {
+            color: rgba(255,255,255,0.8) !important;
+            padding: 0.5rem 0.6rem;
+            transition: color 0.3s ease, transform 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+        .navbar-icons .nav-link:hover {
+            color: #ffc107 !important;
+            transform: translateY(-1px);
+        }
+        .navbar-icons .nav-link i {
+            font-size: 1.2rem;
             cursor: pointer;
-            transition: color 0.3s;
+            transition: color 0.3s ease, transform 0.3s ease;
+            vertical-align: middle;
         }
-        .navbar-icons i:hover {
-            color: #ffc107;
+        .navbar-icons .nav-link:hover i {
+            transform: scale(1.1);
+        }
+        .navbar-icons .position-relative .badge {
+            font-size: 0.6em;
+            padding: 0.3em 0.5em;
+            top: 0px;
+            right: -5px;
+            line-height: 1;
+            border: 1px solid #1a1a1a;
         }
         .cart-badge {
             position: relative;
@@ -58,31 +104,38 @@
         .cart-badge::after {
             content: attr(data-count);
             position: absolute;
-            top: -8px;
-            right: -8px;
+            top: -6px;
+            right: -10px;
             background: #ffc107;
             color: #000;
             border-radius: 50%;
-            width: 18px;
-            height: 18px;
+            min-width: 20px;
+            height: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 10px;
+            font-size: 0.7rem;
             font-weight: bold;
+            border: 1.5px solid #1a1a1a;
+            box-shadow: 0 0 8px rgba(255,193,7,0.5);
         }
         .user-avatar {
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             background: #ffc107;
             display: flex;
             align-items: center;
             justify-content: center;
             color: #000;
-            font-weight: bold;
-            font-size: 12px;
+            font-weight: 700;
+            font-size: 1rem;
             cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .user-avatar:hover {
+            transform: scale(1.12);
+            box-shadow: 0 0 18px rgba(255,193,7,0.6);
         }
         
         .hero-section {
@@ -217,6 +270,83 @@
         }
         .sidebar .form-range::-ms-thumb {
             background: #ffc107;
+        }
+
+        /* Themed form controls for sidebar (and potentially main content sort) */
+        .form-control, .form-select {
+            background-color: rgba(0,0,0,0.25);
+            border: 1px solid rgba(255,193,7,0.3);
+            color: #fff;
+            border-radius: 8px; /* Consistent border radius */
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .form-control:focus, .form-select:focus {
+            background-color: rgba(0,0,0,0.35);
+            border-color: #ffc107;
+            box-shadow: 0 0 0 0.2rem rgba(255,193,7,0.25);
+            color: #fff;
+        }
+        .form-control::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+        .form-select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffc107' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: left 0.75rem center; /* Adjusted for RTL */
+            background-size: 16px 12px;
+            padding-right: 0.75rem; /* Default padding */
+            padding-left: 2.25rem; /* Space for the arrow */
+        }
+        .form-control-sm {
+            font-size: 0.8rem; /* Adjust as needed */
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+        }
+
+        /* Button Theming */
+        .btn-gold {
+            background: linear-gradient(45deg, #ffc107, #ff8c00);
+            border: none;
+            color: #000;
+            font-weight: 600; /* Adjusted from 700 to match other gold buttons */
+            padding: 10px 20px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            display: inline-flex; /* To align icon and text */
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-gold:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 15px rgba(255,193,7,0.3);
+            color: #000;
+        }
+        .btn-gold:focus {
+            outline: none;
+            box-shadow: 0 0 0 0.2rem rgba(255,193,7,0.25), 0 8px 15px rgba(255,193,7,0.3);
+        }
+        .btn-gold i {
+            margin-left: 8px; /* Space between icon and text */
+        }
+
+        /* Main content area title and sort */
+        .category-products-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255,193,7,0.2);
+        }
+        .category-products-header h4 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #ffc107;
+            margin-bottom: 0;
+        }
+        .category-products-header .form-select {
+            width: auto;
+            min-width: 200px; /* Ensure it has some width */
         }
 
         /* Standardized Product Card CSS (from product.html / index.html) */
@@ -363,46 +493,6 @@
             z-index: 5;
         }
 
-        /* Styles for search box - specific to categories.html if not used elsewhere */
-        .search-box {
-            position: relative;
-            margin-bottom: 20px; /* Add some margin */
-        }
-        .search-box input {
-            background: rgba(0,0,0,0.3); /* Themed background */
-            border: 1px solid rgba(255,193,7,0.25); /* Themed border */
-            color: white;
-            border-radius: 25px;
-            padding: 10px 45px 10px 20px; /* Adjusted padding for button */
-            width: 100%; /* Make it full width of its container */
-            transition: all 0.3s ease;
-        }
-        .search-box input::placeholder {
-            color: rgba(255,255,255,0.6);
-        }
-        .search-box input:focus {
-            background: rgba(0,0,0,0.4);
-            border-color: #ffc107;
-            box-shadow: 0 0 10px rgba(255,193,7,0.3);
-            outline: none;
-        }
-        .search-box button {
-            position: absolute;
-            right: 0px; /* Align to the very right */
-            top: 0px; /* Align to the very top */
-            height: 100%; /* Make button full height of input */
-            background: #ffc107;
-            border: none;
-            border-top-right-radius: 25px; /* Match input's border radius */
-            border-bottom-right-radius: 25px;
-            width: 45px; /* Fixed width for button */
-            color: #000;
-            transition: background-color 0.3s ease;
-        }
-        .search-box button:hover {
-            background: #ff8c00;
-        }
-        
         /* Standardized Footer CSS (from product.html) */
         .footer {
             background: rgba(0,0,0,0.9);
@@ -484,19 +574,23 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
         <div class="container">
-            <a class="navbar-brand" href="#">CURVA</a>
+            <a class="navbar-brand" href="index.html">MBA</a>
             
-            <div class="d-flex align-items-center order-lg-last">
-                <div class="search-box me-3">
-                    <input type="text" class="form-control" placeholder="البحث عن المنتجات...">
-                    <button type="button"><i class="fas fa-search"></i></button>
-                </div>
-                <a href="#" class="text-warning me-3"><i class="fas fa-heart"></i></a>
-                <a href="#" class="text-warning me-3 position-relative">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">3</span>
+            <!-- Icons and User Avatar -->
+            <div class="navbar-icons order-lg-last">
+                <a href="#" class="nav-link me-2"><i class="fas fa-search"></i></a>
+                <a href="#" class="nav-link me-2 position-relative">
+                    <i class="fas fa-heart"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark" style="font-size: 0.6em; padding: 0.2em 0.4em;">0</span>
                 </a>
-                <a href="#" class="text-warning"><i class="fas fa-user"></i></a>
+                <a href="cart.html" class="nav-link me-2 cart-badge position-relative" data-count="3">
+                    <i class="fas fa-shopping-cart"></i>
+                </a>
+                <a href="profile.html" class="nav-link">
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </a>
             </div>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -505,11 +599,11 @@
             
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link" href="#">الرئيسية</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="#">أحذية كرة القدم</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">الملابس الرياضية</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">الإكسسوارات</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index.html">الرئيسية</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="categories.html">الفئات</a></li>
+                    <li class="nav-item"><a class="nav-link" href="product.html">المنتجات</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">العروض</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">اتصل بنا</a></li>
                 </ul>
             </div>
         </div>
@@ -599,16 +693,16 @@
                         </div>
                     </div>
                     
-                    <button class="btn btn-cart w-100">تطبيق الفلتر</button>
+                    <button class="btn btn-gold w-100"><i class="fas fa-filter"></i> &nbsp;تطبيق الفلتر</button>
                 </div>
             </div>
 
             <!-- Products Grid -->
             <div class="col-lg-9">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h4>أحذية كرة القدم (245 منتج)</h4>
+                <div class="category-products-header">
+                    <h4>أحذية كرة القدم <span class="text-white-50 fw-normal">(245 منتج)</span></h4>
                     <select class="form-select w-auto">
-                        <option>ترتيب حسب: الأحدث</option>
+                        <option selected>ترتيب حسب: الأحدث</option>
                         <option>السعر: من الأقل للأعلى</option>
                         <option>السعر: من الأعلى للأقل</option>
                         <option>الأكثر مبيعاً</option>
@@ -617,180 +711,175 @@
 
                 <div class="row">
                     <!-- Product 1 -->
-                    <div class="col-md-4 col-sm-6">
+                    <div class="col-md-4 col-sm-6 mb-4">
                         <div class="product-card">
-                            <div class="product-image">
-                                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%23ff6b35' d='M50 100 Q150 50 250 100 Q150 150 50 100'/><circle fill='%23ffffff' cx='100' cy='80' r='15'/><circle fill='%23ffffff' cx='200' cy='120' r='15'/></svg>" alt="حذاء كرة قدم نايك">
-                                <div class="product-badge">خصم 25%</div>
+                            <div class="wishlist-icon" onclick="toggleWishlistCard(this)">
+                                <i class="far fa-heart"></i>
                             </div>
+                            <span class="sale-badge">خصم 25%</span>
+                            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%23ff6b35' d='M50 100 Q150 50 250 100 Q150 150 50 100'/><circle fill='%23ffffff' cx='100' cy='80' r='15'/><circle fill='%23ffffff' cx='200' cy='120' r='15'/></svg>" class="product-card-img" alt="حذاء نايك ميركوريال سوبرفلاي 9 إليت">
                             <div class="product-info">
-                                <h6 class="product-title">حذاء نايك ميركوريال سوبرفلاي 9 إليت</h6>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="product-price">
-                                        745 ر.س
-                                        <span class="old-price">995 ر.س</span>
-                                    </div>
-                                    <button class="btn btn-cart">
-                                        <i class="fas fa-shopping-cart me-1"></i>
-                                    </button>
+                                <h5>حذاء نايك ميركوريال سوبرفلاي 9 إليت</h5>
+                                <div class="price-area">
+                                    <span class="price">745 ج.م</span>
+                                    <span class="old-price">995 ج.م</span>
                                 </div>
+                                <button class="btn-add-to-cart-card" onclick="handleAddToCart(this)">
+                                    <i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة
+                                </button>
                             </div>
                         </div>
                     </div>
 
                     <!-- Product 2 -->
-                    <div class="col-md-4 col-sm-6">
+                    <div class="col-md-4 col-sm-6 mb-4">
                         <div class="product-card">
-                            <div class="product-image">
-                                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%2300aaff' d='M50 100 Q150 60 250 100 Q150 140 50 100'/><circle fill='%23ffffff' cx='90' cy='90' r='12'/><circle fill='%23ffffff' cx='210' cy='110' r='12'/></svg>" alt="حذاء كرة قدم أديداس">
-                                <div class="product-badge">جديد</div>
+                            <div class="wishlist-icon" onclick="toggleWishlistCard(this)">
+                                <i class="far fa-heart"></i>
                             </div>
+                            <span class="sale-badge" style="background-color: #007bff; color: white;">جديد</span>
+                            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%2300aaff' d='M50 100 Q150 60 250 100 Q150 140 50 100'/><circle fill='%23ffffff' cx='90' cy='90' r='12'/><circle fill='%23ffffff' cx='210' cy='110' r='12'/></svg>" class="product-card-img" alt="حذاء كرة قدم أديداس">
                             <div class="product-info">
-                                <h6 class="product-title">حذاء أديداس إكس سبيدبورتال.1</h6>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="product-price">850 ر.س</div>
-                                    <button class="btn btn-cart">
-                                        <i class="fas fa-shopping-cart me-1"></i>
-                                    </button>
+                                <h5>حذاء أديداس إكس سبيدبورتال.1</h5>
+                                <div class="price-area">
+                                    <span class="price">850 ج.م</span>
                                 </div>
+                                <button class="btn-add-to-cart-card" onclick="handleAddToCart(this)">
+                                    <i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة
+                                </button>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Product 3 -->
-                    <div class="col-md-4 col-sm-6">
+                    <!-- Product 2 -->
+                    <div class="col-md-4 col-sm-6 mb-4">
                         <div class="product-card">
-                            <div class="product-image">
-                                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%2300ff44' d='M60 110 Q150 70 240 110 Q150 150 60 110'/><circle fill='%23000000' cx='110' cy='95' r='10'/><circle fill='%23000000' cx='190' cy='125' r='10'/></svg>" alt="حذاء كرة قدم بوما">
+                            <div class="wishlist-icon" onclick="toggleWishlistCard(this)">
+                                <i class="far fa-heart"></i>
                             </div>
-                            <div class="product-image">
-                                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%2300ff44' d='M60 110 Q150 70 240 110 Q150 150 60 110'/><circle fill='%23000000' cx='110' cy='95' r='10'/><circle fill='%23000000' cx='190' cy='125' r='10'/></svg>" alt="حذاء كرة قدم بوما">
-                            </div>
+                            <span class="sale-badge" style="background-color: #007bff; color: white;">جديد</span>
+                            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%2300aaff' d='M50 100 Q150 60 250 100 Q150 140 50 100'/><circle fill='%23ffffff' cx='90' cy='90' r='12'/><circle fill='%23ffffff' cx='210' cy='110' r='12'/></svg>" class="product-card-img" alt="حذاء كرة قدم أديداس">
                             <div class="product-info">
-                                <h6 class="product-title">حذاء بوما فيوتشر Z 1.2</h6>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="product-price">
-                                        520 ر.س
-                                        <span class="old-price">650 ر.س</span>
-                                    </div>
-                                    <button class="btn btn-cart">
-                                        <i class="fas fa-shopping-cart me-1"></i>
-                                    </button>
+                                <h5>حذاء أديداس إكس سبيدبورتال.1</h5>
+                                <div class="price-area">
+                                    <span class="price">850 ج.م</span>
                                 </div>
+                                <button class="btn-add-to-cart-card" onclick="handleAddToCart(this)">
+                                    <i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة
+                                </button>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Product 4 -->
-                    <div class="col-md-4 col-sm-6">
+                    <!-- Product 2 -->
+                    <div class="col-md-4 col-sm-6 mb-4">
                         <div class="product-card">
-                            <div class="product-image">
-                                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%23333333' d='M70 105 Q150 65 230 105 Q150 145 70 105'/><circle fill='%23ffffff' cx='120' cy='85' r='8'/><circle fill='%23ffffff' cx='180' cy='125' r='8'/></svg>" alt="حذاء كرة قدم أمبرو">
+                            <div class="wishlist-icon" onclick="toggleWishlistCard(this)">
+                                <i class="far fa-heart"></i>
                             </div>
+                            <span class="sale-badge" style="background-color: #007bff; color: white;">جديد</span>
+                            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%2300aaff' d='M50 100 Q150 60 250 100 Q150 140 50 100'/><circle fill='%23ffffff' cx='90' cy='90' r='12'/><circle fill='%23ffffff' cx='210' cy='110' r='12'/></svg>" class="product-card-img" alt="حذاء كرة قدم أديداس">
                             <div class="product-info">
-                                <h6 class="product-title">حذاء أمبرو فيلوسيتا 7 برو</h6>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="product-price">385 ر.س</div>
-                                    <button class="btn btn-cart">
-                                        <i class="fas fa-shopping-cart me-1"></i>
-                                    </button>
+                                <h5>حذاء أديداس إكس سبيدبورتال.1</h5>
+                                <div class="price-area">
+                                    <span class="price">850 ج.م</span>
                                 </div>
+                                <button class="btn-add-to-cart-card" onclick="handleAddToCart(this)">
+                                    <i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة
+                                </button>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Product 5 -->
-                    <div class="col-md-4 col-sm-6">
+                    <!-- Product 2 -->
+                    <div class="col-md-4 col-sm-6 mb-4">
                         <div class="product-card">
-                            <div class="product-image">
-                                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%23ff1744' d='M55 100 Q150 55 245 100 Q150 145 55 100'/><circle fill='%23ffffff' cx='95' cy='85' r='12'/><circle fill='%23ffffff' cx='205' cy='115' r='12'/></svg>" alt="حذاء كرة قدم نايك">
-                                <div class="product-badge">خصم 30%</div>
+                            <div class="wishlist-icon" onclick="toggleWishlistCard(this)">
+                                <i class="far fa-heart"></i>
                             </div>
+                            <span class="sale-badge" style="background-color: #007bff; color: white;">جديد</span>
+                            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%2300aaff' d='M50 100 Q150 60 250 100 Q150 140 50 100'/><circle fill='%23ffffff' cx='90' cy='90' r='12'/><circle fill='%23ffffff' cx='210' cy='110' r='12'/></svg>" class="product-card-img" alt="حذاء كرة قدم أديداس">
                             <div class="product-info">
-                                <h6 class="product-title">حذاء نايك فانتوم جي تي 2 إليت</h6>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="product-price">
-                                        680 ر.س
-                                        <span class="old-price">970 ر.س</span>
-                                    </div>
-                                    <button class="btn btn-cart">
-                                        <i class="fas fa-shopping-cart me-1"></i>
-                                    </button>
+                                <h5>حذاء أديداس إكس سبيدبورتال.1</h5>
+                                <div class="price-area">
+                                    <span class="price">850 ج.م</span>
                                 </div>
+                                <button class="btn-add-to-cart-card" onclick="handleAddToCart(this)">
+                                    <i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة
+                                </button>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Product 6 -->
-                    <div class="col-md-4 col-sm-6">
+                    <!-- Product 2 -->
+                    <div class="col-md-4 col-sm-6 mb-4">
                         <div class="product-card">
-                            <div class="product-image">
-                                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%2300d4ff' d='M65 95 Q150 55 235 95 Q150 135 65 95'/><circle fill='%23000000' cx='105' cy='75' r='10'/><circle fill='%23000000' cx='195' cy='115' r='10'/></svg>" alt="حذاء كرة قدم أديداس">
+                            <div class="wishlist-icon" onclick="toggleWishlistCard(this)">
+                                <i class="far fa-heart"></i>
                             </div>
+                            <span class="sale-badge" style="background-color: #007bff; color: white;">جديد</span>
+                            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%2300aaff' d='M50 100 Q150 60 250 100 Q150 140 50 100'/><circle fill='%23ffffff' cx='90' cy='90' r='12'/><circle fill='%23ffffff' cx='210' cy='110' r='12'/></svg>" class="product-card-img" alt="حذاء كرة قدم أديداس">
                             <div class="product-info">
-                                <h6 class="product-title">حذاء أديداس كوبا سينس.1</h6>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="product-price">920 ر.س</div>
-                                    <button class="btn btn-cart">
-                                        <i class="fas fa-shopping-cart me-1"></i>
-                                    </button>
+                                <h5>حذاء أديداس إكس سبيدبورتال.1</h5>
+                                <div class="price-area">
+                                    <span class="price">850 ج.م</span>
                                 </div>
+                                <button class="btn-add-to-cart-card" onclick="handleAddToCart(this)">
+                                    <i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة
+                                </button>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Additional products (repeat pattern) -->
-                    <div class="col-md-4 col-sm-6">
+                    <!-- Product 2 -->
+                    <div class="col-md-4 col-sm-6 mb-4">
                         <div class="product-card">
-                            <div class="product-image">
-                                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%23ff9800' d='M50 110 Q150 70 250 110 Q150 150 50 110'/><circle fill='%23ffffff' cx='100' cy='90' r='10'/><circle fill='%23ffffff' cx='200' cy='130' r='10'/></svg>" alt="حذاء كرة قدم">
-                                <div class="product-badge">محدود</div>
+                            <div class="wishlist-icon" onclick="toggleWishlistCard(this)">
+                                <i class="far fa-heart"></i>
                             </div>
+                            <span class="sale-badge" style="background-color: #007bff; color: white;">جديد</span>
+                            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%2300aaff' d='M50 100 Q150 60 250 100 Q150 140 50 100'/><circle fill='%23ffffff' cx='90' cy='90' r='12'/><circle fill='%23ffffff' cx='210' cy='110' r='12'/></svg>" class="product-card-img" alt="حذاء كرة قدم أديداس">
                             <div class="product-info">
-                                <h6 class="product-title">حذاء نايك تيم إصدار خاص</h6>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="product-price">1250 ر.س</div>
-                                    <button class="btn btn-cart">
-                                        <i class="fas fa-shopping-cart me-1"></i>
-                                    </button>
+                                <h5>حذاء أديداس إكس سبيدبورتال.1</h5>
+                                <div class="price-area">
+                                    <span class="price">850 ج.م</span>
                                 </div>
+                                <button class="btn-add-to-cart-card" onclick="handleAddToCart(this)">
+                                    <i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة
+                                </button>
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-md-4 col-sm-6">
+                    <!-- Product 2 -->
+                    <div class="col-md-4 col-sm-6 mb-4">
                         <div class="product-card">
-                            <div class="product-image">
-                                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%23e91e63' d='M60 100 Q150 60 240 100 Q150 140 60 100'/><circle fill='%23ffffff' cx='90' cy='80' r='8'/><circle fill='%23ffffff' cx='210' cy='120' r='8'/></svg>" alt="حذاء كرة قدم">
+                            <div class="wishlist-icon" onclick="toggleWishlistCard(this)">
+                                <i class="far fa-heart"></i>
                             </div>
+                            <span class="sale-badge" style="background-color: #007bff; color: white;">جديد</span>
+                            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%2300aaff' d='M50 100 Q150 60 250 100 Q150 140 50 100'/><circle fill='%23ffffff' cx='90' cy='90' r='12'/><circle fill='%23ffffff' cx='210' cy='110' r='12'/></svg>" class="product-card-img" alt="حذاء كرة قدم أديداس">
                             <div class="product-info">
-                                <h6 class="product-title">حذاء بوما كينغ بلاتينيوم</h6>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="product-price">
-                                        450 ر.س
-                                        <span class="old-price">580 ر.س</span>
-                                    </div>
-                                    <button class="btn btn-cart">
-                                        <i class="fas fa-shopping-cart me-1"></i>
-                                    </button>
+                                <h5>حذاء أديداس إكس سبيدبورتال.1</h5>
+                                <div class="price-area">
+                                    <span class="price">850 ج.م</span>
                                 </div>
+                                <button class="btn-add-to-cart-card" onclick="handleAddToCart(this)">
+                                    <i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة
+                                </button>
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-md-4 col-sm-6">
+                    <!-- Product 2 -->
+                    <div class="col-md-4 col-sm-6 mb-4">
                         <div class="product-card">
-                            <div class="product-image">
-                                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%23795548' d='M55 105 Q150 65 245 105 Q150 145 55 105'/><circle fill='%23ffeb3b' cx='110' cy='85' r='12'/><circle fill='%23ffeb3b' cx='190' cy='125' r='12'/></svg>" alt="حذاء كرة قدم">
+                            <div class="wishlist-icon" onclick="toggleWishlistCard(this)">
+                                <i class="far fa-heart"></i>
                             </div>
+                            <span class="sale-badge" style="background-color: #007bff; color: white;">جديد</span>
+                            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%2300aaff' d='M50 100 Q150 60 250 100 Q150 140 50 100'/><circle fill='%23ffffff' cx='90' cy='90' r='12'/><circle fill='%23ffffff' cx='210' cy='110' r='12'/></svg>" class="product-card-img" alt="حذاء كرة قدم أديداس">
                             <div class="product-info">
-                                <h6 class="product-title">حذاء أديداس بريداتور فرياك</h6>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="product-price">780 ر.س</div>
-                                    <button class="btn btn-cart">
-                                        <i class="fas fa-shopping-cart me-1"></i>
-                                    </button>
+                                <h5>حذاء أديداس إكس سبيدبورتال.1</h5>
+                                <div class="price-area">
+                                    <span class="price">850 ج.م</span>
                                 </div>
+                                <button class="btn-add-to-cart-card" onclick="handleAddToCart(this)">
+                                    <i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -920,7 +1009,7 @@
         });
         
         // Filter functionality
-        document.querySelector('.sidebar .btn-cart').addEventListener('click', function() {
+        document.querySelector('.sidebar .btn-gold').addEventListener('click', function() {
             this.textContent = 'جاري التطبيق...';
             setTimeout(() => {
                 this.textContent = 'تطبيق الفلتر';

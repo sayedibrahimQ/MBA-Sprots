@@ -3,1274 +3,346 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إنشاء حساب جديد - CURVA</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>إنشاء حساب جديد - MBA</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap');
-        
         * {
             font-family: 'Cairo', sans-serif;
+            box-sizing: border-box;
         }
         
-        body {
-            background: linear-gradient(135deg, #2c3e35 0%, #1a1a1a 100%);
-            min-height: 100vh;
+        html, body {
+            height: 100%;
             margin: 0;
-            position: relative;
-            overflow-x: hidden;
+            overflow-x: hidden; 
         }
-        
-        /* Background overlay with grass effect */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><path d="M0,400 Q300,200 600,400 T1200,400 L1200,800 L0,800 Z" fill="%23234a3a" opacity="0.3"/></svg>') no-repeat center bottom;
-            background-size: cover;
-            z-index: -1;
-        }
-        
-        /* Navbar */
-        .navbar {
-            background: rgba(42, 42, 42, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 0.5rem 0;
-        }
-        
-        .navbar-brand img {
-            height: 35px;
-        }
-        
-        .nav-link {
-            color: #fff !important;
-            font-size: 14px;
-            margin: 0 10px;
-            transition: color 0.3s;
-        }
-        
-        .nav-link:hover {
-            color: #d4a574 !important;
-        }
-        
-        .navbar-icons {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .navbar-icons i {
-            color: #fff;
-            font-size: 18px;
-            cursor: pointer;
-            transition: color 0.3s;
-        }
-        
-        .navbar-icons i:hover {
-            color: #d4a574;
-        }
-        
-        .cart-badge {
-            position: relative;
-        }
-        
-        .cart-badge::after {
-            content: '0';
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: #d4a574;
+
+        body {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d3748 100%);
             color: white;
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            font-weight: bold;
+            flex-direction: column;
+            align-items: center; 
+            justify-content: space-between; 
+            min-height: 100vh;
         }
         
-        /* Main content */
-        .main-content {
-            min-height: calc(100vh - 200px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 50px 0;
-        }
-        
-        .signup-container {
-            background: rgba(60, 60, 60, 0.9);
-            border-radius: 15px;
-            padding: 40px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            max-width: 500px;
+        .simple-header {
             width: 100%;
-        }
-        
-        .signup-title {
-            color: #fff;
+            padding: 25px 0;
             text-align: center;
-            margin-bottom: 10px;
-            font-size: 24px;
-            font-weight: 600;
+        }
+        .simple-header .navbar-brand {
+            font-weight: 700;
+            font-size: 2.5rem; 
+            color: #ffc107 !important;
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+        .simple-header .navbar-brand:hover {
+            opacity: 0.85;
+        }
+
+        .auth-main-content {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 20px;
         }
         
-        .signup-subtitle {
-            color: #aaa;
+        .auth-card {
+            background: rgba(0,0,0,0.75);
+            border-radius: 20px; 
+            padding: 40px; 
+            box-shadow: 0 15px 45px rgba(0,0,0,0.6); 
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,193,7,0.25);
+            width: 100%;
+            max-width: 480px;
+        }
+        
+        .form-card-title {
+            font-size: 2rem; 
+            font-weight: 700;
+            color: #ffc107;
             text-align: center;
             margin-bottom: 30px;
-            font-size: 14px;
-            line-height: 1.5;
         }
         
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-group label {
-            color: #ddd;
-            font-size: 14px;
-            margin-bottom: 8px;
-            display: block;
+        .form-label {
+            color: rgba(255,255,255,0.8);
             font-weight: 500;
+            margin-bottom: 0.5rem;
         }
-        
         .form-control {
-            background: rgba(255, 255, 255, 0.1) !important;
-            border: 1px solid rgba(255, 255, 255, 0.2) !important;
-            color: white !important;
-            padding: 12px 15px !important;
-            border-radius: 8px !important;
-            font-size: 14px;
-            transition: all 0.3s ease;
+            background-color: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,193,7,0.3);
+            color: #fff;
+            border-radius: 10px; 
+            padding: 12px 15px; 
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+            font-size: 0.95rem;
         }
-        
         .form-control:focus {
-            background: rgba(255, 255, 255, 0.15) !important;
-            border-color: #d4a574 !important;
-            box-shadow: 0 0 0 0.2rem rgba(212, 165, 116, 0.25) !important;
-            color: white !important;
+            background-color: rgba(255,255,255,0.12);
+            border-color: #ffc107;
+            box-shadow: 0 0 0 0.2rem rgba(255,193,7,0.25);
+            color: #fff;
         }
-        
         .form-control::placeholder {
-            color: rgba(255, 255, 255, 0.6);
+            color: rgba(255,255,255,0.5);
         }
-        
-        .form-select {
-            background: rgba(255, 255, 255, 0.1) !important;
-            border: 1px solid rgba(255, 255, 255, 0.2) !important;
-            color: white !important;
-            padding: 12px 15px !important;
-            border-radius: 8px !important;
-        }
-        
-        .form-select option {
-            background: #333;
-            color: white;
-        }
-        
         .input-group {
             position: relative;
         }
-        
+        .input-group .form-control {
+            padding-left: 40px; 
+        }
         .password-toggle {
             position: absolute;
-            left: 15px;
+            left: 10px; 
             top: 50%;
             transform: translateY(-50%);
-            color: #aaa;
+            color: rgba(255,255,255,0.6);
             cursor: pointer;
-            z-index: 10;
-            transition: color 0.3s;
+            transition: color 0.3s ease;
+            z-index: 100;
         }
-        
         .password-toggle:hover {
-            color: #d4a574;
-        }
-        
-        .btn-signup {
-            background: #d4a574;
-            border: none;
-            color: white;
-            padding: 14px;
-            border-radius: 8px;
-            font-weight: 600;
-            width: 100%;
-            margin-bottom: 20px;
-            transition: all 0.3s;
-            font-size: 16px;
-        }
-        
-        .btn-signup:hover {
-            background: #c49660;
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(212, 165, 116, 0.3);
-        }
-        
-        .btn-signup:disabled {
-            background: #666;
-            transform: none;
-            box-shadow: none;
-            cursor: not-allowed;
-        }
-        
-        .signup-options {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        
-        .signup-options a {
-            color: #d4a574;
-            text-decoration: none;
-            font-size: 14px;
-            transition: color 0.3s;
-        }
-        
-        .signup-options a:hover {
-            color: #c49660;
-            text-decoration: underline;
-        }
-        
-        .social-signup {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-        
-        .btn-google {
-            background: #dd4b39;
-            border: 1px solid #dd4b39;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .btn-google:hover {
-            background: #c23321;
-            transform: translateY(-2px);
-        }
-        
-        .btn-facebook {
-            background: #3b5998;
-            border: 1px solid #3b5998;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .btn-facebook:hover {
-            background: #2d4373;
-            transform: translateY(-2px);
-        }
-        
-        .terms-agreement {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .form-check-input {
-            background-color: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-        
-        .form-check-input:checked {
-            background-color: #d4a574;
-            border-color: #d4a574;
-        }
-        
-        .form-check-label {
-            color: #ccc;
-            font-size: 13px;
-            line-height: 1.4;
-        }
-        
-        .form-check-label a {
-            color: #d4a574;
-            text-decoration: none;
-        }
-        
-        .form-check-label a:hover {
-            text-decoration: underline;
-        }
-        
-        .password-strength {
-            margin-top: 5px;
-            font-size: 12px;
-        }
-        
-        .strength-weak {
-            color: #dc3545;
-        }
-        
-        .strength-medium {
             color: #ffc107;
         }
         
-        .strength-strong {
-            color: #28a745;
+        .btn-gold {
+            background: linear-gradient(45deg, #ffc107, #ff8c00);
+            border: none;
+            color: #000;
+            font-weight: 700; 
+            padding: 12px 25px; 
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%; 
+            font-size: 1.05rem; 
         }
-        
-        .progress {
-            height: 4px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 2px;
-            margin-top: 5px;
+        .btn-gold:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 15px rgba(255,193,7,0.35); 
+            color: #000;
         }
-        
-        .progress-bar {
-            transition: width 0.3s ease;
+        .btn-gold:focus {
+            outline: none;
+            box-shadow: 0 0 0 0.2rem rgba(255,193,7,0.25), 0 8px 15px rgba(255,193,7,0.3);
         }
-        
-        .error-message {
-            color: #dc3545;
-            font-size: 12px;
-            margin-top: 5px;
-            display: none;
-        }
-        
-        .success-message {
-            color: #28a745;
-            font-size: 12px;
-            margin-top: 5px;
-            display: none;
-        }
-        
-        /* Footer */
-        .footer {
-            background: rgba(30, 30, 30, 0.95);
-            color: #fff;
-            padding: 40px 0 20px;
-            margin-top: auto;
-        }
-        
-        .footer h5 {
-            color: #d4a574;
-            margin-bottom: 20px;
-            font-size: 16px;
-        }
-        
-        .footer a {
-            color: #ccc;
-            text-decoration: none;
-            font-size: 14px;
-            line-height: 2;
-            transition: color 0.3s;
-        }
-        
-        .footer a:hover {
-            color: #d4a574;
-        }
-        
-        .app-download {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        
-        .app-download img {
-            height: 40px;
-            border-radius: 5px;
-        }
-        
-        .social-icons {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-        }
-        
-        .social-icons i {
-            font-size: 20px;
-            color: #ccc;
-            cursor: pointer;
-            transition: color 0.3s;
-        }
-        
-        .social-icons i:hover {
-            color: #d4a574;
-        }
-        
-        .copyright {
+
+        .auth-links {
             text-align: center;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: #aaa;
-            font-size: 12px;
+            margin-top: 25px;
+        }
+        .auth-links a {
+            color: #ffc107;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin: 0 10px;
+            transition: color 0.3s ease, text-decoration 0.3s ease;
+        }
+        .auth-links a:hover {
+            color: #ffdb6a;
+            text-decoration: underline;
+        }
+        .auth-links .separator { 
+            color: rgba(255,255,255,0.5);
         }
         
-        .breadcrumb-custom {
-            background: transparent;
+        .social-login-divider {
+            text-align: center;
+            color: rgba(255,255,255,0.6);
+            margin: 30px 0 20px;
+            position: relative;
+        }
+        .social-login-divider::before,
+        .social-login-divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: calc(50% - 30px); 
+            height: 1px;
+            background-color: rgba(255,193,7,0.2);
+        }
+        .social-login-divider::before {
+            right: 0;
+        }
+        .social-login-divider::after {
+            left: 0;
+        }
+        .social-login-buttons .btn {
+            width: 100%;
+            margin-bottom: 10px;
+            font-weight: 500;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .social-login-buttons .btn i {
+            margin-left: 10px; 
+        }
+        .social-login-buttons .btn-google {
+            background-color: rgba(221, 75, 57, 0.1); 
+            border-color: rgba(221, 75, 57, 0.4);
+            color: #fff; 
+        }
+        .social-login-buttons .btn-google:hover {
+            background-color: rgba(221, 75, 57, 0.2);
+            border-color: #dd4b39;
+            color: #fff;
+        }
+        .social-login-buttons .btn-facebook {
+            background-color: rgba(59, 89, 152, 0.1);
+            border-color: rgba(59, 89, 152, 0.4);
+            color: #fff; 
+        }
+        .social-login-buttons .btn-facebook:hover {
+            background-color: rgba(59, 89, 152, 0.2);
+            border-color: #3b5998;
+            color: #fff;
+        }
+
+        .simple-footer {
+            width: 100%;
+            text-align: center;
             padding: 20px 0;
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
         }
-        
-        .breadcrumb-custom a {
-            color: #d4a574;
+        .simple-footer a {
+            color: #ffc107;
             text-decoration: none;
         }
-        
-        .breadcrumb-custom span {
-            color: #ccc;
+        .simple-footer a:hover {
+            text-decoration: underline;
         }
-        
-        .spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
+        .form-check-input {
+            background-color: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,193,7,0.3);
         }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .form-check-input:checked {
+            background-color: #ffc107;
+            border-color: #ffc107;
         }
-        
-        @media (max-width: 768px) {
-            .signup-container {
-                margin: 20px;
-                padding: 30px 20px;
-            }
-            
-            .navbar-nav {
-                text-align: center;
-            }
-            
-            .social-signup {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .btn-google, .btn-facebook {
-                justify-content: center;
-            }
+        .form-check-label {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.8);
+        }
+        .form-check-input:focus {
+            box-shadow: 0 0 0 0.2rem rgba(255,193,7,0.25) !important; /* Ensure focus style for checkbox */
         }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg">
-        <div class="container">
-            <a class="navbar-brand" href="#">
-                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 30'><text x='5' y='20' fill='%23d4a574' font-family='Arial, sans-serif' font-size='16' font-weight='bold'>CURVA</text></svg>" alt="CURVA">
-            </a>
+    <header class="simple-header">
+        <a class="navbar-brand" href="index.html">MBA</a>
+    </header>
+
+    <main class="auth-main-content">
+        <div class="auth-card">
+            <h1 class="form-card-title">إنشاء حساب جديد</h1>
+            <form id="signupForm">
+                <div class="mb-3">
+                    <label for="fullNameInput" class="form-label">الاسم الكامل</label>
+                    <input type="text" class="form-control" id="fullNameInput" placeholder="ادخل اسمك الكامل" required>
+                </div>
+                <div class="mb-3">
+                    <label for="emailInput" class="form-label">البريد الإلكتروني</label>
+                    <input type="email" class="form-control" id="emailInput" placeholder="ادخل بريدك الإلكتروني" required>
+                </div>
+                <div class="mb-3">
+                    <label for="passwordInput" class="form-label">كلمة المرور</label>
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="passwordInput" placeholder="ادخل كلمة المرور (8+ حروف وارقام ورمز)" required minlength="8" pattern=".*(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&*]).*">
+                        <span class="password-toggle" onclick="togglePasswordVisibility('passwordInput', this)">
+                            <i class="fas fa-eye"></i>
+                        </span>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="confirmPasswordInput" class="form-label">تأكيد كلمة المرور</label>
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="confirmPasswordInput" placeholder="أعد إدخال كلمة المرور" required>
+                        <span class="password-toggle" onclick="togglePasswordVisibility('confirmPasswordInput', this)">
+                            <i class="fas fa-eye"></i>
+                        </span>
+                    </div>
+                </div>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="termsCheck" required>
+                    <label class="form-check-label" for="termsCheck">أوافق على <a href="#" class="auth-links" style="margin:0; display:inline; text-decoration:underline;">الشروط والأحكام</a> و <a href="#" class="auth-links" style="margin:0; display:inline; text-decoration:underline;">سياسة الخصوصية</a>.</label>
+                </div>
+                <button type="submit" class="btn btn-gold mb-3">إنشاء حساب</button>
+            </form>
             
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">الرئيسية</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">المنتجات</a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">جميع المنتجات</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">خدماتنا</a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">خدمة العملاء</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">من نحن</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">الخدمات</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">الملف</a>
-                    </li>
-                </ul>
-                
-                <div class="navbar-icons">
-                    <i class="fas fa-search"></i>
-                    <i class="fas fa-cog"></i>
-                    <i class="fas fa-globe"></i>
-                    <div class="cart-badge">
-                        <i class="fas fa-shopping-cart"></i>
-                    </div>
-                </div>
+            <div class="auth-links mt-4">
+                <span>لديك حساب بالفعل؟</span>
+                <a href="login.html">تسجيل الدخول</a>
             </div>
         </div>
-    </nav>
+    </main>
 
-    <!-- Breadcrumb -->
-    <div class="container">
-        <div class="breadcrumb-custom">
-            <span>الرئيسية</span> &lt; <a href="#">إنشاء حساب جديد</a>
-        </div>
-    </div>
-
-    <!-- Main Content -->
-    <div class="main-content">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-md-8 col-lg-6">
-                    <div class="signup-container">
-                        <h2 class="signup-title">إنشاء حساب جديد</h2>
-                        <p class="signup-subtitle">انضم إلى مجتمع كيرفا واستمتع بتجربة تسوق مميزة</p>
-                        
-                        <!-- Social Signup Options -->
-                        <div class="signup-options" style="margin-bottom: 20px;">
-                            <span style="color: #aaa; font-size: 14px;">سجل بسرعة باستخدام</span>
-                        </div>
-                        
-                        <div class="social-signup">
-                            <button class="btn btn-google" onclick="signupWithGoogle()">
-                                <i class="fab fa-google"></i> Google
-                            </button>
-                            <button class="btn btn-facebook" onclick="signupWithFacebook()">
-                                <i class="fab fa-facebook-f"></i> Facebook
-                            </button>
-                        </div>
-                        
-                        <div class="signup-options" style="margin-bottom: 20px;">
-                            <span style="color: #aaa; font-size: 14px;">أو أملأ النموذج أدناه</span>
-                        </div>
-                        
-                        <form id="signupForm" novalidate>
-                            <!-- Personal Information -->
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="firstName">الاسم الأول *</label>
-                                        <input type="text" class="form-control" id="firstName" placeholder="أدخل اسمك الأول" required>
-                                        <div class="error-message" id="firstNameError"></div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="lastName">الاسم الأخير *</label>
-                                        <input type="text" class="form-control" id="lastName" placeholder="أدخل اسمك الأخير" required>
-                                        <div class="error-message" id="lastNameError"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Contact Information -->
-                            <div class="form-group">
-                                <label for="email">البريد الإلكتروني *</label>
-                                <input type="email" class="form-control" id="email" placeholder="example@domain.com" required>
-                                <div                                <div class="error-message" id="emailError"></div>
-                                <div class="success-message" id="emailSuccess"></div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="phone">رقم الهاتف *</label>
-                                <input type="tel" class="form-control" id="phone" placeholder="+966 5xxxxxxxx" required>
-                                <div class="error-message" id="phoneError"></div>
-                            </div>
-
-                            <!-- Date of Birth and Gender -->
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="birthDate">تاريخ الميلاد</label>
-                                        <input type="date" class="form-control" id="birthDate">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="gender">الجنس</label>
-                                        <select class="form-select" id="gender">
-                                            <option value="">اختر الجنس</option>
-                                            <option value="male">ذكر</option>
-                                            <option value="female">أنثى</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Password Fields -->
-                            <div class="form-group">
-                                <label for="password">كلمة المرور *</label>
-                                <div class="input-group">
-                                    <input type="password" class="form-control" id="password" placeholder="كلمة مرور قوية" required>
-                                    <span class="password-toggle" onclick="togglePassword('password')">
-                                        <i class="fas fa-eye" id="passwordEye"></i>
-                                    </span>
-                                </div>
-                                <div class="progress" style="margin-top: 8px;">
-                                    <div class="progress-bar" id="passwordStrength" role="progressbar" style="width: 0%"></div>
-                                </div>
-                                <div class="password-strength" id="passwordStrengthText"></div>
-                                <div class="error-message" id="passwordError"></div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="confirmPassword">تأكيد كلمة المرور *</label>
-                                <div class="input-group">
-                                    <input type="password" class="form-control" id="confirmPassword" placeholder="أعد إدخال كلمة المرور" required>
-                                    <span class="password-toggle" onclick="togglePassword('confirmPassword')">
-                                        <i class="fas fa-eye" id="confirmPasswordEye"></i>
-                                    </span>
-                                </div>
-                                <div class="error-message" id="confirmPasswordError"></div>
-                                <div class="success-message" id="confirmPasswordSuccess"></div>
-                            </div>
-
-                            <!-- Terms and Conditions -->
-                            <div class="terms-agreement">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="agreeTerms" required>
-                                    <label class="form-check-label" for="agreeTerms">
-                                        أوافق على <a href="#" onclick="showTerms()">الشروط والأحكام</a> و <a href="#" onclick="showPrivacy()">سياسة الخصوصية</a>
-                                    </label>
-                                </div>
-                                <div class="form-check mt-2">
-                                    <input class="form-check-input" type="checkbox" id="agreeMarketing">
-                                    <label class="form-check-label" for="agreeMarketing">
-                                        أرغب في تلقي العروض والتحديثات عبر البريد الإلكتروني
-                                    </label>
-                                </div>
-                            </div>
-
-                            <button type="submit" class="btn btn-signup" id="signupBtn">
-                                إنشاء الحساب
-                            </button>
-                        </form>
-                        
-                        <div class="signup-options">
-                            <span style="color: #aaa;">لديك حساب بالفعل؟</span>
-                            <a href="login.html"> سجل الدخول</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-3">
-                    <h5>تحميل تطبيق كيرفا</h5>
-                    <div class="app-download">
-                        <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 40'><rect width='120' height='40' fill='%23000' rx='5'/><text x='60' y='15' fill='white' font-size='8' text-anchor='middle'>Download on the</text><text x='60' y='28' fill='white' font-size='12' text-anchor='middle' font-weight='bold'>App Store</text></svg>" alt="App Store">
-                        <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 40'><rect width='120' height='40' fill='%23000' rx='5'/><text x='60' y='15' fill='white' font-size='8' text-anchor='middle'>GET IT ON</text><text x='60' y='28' fill='white' font-size='12' text-anchor='middle' font-weight='bold'>Google Play</text></svg>" alt="Google Play">
-                    </div>
-                    <div class="social-icons">
-                        <i class="fab fa-linkedin"></i>
-                        <i class="fab fa-youtube"></i>
-                        <i class="fab fa-tiktok"></i>
-                        <i class="fab fa-whatsapp"></i>
-                        <i class="fab fa-instagram"></i>
-                        <i class="fab fa-facebook"></i>
-                    </div>
-                    <p style="margin-top: 20px; font-size: 12px; color: #aaa;">تابعنا على</p>
-                </div>
-                
-                <div class="col-md-3">
-                    <h5>الحساب</h5>
-                    <div>
-                        <a href="#" class="d-block">تسجيل حساب جديد</a>
-                        <a href="#" class="d-block">تسجيل الدخول</a>
-                        <a href="#" class="d-block">نسيت كلمة المرور</a>
-                        <a href="#" class="d-block">إدارة الحساب</a>
-                    </div>
-                </div>
-                
-                <div class="col-md-3">
-                    <h5>المتاجر</h5>
-                    <div>
-                        <a href="#" class="d-block">السعودية</a>
-                        <a href="#" class="d-block">الإمارات</a>
-                        <a href="#" class="d-block">الأردن</a>
-                        <a href="#" class="d-block">الكويت</a>
-                    </div>
-                </div>
-                
-                <div class="col-md-3">
-                    <h5>اتصل بنا</h5>
-                    <div>
-                        <p style="color: #ccc; font-size: 14px;">الهاتف: <span>+966123456789</span></p>
-                        <p style="color: #ccc; font-size: 14px;">البريد الإلكتروني:</p>
-                        <p style="color: #ccc; font-size: 12px;">support@curva.com</p>
-                        <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 30'><text x='5' y='20' fill='%23d4a574' font-family='Arial, sans-serif' font-size='16' font-weight='bold'>CURVA</text></svg>" alt="CURVA" style="margin-top: 20px; height: 25px;">
-                    </div>
-                </div>
-            </div>
-            
-            <div class="copyright">
-                كيرفا © 2024 جميع الحقوق محفوظة
-            </div>
-        </div>
+    <footer class="simple-footer">
+        <p>&copy; 2024 MBA Sports. جميع الحقوق محفوظة. <a href="#">سياسة الخصوصية</a> | <a href="#">شروط الخدمة</a></p>
     </footer>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Form validation patterns
-        const validators = {
-            name: /^[\u0600-\u06FFa-zA-Z\s]{2,30}$/,
-            email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-            phone: /^(\+966|0)?5[0-9]{8}$/,
-            password: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
-        };
-
-        // Password toggle functionality
-        function togglePassword(fieldId) {
-            const field = document.getElementById(fieldId);
-            const eye = document.getElementById(fieldId + 'Eye');
-            
-            if (field.type === 'password') {
-                field.type = 'text';
-                eye.className = 'fas fa-eye-slash';
+        function togglePasswordVisibility(inputId, toggleElement) {
+            const passwordInput = document.getElementById(inputId);
+            const icon = toggleElement.querySelector('i');
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
             } else {
-                field.type = 'password';
-                eye.className = 'fas fa-eye';
+                passwordInput.type = "password";
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
             }
         }
 
-        // Password strength checker
-        function checkPasswordStrength(password) {
-            let strength = 0;
-            let feedback = '';
-            
-            if (password.length >= 8) strength += 25;
-            if (/[a-z]/.test(password)) strength += 25;
-            if (/[A-Z]/.test(password)) strength += 25;
-            if (/[0-9]/.test(password)) strength += 12.5;
-            if (/[@$!%*?&]/.test(password)) strength += 12.5;
-            
-            const strengthBar = document.getElementById('passwordStrength');
-            const strengthText = document.getElementById('passwordStrengthText');
-            
-            strengthBar.style.width = strength + '%';
-            
-            if (strength < 50) {
-                strengthBar.className = 'progress-bar bg-danger';
-                strengthText.innerHTML = 'ضعيفة';
-                strengthText.className = 'password-strength strength-weak';
-                feedback = 'كلمة المرور ضعيفة';
-            } else if (strength < 80) {
-                strengthBar.className = 'progress-bar bg-warning';
-                strengthText.innerHTML = 'متوسطة';
-                strengthText.className = 'password-strength strength-medium';
-                feedback = 'كلمة المرور متوسطة القوة';
-            } else {
-                strengthBar.className = 'progress-bar bg-success';
-                strengthText.innerHTML = 'قوية';
-                strengthText.className = 'password-strength strength-strong';
-                feedback = 'كلمة المرور قوية';
-            }
-            
-            return { strength, feedback };
-        }
-
-        // Real-time validation
-        function setupRealTimeValidation() {
-            const fields = [
-                { id: 'firstName', validator: validators.name, message: 'يجب أن يحتوي الاسم على حروف فقط (2-30 حرف)' },
-                { id: 'lastName', validator: validators.name, message: 'يجب أن يحتوي الاسم على حروف فقط (2-30 حرف)' },
-                { id: 'email', validator: validators.email, message: 'يرجى إدخال بريد إلكتروني صحيح' },
-                { id: 'phone', validator: validators.phone, message: 'يرجى إدخال رقم هاتف سعودي صحيح' }
-            ];
-
-            fields.forEach(field => {
-                const input = document.getElementById(field.id);
-                const errorDiv = document.getElementById(field.id + 'Error');
-                const successDiv = document.getElementById(field.id + 'Success');
-
-                input.addEventListener('blur', function() {
-                    if (this.value.trim() === '') {
-                        showError(errorDiv, 'هذا الحقل مطلوب');
-                        hideSuccess(successDiv);
-                    } else if (!field.validator.test(this.value)) {
-                        showError(errorDiv, field.message);
-                        hideSuccess(successDiv);
-                    } else {
-                        hideError(errorDiv);
-                        if (successDiv) showSuccess(successDiv, 'صحيح ✓');
-                    }
-                });
-            });
-
-            // Password validation
-            const passwordField = document.getElementById('password');
-            const confirmPasswordField = document.getElementById('confirmPassword');
-
-            passwordField.addEventListener('input', function() {
-                const result = checkPasswordStrength(this.value);
-                if (this.value.length > 0 && result.strength < 50) {
-                    showError(document.getElementById('passwordError'), 'كلمة المرور يجب أن تحتوي على 8 أحرف على الأقل مع حروف كبيرة وصغيرة وأرقام ورموز');
-                } else {
-                    hideError(document.getElementById('passwordError'));
-                }
-                
-                // Check confirm password if it has value
-                if (confirmPasswordField.value) {
-                    validatePasswordConfirmation();
-                }
-            });
-
-            confirmPasswordField.addEventListener('input', validatePasswordConfirmation);
-        }
-
-        function validatePasswordConfirmation() {
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            const errorDiv = document.getElementById('confirmPasswordError');
-            const successDiv = document.getElementById('confirmPasswordSuccess');
-
-            if (confirmPassword === '') {
-                hideError(errorDiv);
-                hideSuccess(successDiv);
-            } else if (password !== confirmPassword) {
-                showError(errorDiv, 'كلمتا المرور غير متطابقتين');
-                hideSuccess(successDiv);
-            } else {
-                hideError(errorDiv);
-                showSuccess(successDiv, 'كلمتا المرور متطابقتان ✓');
-            }
-        }
-
-        function showError(element, message) {
-            if (element) {
-                element.textContent = message;
-                element.style.display = 'block';
-            }
-        }
-
-        function hideError(element) {
-            if (element) {
-                element.style.display = 'none';
-            }
-        }
-
-        function showSuccess(element, message) {
-            if (element) {
-                element.textContent = message;
-                element.style.display = 'block';
-            }
-        }
-
-        function hideSuccess(element) {
-            if (element) {
-                element.style.display = 'none';
-            }
-        }
-
-        // Form submission
         document.getElementById('signupForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            
-            if (validateForm()) {
-                submitForm();
-            }
-        });
+            const passwordInput = document.getElementById('passwordInput');
+            const confirmPasswordInput = document.getElementById('confirmPasswordInput');
+            const termsChecked = document.getElementById('termsCheck').checked;
 
-        function validateForm() {
-            let isValid = true;
-            const requiredFields = ['firstName', 'lastName', 'email', 'phone', 'password', 'confirmPassword'];
-            
-            requiredFields.forEach(fieldId => {
-                const field = document.getElementById(fieldId);
-                const errorDiv = document.getElementById(fieldId + 'Error');
-                
-                if (!field.value.trim()) {
-                    showError(errorDiv, 'هذا الحقل مطلوب');
-                    isValid = false;
-                }
-            });
-
-            // Check terms agreement
-            const termsCheckbox = document.getElementById('agreeTerms');
-            if (!termsCheckbox.checked) {
-                alert('يجب الموافقة على الشروط والأحكام');
-                isValid = false;
+            // Simple password strength: min 8 chars, at least one letter, one number, one special character
+            const passwordPattern = /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&*]).{8,}$/;
+            if (!passwordPattern.test(passwordInput.value)) {
+                alert('يجب أن تتكون كلمة المرور من 8 أحرف على الأقل وتحتوي على حرف واحد ورقم واحد ورمز خاص واحد على الأقل (!@#$%^&*).');
+                passwordInput.focus();
+                return;
             }
 
-            // Check password strength
-            const password = document.getElementById('password').value;
-            const passwordStrength = checkPasswordStrength(password);
-            if (passwordStrength.strength < 50) {
-                showError(document.getElementById('passwordError'), 'يرجى اختيار كلمة مرور أقوى');
-                isValid = false;
+            if (passwordInput.value !== confirmPasswordInput.value) {
+                alert('كلمتا المرور غير متطابقتين!');
+                confirmPasswordInput.focus();
+                return;
             }
-
-            // Check password confirmation
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            if (password !== confirmPassword) {
-                showError(document.getElementById('confirmPasswordError'), 'كلمتا المرور غير متطابقتين');
-                isValid = false;
-            }
-
-            return isValid;
-        }
-
-        function submitForm() {
-            const submitBtn = document.getElementById('signupBtn');
-            const originalText = submitBtn.innerHTML;
-            
-            // Show loading state
-            submitBtn.innerHTML = '<span class="spinner"></span> جاري إنشاء الحساب...';
-            submitBtn.disabled = true;
-
-            // Collect form data
-            const formData = {
-                firstName: document.getElementById('firstName').value,
-                lastName: document.getElementById('lastName').value,
-                email: document.getElementById('email').value,
-                phone: document.getElementById('phone').value,
-                birthDate: document.getElementById('birthDate').value,
-                gender: document.getElementById('gender').value,
-                password: document.getElementById('password').value,
-                agreeMarketing: document.getElementById('agreeMarketing').checked
-            };
-
-            // Simulate API call
-            setTimeout(() => {
-                // Reset button
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-                
-                // Success message
-                alert('تم إنشاء الحساب بنجاح! سيتم توجيهك لتسجيل الدخول');
-                
-                // Store user data (in real app, this would be sent to server)
-                console.log('User registered:', formData);
-                
-                // Redirect to login page
-                window.location.href = 'login.html';
-            }, 3000);
-        }
-
-        // Social signup functions
-        function signupWithGoogle() {
-            const popup = window.open('', 'google-signup', 'width=500,height=600');
-            popup.document.write(`
-                <div style="display: flex; align-items: center; justify-content: center; height: 100vh; font-family: Cairo, Arial;">
-                    <div style="text-align: center;">
-                        <h3>إنشاء حساب بواسطة Google</h3>
-                        <p>جاري التحضير...</p>
-                        <div style="margin: 20px 0                        <div style="margin: 20px 0;">
-                            <div style="border: 4px solid #f3f3f3; border-top: 4px solid #dd4b39; border-radius: 50%; width: 40px; height: 40px; animation: spin 2s linear infinite; margin: 0 auto;"></div>
-                        </div>
-                    </div>
-                </div>
-                <style>
-                    @keyframes spin {
-                        0% { transform: rotate(0deg); }
-                        100% { transform: rotate(360deg); }
-                    }
-                </style>
-            `);
-            
-            setTimeout(() => {
-                popup.close();
-                alert('تم إنشاء الحساب بنجاح عبر Google!');
-                window.location.href = 'dashboard.html';
-            }, 3000);
-        }
-
-        function signupWithFacebook() {
-            const popup = window.open('', 'facebook-signup', 'width=500,height=600');
-            popup.document.write(`
-                <div style="display: flex; align-items: center; justify-content: center; height: 100vh; font-family: Cairo, Arial; background: #3b5998; color: white;">
-                    <div style="text-align: center;">
-                        <h3>إنشاء حساب بواسطة Facebook</h3>
-                        <p>جاري التحضير...</p>
-                        <div style="margin: 20px 0;">
-                            <div style="border: 4px solid rgba(255,255,255,0.3); border-top: 4px solid white; border-radius: 50%; width: 40px; height: 40px; animation: spin 2s linear infinite; margin: 0 auto;"></div>
-                        </div>
-                    </div>
-                </div>
-                <style>
-                    @keyframes spin {
-                        0% { transform: rotate(0deg); }
-                        100% { transform: rotate(360deg); }
-                    }
-                </style>
-            `);
-            
-            setTimeout(() => {
-                popup.close();
-                alert('تم إنشاء الحساب بنجاح عبر Facebook!');
-                window.location.href = 'dashboard.html';
-            }, 3000);
-        }
-
-        // Terms and Privacy modal functions
-        function showTerms() {
-            const modal = `
-                <div class="modal fade" id="termsModal" tabindex="-1">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content" style="background: rgba(60, 60, 60, 0.95); color: white; border: 1px solid rgba(255,255,255,0.1);">
-                            <div class="modal-header" style="border-bottom: 1px solid rgba(255,255,255,0.1);">
-                                <h5 class="modal-title">الشروط والأحكام</h5>
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                            </div>
-                            <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
-                                <h6 style="color: #d4a574;">1. القبول بالشروط</h6>
-                                <p>باستخدام موقع كيرفا، فإنك توافق على الالتزام بهذه الشروط والأحكام.</p>
-                                
-                                <h6 style="color: #d4a574;">2. استخدام الموقع</h6>
-                                <p>يجب استخدام الموقع للأغراض القانونية فقط وبطريقة لا تنتهك حقوق الآخرين.</p>
-                                
-                                <h6 style="color: #d4a574;">3. المنتجات والأسعار</h6>
-                                <p>نحتفظ بالحق في تغيير الأسعار وتوفر المنتجات دون إشعار مسبق.</p>
-                                
-                                <h6 style="color: #d4a574;">4. الدفع والشحن</h6>
-                                <p>جميع المدفوعات تتم بشكل آمن ومشفر. تطبق شروط الشحن حسب المنطقة.</p>
-                                
-                                <h6 style="color: #d4a574;">5. سياسة الإرجاع</h6>
-                                <p>يمكن إرجاع المنتجات خلال 14 يوم من تاريخ الاستلام حسب الشروط المحددة.</p>
-                            </div>
-                            <div class="modal-footer" style="border-top: 1px solid rgba(255,255,255,0.1);">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            document.body.insertAdjacentHTML('beforeend', modal);
-            const modalElement = new bootstrap.Modal(document.getElementById('termsModal'));
-            modalElement.show();
-            
-            // Remove modal from DOM when hidden
-            document.getElementById('termsModal').addEventListener('hidden.bs.modal', function() {
-                this.remove();
-            });
-        }
-
-        function showPrivacy() {
-            const modal = `
-                <div class="modal fade" id="privacyModal" tabindex="-1">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content" style="background: rgba(60, 60, 60, 0.95); color: white; border: 1px solid rgba(255,255,255,0.1);">
-                            <div class="modal-header" style="border-bottom: 1px solid rgba(255,255,255,0.1);">
-                                <h5 class="modal-title">سياسة الخصوصية</h5>
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                            </div>
-                            <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
-                                <h6 style="color: #d4a574;">جمع المعلومات</h6>
-                                <p>نجمع المعلومات التي تقدمها مباشرة عند إنشاء حساب أو إجراء عملية شراء.</p>
-                                
-                                <h6 style="color: #d4a574;">استخدام المعلومات</h6>
-                                <p>نستخدم معلوماتك لتقديم الخدمات وتحسين تجربة التسوق وإرسال التحديثات.</p>
-                                
-                                <h6 style="color: #d4a574;">حماية البيانات</h6>
-                                <p>نستخدم أحدث تقنيات الأمان لحماية معلوماتك الشخصية والمالية.</p>
-                                
-                                <h6 style="color: #d4a574;">مشاركة المعلومات</h6>
-                                <p>لا نشارك معلوماتك مع أطراف ثالثة إلا بموافقتك أو حسب ما يتطلبه القانون.</p>
-                                
-                                <h6 style="color: #d4a574;">حقوقك</h6>
-                                <p>يمكنك الوصول إلى بياناتك أو تعديلها أو حذفها في أي وقت من خلال إعدادات الحساب.</p>
-                            </div>
-                            <div class="modal-footer" style="border-top: 1px solid rgba(255,255,255,0.1);">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            document.body.insertAdjacentHTML('beforeend', modal);
-            const modalElement = new bootstrap.Modal(document.getElementById('privacyModal'));
-            modalElement.show();
-            
-            // Remove modal from DOM when hidden
-            document.getElementById('privacyModal').addEventListener('hidden.bs.modal', function() {
-                this.remove();
-            });
-        }
-
-        // Email availability checker
-        function checkEmailAvailability() {
-            const email = document.getElementById('email').value;
-            const errorDiv = document.getElementById('emailError');
-            const successDiv = document.getElementById('emailSuccess');
-            
-            if (validators.email.test(email)) {
-                // Simulate API call to check email availability
-                setTimeout(() => {
-                    // Simulate random availability check
-                    const isAvailable = Math.random() > 0.3; // 70% chance available
-                    
-                    if (isAvailable) {
-                        hideError(errorDiv);
-                        showSuccess(successDiv, 'البريد الإلكتروني متاح ✓');
-                    } else {
-                        showError(errorDiv, 'هذا البريد الإلكتروني مستخدم بالفعل');
-                        hideSuccess(successDiv);
-                    }
-                }, 1000);
-            }
-        }
-
-        // Add email availability check
-        document.getElementById('email').addEventListener('blur', function() {
-            if (this.value && validators.email.test(this.value)) {
-                checkEmailAvailability();
-            }
-        });
-
-        // Phone number formatter
-        document.getElementById('phone').addEventListener('input', function() {
-            let value = this.value.replace(/\D/g, ''); // Remove non-digits
-            
-            if (value.startsWith('966')) {
-                value = '+' + value;
-            } else if (value.startsWith('5') && value.length <= 9) {
-                value = '+966' + value;
+            if (!termsChecked) {
+                alert('يرجى الموافقة على الشروط والأحكام وسياسة الخصوصية.');
+                return;
             }
             
-            this.value = value;
+            alert('تم إرسال بيانات إنشاء الحساب بنجاح! (محاكاة)\nسيتم توجيهك الآن لصفحة تسجيل الدخول.');
+            // Example: Redirect to login page after successful signup
+            // For demo purposes, we can clear the form or redirect
+            // this.reset(); 
+            // window.location.href = 'login.html';
         });
-
-        // Initialize real-time validation
-        setupRealTimeValidation();
-
-        // Navbar functionality (same as login page)
-        window.addEventListener('scroll', function() {
-            const navbar = document.querySelector('.navbar');
-            if (window.scrollY > 50) {
-                navbar.style.background = 'rgba(42, 42, 42, 0.98)';
-            } else {
-                navbar.style.background = 'rgba(42, 42, 42, 0.95)';
-            }
-        });
-
-        // Search functionality
-        document.querySelector('.fa-search').addEventListener('click', function() {
-            const searchTerm = prompt('ادخل كلمة البحث:');
-            if (searchTerm) {
-                alert('البحث عن: ' + searchTerm);
-            }
-        });
-
-        // Settings functionality
-        document.querySelector('.fa-cog').addEventListener('click', function() {
-            alert('إعدادات الموقع');
-        });
-
-        // Language toggle
-        document.querySelector('.fa-globe').addEventListener('click', function() {
-            alert('تغيير اللغة');
-        });
-
-        // Cart functionality
-        document.querySelector('.fa-shopping-cart').addEventListener('click', function() {
-            alert('عرض السلة');
-        });
-
-        // Add scroll to top functionality
-        function addScrollToTop() {
-            const scrollBtn = document.createElement('button');
-            scrollBtn.innerHTML = '<i class="fas fa-arrow-up"></i>';
-            scrollBtn.style.cssText = `
-                position: fixed;
-                bottom: 30px;
-                right: 30px;
-                background: #d4a574;
-                color: white;
-                border: none;
-                border-radius: 50%;
-                width: 50px;
-                height: 50px;
-                display: none;
-                z-index: 1000;
-                cursor: pointer;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-                transition: all 0.3s ease;
-            `;
-            
-            scrollBtn.addEventListener('click', () => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
-            
-            scrollBtn.addEventListener('mouseenter', () => {
-                scrollBtn.style.background = '#c49660';
-                scrollBtn.style.transform = 'scale(1.1)';
-            });
-            
-            scrollBtn.addEventListener('mouseleave', () => {
-                scrollBtn.style.background = '#d4a574';
-                scrollBtn.style.transform = 'scale(1)';
-            });
-            
-            document.body.appendChild(scrollBtn);
-            
-            window.addEventListener('scroll', () => {
-                if (window.scrollY > 300) {
-                    scrollBtn.style.display = 'block';
-                } else {
-                    scrollBtn.style.display = 'none';
-                }
-            });
-        }
-
-        // Initialize scroll to top
-        addScrollToTop();
-
-        // Add keyboard navigation
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                // Close any open modals
-                const modals = document.querySelectorAll('.modal.show');
-                modals.forEach(modal => {
-                    bootstrap.Modal.getInstance(modal)?.hide();
-                });
-            }
-        });
-
-        // Add loading state to page
-        window.addEventListener('load', function() {
-            document.body.style.opacity = '0';
-            document.body.style.transition = 'opacity 0.5s ease';
-            
-            setTimeout(() => {
-                document.body.style.opacity = '1';
-            }, 100);
-        });
-
-        // Console welcome message
-        console.log(`
-        🎉 مرحباً بك في صفحة إنشاء حساب - موقع CURVA
-        
-        المميزات المتوفرة:
-        ✅ تحقق فوري من صحة البيانات
-        ✅ فحص قوة كلمة المرور
-        ✅ تحقق من توفر البريد الإلكتروني
-        ✅ تسجيل عبر وسائل التواصل الاجتماعي
-        ✅ تصميم متجاوب وسهل الاستخدام
-        
-        تم التطوير باستخدام Bootstrap 5 و JavaScript
-        جميع الحقوق محفوظة © 2024
-        `);
     </script>
 </body>
 </html>

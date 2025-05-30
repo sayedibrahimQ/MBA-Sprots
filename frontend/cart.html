@@ -475,7 +475,7 @@
 <!-- Navigation -->
 <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
     <div class="container">
-        <a class="navbar-brand" href="#">CURVA</a>
+        <a class="navbar-brand" href="#">MBA</a>
         
         <div class="d-flex align-items-center order-lg-last">
             <a href="#" class="nav-link me-3"><i class="fas fa-search"></i></a>
@@ -650,7 +650,7 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-3 col-md-6 mb-4">
-                <h6>عن CURVA</h6>
+                <h6>عن MBA</h6>
                 <p class="small text-muted">متجرك المتخصص في أجود قمصان كرة القدم. نوفر لك أحدث التصاميم بأفضل الأسعار وضمان الجودة.</p>
             </div>
             
@@ -687,7 +687,7 @@
         
         <div class="row">
             <div class="col-md-12 text-center">
-                <p class="mb-0 small text-muted">&copy; 2024 CURVA. جميع الحقوق محفوظة.</p>
+                <p class="mb-0 small text-muted">&copy; 2024 MBA. جميع الحقوق محفوظة.</p>
             </div>
         </div>
     </div>
@@ -781,7 +781,7 @@
         }
         
         // Simulate promo code validation
-        if (promoCode === 'CURVA10') {
+        if (promoCode === 'MBA10') {
             showNotification('تم تطبيق كود الخصم بنجاح! خصم 10%', 'success');
             // Apply 10% discount
             const subtotalElement = document.querySelector('.summary-row:nth-child(1) .summary-value');
@@ -907,12 +907,12 @@
             });
         });
         
-        localStorage.setItem('curvaCart', JSON.stringify(cartData));
+        localStorage.setItem('MBACart', JSON.stringify(cartData));
     }
     
     // Load cart from localStorage
     function loadCart() {
-        const savedCart = localStorage.getItem('curvaCart');
+        const savedCart = localStorage.getItem('MBACart');
         if (savedCart) {
             const cartData = JSON.parse(savedCart);
             // Rebuild cart items from saved data

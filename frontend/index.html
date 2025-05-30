@@ -255,6 +255,10 @@
             transform: rotate(15deg) scale(1.1);
         }
         
+        .btn-cart:hover i {
+            transform: scale(1.1);
+        }
+        
         .brand-section, .team-section {
             padding: 60px 0;
         }
@@ -384,6 +388,136 @@
                 height: 200px;
             }
         }
+
+        /* Horizontal Scrolling Container for Products */
+        .horizontal-scroll-container {
+            overflow-x: auto;
+            white-space: nowrap; /* Prevent cards from wrapping to next line */
+            padding: 10px 0 25px 0; /* Padding for aesthetics, bottom padding can hide scrollbar if it's shorter */
+            margin-bottom: 30px; /* Space below the scroller */
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on touch devices */
+            /* For Firefox - Hide scrollbar */
+            scrollbar-width: none; /* Hide scrollbar in Firefox */
+        }
+        /* Custom scrollbar for WebKit browsers - Hide scrollbar */
+        .horizontal-scroll-container::-webkit-scrollbar {
+            display: none; /* Hide scrollbar in WebKit browsers */
+            height: 0px;
+            width: 0px;
+        }
+        /* Remove specific track and thumb styling as they are hidden */
+        /* .horizontal-scroll-container::-webkit-scrollbar-track { ... } */
+        /* .horizontal-scroll-container::-webkit-scrollbar-thumb { ... } */
+        /* .horizontal-scroll-container::-webkit-scrollbar-thumb:hover { ... } */
+
+        .horizontal-scroll-container .row {
+            flex-wrap: nowrap !important; /* Override Bootstrap's row wrap */
+            /* margin-left: 0; margin-right: 0; /* Optional: Remove default row negative margins if problematic */
+        }
+
+        /* Adjust product card width for horizontal scroll context */
+        .horizontal-scroll-container .product-card-wrapper {
+            flex: 0 0 auto; /* Prevent shrinking/growing */
+            width: 320px; /* Fixed width for cards, adjust as needed */
+            /* Or use percentage: e.g., calc(100% / 3.5) if container has a fixed width and you want X.5 cards visible */
+            margin-left: 15px; /* RTL: use margin-right */
+            /* margin-right: 15px; /* RTL: use margin-left */
+        }
+        .horizontal-scroll-container .product-card-wrapper:first-child {
+            margin-left: 0; /* RTL: use margin-right: 0; */
+        }
+
+
+        /* Offers Carousel Styling */
+        #offersCarousel {
+            border-radius: 15px;
+            overflow: hidden; /* Ensures content fits rounded corners */
+            border: 1px solid rgba(255,193,7,0.25);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            margin-bottom: 50px; /* Space below carousel */
+        }
+        .carousel-item {
+            height: 400px; /* Adjust height as needed for your offer images */
+            background-color: #222; /* Fallback if image doesn't load */
+        }
+        .carousel-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Cover the area, might crop */
+            /* object-position: center; */ /* Optional: adjust image focus */
+        }
+        .carousel-caption {
+            background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.6) 60%, transparent 100%);
+            border-radius: 0 0 15px 15px; /* Match carousel rounding at bottom */
+            padding: 25px;
+            bottom: 0; /* Stick to bottom */
+            left: 0;
+            right: 0;
+            text-align: right; /* RTL */
+        }
+        .carousel-caption h5 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ffc107;
+            margin-bottom: 0.75rem;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+        }
+        .carousel-caption p {
+            font-size: 1rem;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+        .carousel-caption .btn-gold {
+            padding: 10px 25px;
+            font-size: 0.95rem;
+        }
+
+        .carousel-indicators [data-bs-target] {
+            background-color: #ffc107;
+            border-radius: 50%;
+            width: 12px;
+            height: 12px;
+            border: 1px solid rgba(0,0,0,0.5);
+            opacity: 0.7;
+            margin: 0 5px;
+        }
+        .carousel-indicators .active {
+            opacity: 1;
+            background-color: #ff8c00;
+            transform: scale(1.1);
+        }
+
+        .carousel-control-prev, .carousel-control-next {
+            background: rgba(0,0,0,0.5);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.8;
+            transition: opacity 0.3s ease, background-color 0.3s ease;
+        }
+        .carousel-control-prev:hover, .carousel-control-next:hover {
+            background: rgba(0,0,0,0.7);
+            opacity: 1;
+        }
+        .carousel-control-prev-icon, .carousel-control-next-icon {
+            background-image: none; /* Remove Bootstrap's default icon */
+            font-family: "Font Awesome 6 Free"; /* Use Font Awesome */
+            font-weight: 900;
+            color: #ffc107;
+            font-size: 1.5rem;
+        }
+        .carousel-control-prev-icon::before {
+            content: "\f053"; /* Font Awesome Angle Left */
+        }
+        .carousel-control-next-icon::before {
+            content: "\f054"; /* Font Awesome Angle Right */
+        }
+        /* Adjust control positions */
+        .carousel-control-prev { left: 15px; }
+        .carousel-control-next { right: 15px; }
     </style>
 </head>
 <body>
@@ -391,7 +525,7 @@
 <!-- Navigation -->
 <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
     <div class="container">
-        <a class="navbar-brand" href="#">CURVA</a>
+        <a class="navbar-brand" href="#">MBA</a>
         
         <div class="d-flex align-items-center order-lg-last">
             <a href="#" class="nav-link me-3"><i class="fas fa-search"></i></a>
@@ -435,6 +569,54 @@
                     </button>
                 </div>
             </div>
+        </div>
+    </div>
+</section>
+
+<!-- Offers Carousel Section -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="section-title">عروض مميزة</h2>
+        <div id="offersCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#offersCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#offersCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#offersCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            </div>
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 400'><rect fill='%232c3e50' width='800' height='400'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='Cairo, sans-serif' font-size='30' fill='%23ffc107'>عرض خاص 1</text></svg>" class="d-block w-100" alt="Offer 1">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>عنوان العرض الأول</h5>
+                        <p>وصف موجز للعرض الأول. خصومات مذهلة!</p>
+                        <button class="btn btn-gold">اكتشف الآن</button>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 400'><rect fill='%2334495e' width='800' height='400'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='Cairo, sans-serif' font-size='30' fill='%23ff8c00'>عرض خاص 2</text></svg>" class="d-block w-100" alt="Offer 2">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>العرض الثاني لا يُفوت</h5>
+                        <p>منتجات حصرية بأسعار لا تُقاوم لفترة محدودة.</p>
+                        <button class="btn btn-gold">تسوق العرض</button>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 400'><rect fill='%231abc9c' width='800' height='400'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='Cairo, sans-serif' font-size='30' fill='%23ffffff'>عرض خاص 3</text></svg>" class="d-block w-100" alt="Offer 3">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>تصفية شاملة!</h5>
+                        <p>استفد من أكبر التخفيضات على تشكيلة واسعة من المنتجات.</p>
+                         <button class="btn btn-gold">اطلع على المزيد</button>
+                    </div>
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#offersCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#offersCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
         </div>
     </div>
 </section>
@@ -484,9 +666,10 @@
 <section class="py-5">
     <div class="container">
         <h2 class="section-title">أحدث المنتجات</h2>
-        <div class="row">
+        <div class="horizontal-scroll-container">
+            <div class="row">
             <!-- Product 1 -->
-            <div class="col-lg-4 col-md-6">
+            <div class="product-card-wrapper">
                 <div class="product-card">
                     <div class="sale-badge">جديد</div>
                     <div class="wishlist-icon">
@@ -507,7 +690,7 @@
             </div>
             
             <!-- Product 2 -->
-            <div class="col-lg-4 col-md-6">
+            <div class="product-card-wrapper">
                 <div class="product-card">
                     <div class="sale-badge">خصم 15%</div>
                     <div class="wishlist-icon">
@@ -528,7 +711,7 @@
             </div>
             
             <!-- Product 3 -->
-            <div class="col-lg-4 col-md-6">
+            <div class="product-card-wrapper">
                 <div class="product-card">
                     <div class="wishlist-icon">
                         <i class="fas fa-heart"></i>
@@ -547,6 +730,7 @@
                 </div>
             </div>
         </div>
+        </div>
         
         <div class="view-all-btn">
             <button class="btn-outline-gold">
@@ -560,9 +744,10 @@
 <section class="py-5">
     <div class="container">
         <h2 class="section-title">الأكثر مبيعاً</h2>
-        <div class="row">
+        <div class="horizontal-scroll-container">
+            <div class="row">
             <!-- Product 1 -->
-            <div class="col-lg-4 col-md-6">
+            <div class="product-card-wrapper">
                 <div class="product-card">
                     <div class="sale-badge">الأكثر طلباً</div>
                     <div class="wishlist-icon">
@@ -583,7 +768,7 @@
             </div>
             
             <!-- Product 2 -->
-            <div class="col-lg-4 col-md-6">
+            <div class="product-card-wrapper">
                 <div class="product-card">
                     <div class="sale-badge">خصم 20%</div>
                     <div class="wishlist-icon">
@@ -604,7 +789,7 @@
             </div>
             
             <!-- Product 3 -->
-            <div class="col-lg-4 col-md-6">
+            <div class="product-card-wrapper">
                 <div class="product-card">
                     <div class="wishlist-icon">
                         <i class="fas fa-heart"></i>
@@ -622,6 +807,7 @@
                     </div>
                 </div>
             </div>
+        </div>
         </div>
         
         <div class="view-all-btn">
@@ -744,7 +930,7 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-4 mb-4">
-                <h4 class="footer-title">CURVA</h4>
+                <h4 class="footer-title">MBA</h4>
                 <p class="mb-3">متجرك الرياضي الأول في مصر للملابس الرياضية الأصلية. نوفر لك أفضل المنتجات من أشهر الماركات العالمية بأسعار تنافسية.</p>
                 <div class="social-icons">
                     <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
@@ -793,7 +979,7 @@
 
         <div class="row copyright">
             <div class="col-md-6">
-                <p class="mb-0">© 2024 CURVA. جميع الحقوق محفوظة.</p>
+                <p class="mb-0">© 2024 MBA. جميع الحقوق محفوظة.</p>
             </div>
             <div class="col-md-6 text-md-end">
                 <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 30'><rect fill='%23ffffff' width='40' height='30' x='0' rx='5'/><rect fill='%23ffffff' width='40' height='30' x='50' rx='5'/><rect fill='%23ffffff' width='40' height='30' x='100' rx='5'/><rect fill='%23ffffff' width='40' height='30' x='150' rx='5'/></svg>" alt="Payment Methods" height="30">
