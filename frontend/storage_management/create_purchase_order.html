@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إنشاء أمر شراء جديد - MBA</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ffc107; /* Gold */
+            --secondary-color: #1a1a1a; /* Dark background */
+            --text-color: #f8f9fa;
+            --card-bg: #23272b; /* Darker card background */
+            --border-color: rgba(255, 193, 7, 0.2);
+            --sidebar-width: 260px;
+        }
+        * {
+            font-family: 'Cairo', sans-serif;
+            scroll-behavior: smooth;
+        }
+        body {
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        #sidebar {
+            width: var(--sidebar-width);
+            background-color: #111315;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            transition: width 0.3s ease;
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1000;
+            border-left: 1px solid var(--border-color);
+        }
+        #sidebar .sidebar-header { font-size: 1.8rem; font-weight: 700; color: var(--primary-color); margin-bottom: 30px; text-align: center; padding-bottom: 20px; border-bottom: 1px solid var(--border-color); }
+        #sidebar .sidebar-header i { margin-left: 10px; }
+        #sidebar .nav-link { color: rgba(255,255,255,0.7); padding: 10px 15px; margin-bottom: 5px; border-radius: 8px; transition: all 0.3s ease; display: flex; align-items: center; font-weight: 500; }
+        #sidebar .nav-link i { margin-left: 12px; width: 20px; text-align: center; }
+        #sidebar .nav-link:hover, #sidebar .nav-link.active { background-color: var(--primary-color); color: #000; }
+        #sidebar .nav-link:hover { transform: translateX(-5px); }
+        #sidebar .nav-link.active { font-weight: 700; box-shadow: 0 4px 15px rgba(255,193,7,0.2); }
+        #sidebar .nav-link.active i { color: #000; }
+        #sidebar .nav-item.logout { margin-top: auto; }
+        #main-content { flex-grow: 1; padding: 25px; margin-right: var(--sidebar-width); transition: margin-right 0.3s ease; }
+        .content-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--border-color); }
+        .content-header h1 { color: var(--primary-color); font-size: 2rem; font-weight: 700; }
+        .btn-gold { background-color: var(--primary-color); border-color: var(--primary-color); color: #000; font-weight: 600; }
+        .btn-gold:hover { background-color: #e0a800; border-color: #d39e00; color: #000; }
+        .btn-outline-secondary-custom { color: var(--text-color); border-color: rgba(255,255,255,0.3); }
+        .btn-outline-secondary-custom:hover { color: #000; background-color: rgba(255,255,255,0.7); border-color: rgba(255,255,255,0.7); }
+        .data-section-card { background-color: var(--card-bg); padding: 30px; border-radius: 12px; margin-bottom: 25px; border: 1px solid var(--border-color); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .form-label { font-weight: 600; margin-bottom: 0.5rem; color: rgba(255,255,255,0.8);}
+        .form-control-dark, .form-select-dark { background-color: #2a2f34; color: var(--text-color); border: 1px solid rgba(255,255,255,0.2); padding: 0.5rem 1rem; }
+        .form-control-dark:focus, .form-select-dark:focus { background-color: #2a2f34; color: var(--text-color); border-color: var(--primary-color); box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25); }
+        .form-control-dark::placeholder { color: rgba(255,255,255,0.5); }
+        .product-item-row { border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1rem; }
+        .product-item-row:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+        #totalOrderCost { font-size: 1.5rem; font-weight: bold; color: var(--primary-color); }
+
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            #sidebar { width: 100%; height: auto; position: static; border-left: none; border-bottom: 1px solid var(--border-color); }
+            #main-content { margin-right: 0; padding: 15px; }
+            .content-header { flex-direction: column; align-items: flex-start; }
+            .content-header h1 { font-size: 1.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <aside id="sidebar">
+        <div class="sidebar-header"><i class="fas fa-tachometer-alt"></i> MBA Admin</div>
+        <ul class="nav flex-column">
+            <li class="nav-item"><a class="nav-link" href="dashboard.html"><i class="fas fa-tachometer-alt fa-fw"></i> لوحة التحكم</a></li>
+            <li class="nav-item"><a class="nav-link" href="products.html"><i class="fas fa-box-open fa-fw"></i> المنتجات</a></li>
+            <li class="nav-item"><a class="nav-link" href="low_stock_alerts.html"><i class="fas fa-exclamation-triangle fa-fw"></i> تنبيهات المخزون</a></li>
+            <li class="nav-item"><a class="nav-link active" href="purchase_orders.html"><i class="fas fa-file-invoice-dollar fa-fw"></i> أوامر الشراء</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-shopping-cart fa-fw"></i> الطلبات</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-users fa-fw"></i> العملاء</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-chart-line fa-fw"></i> التقارير</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-truck fa-fw"></i> الشحنات</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-cog fa-fw"></i> الإعدادات</a></li>
+            <li class="nav-item logout"><a class="nav-link" href="#"><i class="fas fa-sign-out-alt fa-fw"></i> تسجيل الخروج</a></li>
+        </ul>
+    </aside>
+
+    <main id="main-content">
+        <div class="content-header">
+            <h1><i class="fas fa-plus-circle me-2"></i> إنشاء أمر شراء جديد</h1>
+            <a href="purchase_orders.html" class="btn btn-outline-secondary-custom"><i class="fas fa-arrow-right me-2"></i> العودة لقائمة أوامر الشراء</a>
+        </div>
+
+        <div class="data-section-card">
+            <form id="createPurchaseOrderForm">
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="supplierName" class="form-label">المورد <span class="text-danger">*</span></label>
+                        <select class="form-select form-select-dark" id="supplierName" required>
+                            <option value="" disabled selected>اختر مورد...</option>
+                            <option value="supplier1">مورد الأقمشة الفاخرة</option>
+                            <option value="supplier2">شركة الأحذية الرياضية</option>
+                            <option value="supplier3">مورد الإكسسوارات العامة</option>
+                            <option value="supplier4">مصنع الملابس الرياضية المتطورة</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="expectedDeliveryDate" class="form-label">تاريخ التسليم المتوقع <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control form-control-dark" id="expectedDeliveryDate" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="purchaseStatus" class="form-label">الحالة <span class="text-danger">*</span></label>
+                        <select class="form-select form-select-dark" id="purchaseStatus" required>
+                            <option value="pending" selected>معلق</option>
+                            <option value="shipped">تم الشحن</option>
+                            <option value="received">تم الاستلام</option>
+                             <option value="cancelled">ملغي</option>
+                        </select>
+                    </div>
+                </div>
+
+                <hr class="my-4 border-secondary">
+
+                <h5 class="mb-3 text-warning">المنتجات المطلوبة</h5>
+                <div id="productItemsContainer">
+                    <!-- Product item rows will be added here by JS -->
+                    <div class="row product-item-row align-items-end gx-2 gy-2">
+                        <div class="col-md-4">
+                            <label class="form-label form-label-sm">المنتج <span class="text-danger">*</span></label>
+                            <select class="form-select form-select-dark form-select-sm product-select" required>
+                                <option value="" disabled selected>اختر منتج...</option>
+                                <option value="MBA-SHOE-001" data-cost="150.00">حذاء رياضي فائق الأداء (MBA-SHOE-001)</option>
+                                <option value="MBA-TSHIRT-005" data-cost="45.50">تيشيرت تدريب برو (MBA-TSHIRT-005)</option>
+                                <option value="MBA-SHORT-003" data-cost="30.00">شورت رياضي مريح (MBA-SHORT-003)</option>
+                                <option value="MBA-ACC-012" data-cost="15.75">قبعة رياضية بشعار MBA (MBA-ACC-012)</option>
+                                <option value="MBA-EQUIP-002" data-cost="70.25">كرة قدم احترافية (MBA-EQUIP-002)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label form-label-sm">الكمية <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control form-control-dark form-control-sm product-quantity" min="1" value="1" required>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label form-label-sm">تكلفة الوحدة <span class="text-danger">*</span></label>
+                            <input type="number" step="0.01" class="form-control form-control-dark form-control-sm product-cost" min="0" placeholder="0.00" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label form-label-sm">الإجمالي الفرعي</label>
+                            <input type="text" class="form-control form-control-dark form-control-sm product-subtotal" readonly placeholder="0.00 ر.س">
+                        </div>
+                        <div class="col-md-1 d-flex align-items-end">
+                            <button type="button" class="btn btn-sm btn-outline-danger remove-product-item-btn" style="display:none;"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" id="addProductItemBtn" class="btn btn-sm btn-outline-gold mt-3 mb-3"><i class="fas fa-plus"></i> إضافة منتج آخر</button>
+                
+                <hr class="my-4 border-secondary">
+
+                <div class="row mb-3">
+                     <div class="col-md-12">
+                        <label for="orderNotes" class="form-label">ملاحظات الطلب</label>
+                        <textarea class="form-control form-control-dark" id="orderNotes" rows="3"></textarea>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top border-secondary">
+                    <div>
+                        <span class="text-muted">إجمالي تكلفة الطلب:</span>
+                        <span id="totalOrderCost">0.00 ر.س</span>
+                    </div>
+                    <div>
+                        <a href="purchase_orders.html" class="btn btn-outline-secondary-custom me-2">إلغاء</a>
+                        <button type="submit" class="btn btn-gold"><i class="fas fa-save me-2"></i> حفظ أمر الشراء</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const currentPath = window.location.pathname.split("/").pop();
+            const navLinks = document.querySelectorAll('#sidebar .nav-link');
+            navLinks.forEach(link => {
+                const linkPath = link.getAttribute('href');
+                if (linkPath === 'purchase_orders.html' && (currentPath === 'purchase_orders.html' || currentPath === 'create_purchase_order.html' || currentPath.startsWith('purchase_order_details.html'))) {
+                    link.classList.add('active');
+                } else if (linkPath === currentPath) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+
+            const productItemsContainer = document.getElementById('productItemsContainer');
+            const addProductItemBtn = document.getElementById('addProductItemBtn');
+            const totalOrderCostEl = document.getElementById('totalOrderCost');
+
+            const sampleProducts = [
+                { value: "MBA-SHOE-001", text: "حذاء رياضي فائق الأداء (MBA-SHOE-001)", cost: "150.00" },
+                { value: "MBA-TSHIRT-005", text: "تيشيرت تدريب برو (MBA-TSHIRT-005)", cost: "45.50" },
+                { value: "MBA-SHORT-003", text: "شورت رياضي مريح (MBA-SHORT-003)", cost: "30.00" },
+                { value: "MBA-ACC-012", text: "قبعة رياضية بشعار MBA (MBA-ACC-012)", cost: "15.75" },
+                { value: "MBA-EQUIP-002", text: "كرة قدم احترافية (MBA-EQUIP-002)", cost: "70.25" }
+            ];
+
+            function createProductItemRow() {
+                const newRow = document.createElement('div');
+                newRow.classList.add('row', 'product-item-row', 'align-items-end', 'gx-2', 'gy-2');
+                
+                let productOptions = '<option value="" disabled selected>اختر منتج...</option>';
+                sampleProducts.forEach(p => {
+                    productOptions += `<option value="${p.value}" data-cost="${p.cost}">${p.text}</option>`;
+                });
+
+                newRow.innerHTML = `
+                    <div class="col-md-4">
+                        <label class="form-label form-label-sm d-md-none">المنتج</label>
+                        <select class="form-select form-select-dark form-select-sm product-select" required>${productOptions}</select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label form-label-sm d-md-none">الكمية</label>
+                        <input type="number" class="form-control form-control-dark form-control-sm product-quantity" min="1" value="1" required>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label form-label-sm d-md-none">تكلفة الوحدة</label>
+                        <input type="number" step="0.01" class="form-control form-control-dark form-control-sm product-cost" min="0" placeholder="0.00" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label form-label-sm d-md-none">الإجمالي الفرعي</label>
+                        <input type="text" class="form-control form-control-dark form-control-sm product-subtotal" readonly placeholder="0.00 ر.س">
+                    </div>
+                    <div class="col-md-1 d-flex align-items-end">
+                        <button type="button" class="btn btn-sm btn-outline-danger remove-product-item-btn"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
+                productItemsContainer.appendChild(newRow);
+                attachEventListenersToRow(newRow);
+                updateRemoveButtonsVisibility();
+                updateTotalOrderCost();
+            }
+
+            function attachEventListenersToRow(rowElement) {
+                const productSelect = rowElement.querySelector('.product-select');
+                const quantityInput = rowElement.querySelector('.product-quantity');
+                const costInput = rowElement.querySelector('.product-cost');
+                const subtotalInput = rowElement.querySelector('.product-subtotal');
+                const removeBtn = rowElement.querySelector('.remove-product-item-btn');
+
+                productSelect.addEventListener('change', function() {
+                    const selectedOption = this.options[this.selectedIndex];
+                    costInput.value = parseFloat(selectedOption.dataset.cost || 0).toFixed(2);
+                    updateRowSubtotal(quantityInput, costInput, subtotalInput);
+                });
+
+                quantityInput.addEventListener('input', () => updateRowSubtotal(quantityInput, costInput, subtotalInput));
+                costInput.addEventListener('input', () => updateRowSubtotal(quantityInput, costInput, subtotalInput));
+                
+                if(removeBtn) {
+                    removeBtn.addEventListener('click', function() {
+                        this.closest('.product-item-row').remove();
+                        updateRemoveButtonsVisibility();
+                        updateTotalOrderCost();
+                    });
+                }
+                 updateRowSubtotal(quantityInput, costInput, subtotalInput); // Initial calculation
+            }
+
+            function updateRowSubtotal(qtyEl, costEl, subtotalEl) {
+                const quantity = parseInt(qtyEl.value) || 0;
+                const cost = parseFloat(costEl.value) || 0;
+                const subtotal = quantity * cost;
+                subtotalEl.value = subtotal.toFixed(2) + " ر.س";
+                updateTotalOrderCost();
+            }
+
+            function updateTotalOrderCost() {
+                let totalCost = 0;
+                productItemsContainer.querySelectorAll('.product-item-row').forEach(row => {
+                    const subtotalVal = parseFloat(row.querySelector('.product-subtotal').value) || 0;
+                    totalCost += subtotalVal;
+                });
+                totalOrderCostEl.textContent = totalCost.toFixed(2) + " ر.س";
+            }
+
+            function updateRemoveButtonsVisibility() {
+                const rows = productItemsContainer.querySelectorAll('.product-item-row');
+                rows.forEach((row, index) => {
+                    const removeBtn = row.querySelector('.remove-product-item-btn');
+                    if(removeBtn) removeBtn.style.display = rows.length > 1 ? 'inline-block' : 'none';
+                });
+            }
+
+            addProductItemBtn.addEventListener('click', createProductItemRow);
+            
+            // Attach listeners to the initial row(s) if any
+            productItemsContainer.querySelectorAll('.product-item-row').forEach(row => {
+                attachEventListenersToRow(row);
+            });
+            updateRemoveButtonsVisibility();
+            updateTotalOrderCost(); // Initial calculation
+
+            document.getElementById('createPurchaseOrderForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                // Add actual form submission logic here (e.g., AJAX to backend)
+                alert('تم حفظ أمر الشراء (تجريبي)!');
+                // this.reset();
+                // productItemsContainer.innerHTML = ''; // Clear items
+                // createProductItemRow(); // Add one empty row back
+            });
+        });
+    </script>
+</body>
+</html> 

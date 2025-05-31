@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تنبيهات المخزون - MBA</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ffc107; /* Gold */
+            --secondary-color: #1a1a1a; /* Dark background */
+            --text-color: #f8f9fa;
+            --card-bg: #23272b; /* Darker card background */
+            --border-color: rgba(255, 193, 7, 0.2);
+            --sidebar-width: 260px;
+            --danger-bg: #dc3545;
+            --warning-bg: #ffc107; /* Using primary for warning, or could define a specific yellow */
+            --warning-text: #000;
+        }
+
+        * {
+            font-family: 'Cairo', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        #sidebar {
+            width: var(--sidebar-width);
+            background-color: #111315;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            transition: width 0.3s ease;
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1000;
+            border-left: 1px solid var(--border-color);
+        }
+
+        #sidebar .sidebar-header {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        #sidebar .sidebar-header i { margin-left: 10px; }
+
+        #sidebar .nav-link {
+            color: rgba(255,255,255,0.7);
+            padding: 10px 15px;
+            margin-bottom: 5px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+        }
+        #sidebar .nav-link i { margin-left: 12px; width: 20px; text-align: center; }
+
+        #sidebar .nav-link:hover,
+        #sidebar .nav-link.active {
+            background-color: var(--primary-color);
+            color: #000;
+        }
+        #sidebar .nav-link:hover {  transform: translateX(-5px); }
+        #sidebar .nav-link.active { font-weight: 700; box-shadow: 0 4px 15px rgba(255,193,7,0.2); }
+        #sidebar .nav-link.active i { color: #000; }
+        
+        #sidebar .nav-item.logout { margin-top: auto; }
+
+        #main-content {
+            flex-grow: 1;
+            padding: 25px;
+            margin-right: var(--sidebar-width);
+            transition: margin-right 0.3s ease;
+        }
+        
+        .content-header {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .content-header h1 {
+            color: var(--primary-color);
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        .content-header .lead {
+            color: rgba(255,255,255,0.7);
+            font-size: 1rem;
+        }
+        
+        .summary-card {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .summary-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .summary-card .info h5 {
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        .summary-card .info .count {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        .summary-card .icon i {
+            font-size: 2.5rem;
+            opacity: 0.5;
+        }
+
+        .summary-card.low-stock {
+            background-color: var(--warning-bg);
+            color: var(--warning-text); /* Black text on gold */
+            border-color: var(--warning-bg);
+        }
+        .summary-card.low-stock .icon i, .summary-card.low-stock .info h5 { color: var(--warning-text); opacity: 0.8;}
+
+
+        .summary-card.out-of-stock {
+            background-color: var(--danger-bg);
+            color: var(--text-color); /* White text on red */
+            border-color: var(--danger-bg);
+        }
+         .summary-card.out-of-stock .icon i, .summary-card.out-of-stock .info h5 { color: var(--text-color); opacity: 0.8;}
+
+
+        .summary-card.reorder-threshold {
+            border-left: 5px solid var(--primary-color); /* Gold accent border */
+        }
+        .summary-card.reorder-threshold .icon i { color: var(--primary-color); opacity: 0.7;}
+        .summary-card.reorder-threshold .info .count { color: var(--primary-color); }
+
+
+        .data-section-card {
+            background-color: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .data-section-card h3 {
+            color: var(--primary-color);
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+        }
+
+        .form-control-dark, .form-select-dark {
+            background-color: #2a2f34;
+            color: var(--text-color);
+            border-color: var(--border-color);
+        }
+        .form-control-dark:focus, .form-select-dark:focus {
+            background-color: #2a2f34;
+            color: var(--text-color);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25);
+        }
+        .form-control-dark::placeholder { color: rgba(255,255,255,0.5); }
+
+        .table-dark-custom {
+            background-color: transparent;
+            color: var(--text-color);
+        }
+        .table-dark-custom th {
+            background-color: rgba(0,0,0,0.3);
+            color: var(--primary-color);
+            font-weight: 600;
+            border-bottom: 2px solid var(--border-color) !important;
+        }
+        .table-dark-custom td, .table-dark-custom th {
+            border-color: var(--border-color);
+            vertical-align: middle;
+        }
+        .table-dark-custom tbody tr:hover {
+            background-color: rgba(255, 193, 7, 0.05);
+        }
+        .product-img-sm {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-left: 10px;
+            border: 1px solid var(--border-color);
+        }
+        .color-swatch {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 5px;
+            vertical-align: middle;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        .badge.bg-warning-custom { background-color: var(--warning-bg); color: var(--warning-text); }
+        .badge.bg-danger-custom { background-color: var(--danger-bg); color: var(--text-color); }
+
+        .btn-gold {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: #000;
+            font-weight: 600;
+        }
+        .btn-gold:hover {
+            background-color: #e0a800;
+            border-color: #d39e00;
+            color: #000;
+        }
+        .btn-outline-gold {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        .btn-outline-gold:hover {
+            color: var(--secondary-color);
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+
+        @media (max-width: 991px) { /* Tablets */
+            .summary-card .info .count { font-size: 1.6rem; }
+            .summary-card .icon i { font-size: 2rem; }
+        }
+        @media (max-width: 768px) { /* Mobile */
+            body { flex-direction: column; }
+            #sidebar { width: 100%; height: auto; position: static; border-left: none; border-bottom: 1px solid var(--border-color); }
+            #main-content { margin-right: 0; padding: 15px; }
+            .content-header h1 { font-size: 1.6rem; }
+            .summary-card { flex-direction: column; align-items: flex-start; text-align: right; }
+            .summary-card .icon { align-self: flex-end; margin-top: 10px;}
+            .filters-section .row > .col-md-4,
+            .filters-section .row > .col-md-3 {
+                 margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <aside id="sidebar">
+        <div class="sidebar-header">
+            <i class="fas fa-tachometer-alt"></i> MBA Admin
+        </div>
+        <ul class="nav flex-column">
+            <li class="nav-item"><a class="nav-link" href="dashboard.html"><i class="fas fa-tachometer-alt fa-fw"></i> لوحة التحكم</a></li>
+            <li class="nav-item"><a class="nav-link" href="products.html"><i class="fas fa-box-open fa-fw"></i> المنتجات</a></li>
+            <li class="nav-item"><a class="nav-link active" href="low_stock_alerts.html"><i class="fas fa-exclamation-triangle fa-fw"></i> تنبيهات المخزون</a></li>
+            <li class="nav-item"><a class="nav-link" href="purchase_orders.html"><i class="fas fa-file-invoice-dollar fa-fw"></i> أوامر الشراء</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-shopping-cart fa-fw"></i> الطلبات</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-users fa-fw"></i> العملاء</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-chart-line fa-fw"></i> التقارير</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-truck fa-fw"></i> الشحنات</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-cog fa-fw"></i> الإعدادات</a></li>
+            <li class="nav-item logout"><a class="nav-link" href="#"><i class="fas fa-sign-out-alt fa-fw"></i> تسجيل الخروج</a></li>
+        </ul>
+    </aside>
+
+    <main id="main-content">
+        <div class="content-header">
+            <h1><i class="fas fa-bell me-2"></i> تنبيهات انخفاض و نفاد المخزون</h1>
+            <p class="lead">مراقبة وإدارة المنتجات التي تحتاج إلى اهتمام فوري بخصوص مستويات مخزونها.</p>
+        </div>
+
+        <!-- Summary Cards Row -->
+        <div class="row mb-4">
+            <div class="col-lg-4 col-md-6 mb-3">
+                <div class="summary-card low-stock">
+                    <div class="info">
+                        <h5>منتجات ذات مخزون منخفض</h5>
+                        <div class="count">31</div>
+                    </div>
+                    <div class="icon"><i class="fas fa-battery-quarter"></i></div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-3">
+                <div class="summary-card out-of-stock">
+                    <div class="info">
+                        <h5>منتجات نفدت</h5>
+                        <div class="count">12</div>
+                    </div>
+                    <div class="icon"><i class="fas fa-ban"></i></div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-12 mb-3"> <!-- Full width on md for better spacing sometimes -->
+                <div class="summary-card reorder-threshold">
+                    <div class="info">
+                        <h5>منتجات وصلت حد إعادة الطلب</h5>
+                        <div class="count">45</div>
+                    </div>
+                    <div class="icon"><i class="fas fa-bullhorn"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters Section -->
+        <div class="data-section-card filters-section mb-4">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-5">
+                    <label for="searchInput" class="form-label">بحث (اسم المنتج, SKU)</label>
+                    <input type="text" class="form-control form-control-dark" id="searchInput" placeholder="ادخل اسم المنتج أو SKU...">
+                </div>
+                <div class="col-md-4">
+                    <label for="categoryFilter" class="form-label">الفئة</label>
+                    <select id="categoryFilter" class="form-select form-select-dark">
+                        <option selected value="">الكل</option>
+                        <option value="shoes">أحذية</option>
+                        <option value="shirts">قمصان</option>
+                        <option value="pants">سراويل</option>
+                        <option value="accessories">إكسسوارات</option>
+                        <option value="equipment">معدات</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="button" class="btn btn-outline-gold w-100"><i class="fas fa-filter me-1"></i> تطبيق الفلاتر</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Low Stock Products Table -->
+        <div class="data-section-card">
+            <h3><i class="fas fa-list-ul me-2"></i> قائمة المنتجات ذات المخزون الحرج</h3>
+            <div class="table-responsive">
+                <table class="table table-dark-custom table-hover">
+                    <thead>
+                        <tr>
+                            <th>المنتج</th>
+                            <th>SKU</th>
+                            <th>المقاس</th>
+                            <th>اللون</th>
+                            <th>المخزون الحالي</th>
+                            <th>حد الطلب</th>
+                            <th>الحالة</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Sample Row 1: Low Stock -->
+                        <tr>
+                            <td>
+                                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50'><rect fill='%23d1d1d1' width='50' height='50'/><text x='50%' y='50%' fill='%23616161' dy='.3em' text-anchor='middle' font-size='10'>منتج</text></svg>" alt="Product" class="product-img-sm">
+                                تيشيرت تدريب برو
+                            </td>
+                            <td>MBA-TSHIRT-005</td>
+                            <td>M</td>
+                            <td><span class="color-swatch" style="background-color: #007bff;"></span> أزرق</td>
+                            <td>8</td>
+                            <td>10</td>
+                            <td><span class="badge bg-warning-custom">مخزون منخفض</span></td>
+                            <td>
+                                <a href="edit_product.html?sku=MBA-TSHIRT-005" class="btn btn-sm btn-outline-gold me-1" title="تعديل المخزون"><i class="fas fa-edit"></i></a>
+                                <button class="btn btn-sm btn-gold" title="إنشاء طلب شراء"><i class="fas fa-plus-circle"></i></button>
+                            </td>
+                        </tr>
+                        <!-- Sample Row 2: Out of Stock -->
+                        <tr>
+                            <td>
+                                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50'><rect fill='%23c2c2c2' width='50' height='50'/><text x='50%' y='50%' fill='%23424242' dy='.3em' text-anchor='middle' font-size='10'>منتج</text></svg>" alt="Product" class="product-img-sm">
+                                شورت رياضي مريح
+                            </td>
+                            <td>MBA-SHORT-003</td>
+                            <td>L</td>
+                            <td><span class="color-swatch" style="background-color: #28a745;"></span> أخضر</td>
+                            <td>0</td>
+                            <td>5</td>
+                            <td><span class="badge bg-danger-custom">نفد المخزون</span></td>
+                            <td>
+                                <a href="edit_product.html?sku=MBA-SHORT-003" class="btn btn-sm btn-outline-gold me-1" title="تعديل المخزون"><i class="fas fa-edit"></i></a>
+                                <button class="btn btn-sm btn-gold" title="إنشاء طلب شراء"><i class="fas fa-plus-circle"></i></button>
+                            </td>
+                        </tr>
+                        <!-- Sample Row 3: Low Stock, different color -->
+                        <tr>
+                            <td>
+                                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50'><rect fill='%23d1d1d1' width='50' height='50'/><text x='50%' y='50%' fill='%23616161' dy='.3em' text-anchor='middle' font-size='10'>منتج</text></svg>" alt="Product" class="product-img-sm">
+                                تيشيرت تدريب برو
+                            </td>
+                            <td>MBA-TSHIRT-006</td>
+                            <td>S</td>
+                            <td><span class="color-swatch" style="background-color: #ffc107;"></span> ذهبي</td>
+                            <td>3</td>
+                            <td>10</td>
+                            <td><span class="badge bg-warning-custom">مخزون منخفض</span></td>
+                            <td>
+                                <a href="edit_product.html?sku=MBA-TSHIRT-006" class="btn btn-sm btn-outline-gold me-1" title="تعديل المخزون"><i class="fas fa-edit"></i></a>
+                                <button class="btn btn-sm btn-gold" title="إنشاء طلب شراء"><i class="fas fa-plus-circle"></i></button>
+                            </td>
+                        </tr>
+                         <!-- Sample Row 4: Barely above threshold (for testing or future "Near Threshold" status) -->
+                        <tr>
+                            <td>
+                                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50'><rect fill='%23b3b3b3' width='50' height='50'/><text x='50%' y='50%' fill='%23212121' dy='.3em' text-anchor='middle' font-size='10'>منتج</text></svg>" alt="Product" class="product-img-sm">
+                                قبعة رياضية بشعار
+                            </td>
+                            <td>MBA-CAP-001</td>
+                            <td>مقاس واحد</td>
+                            <td><span class="color-swatch" style="background-color: #343a40;"></span> أسود فاحم</td>
+                            <td>12</td>
+                            <td>10</td>
+                             <td><span class="badge bg-info text-dark">قريب من الحد</span></td> <!-- Could be a different status -->
+                            <td>
+                                <a href="edit_product.html?sku=MBA-CAP-001" class="btn btn-sm btn-outline-gold me-1" title="تعديل المخزون"><i class="fas fa-edit"></i></a>
+                                <button class="btn btn-sm btn-gold" title="إنشاء طلب شراء"><i class="fas fa-plus-circle"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- Pagination (optional) -->
+             <nav aria-label="Page navigation" class="mt-4 d-flex justify-content-center">
+                <ul class="pagination">
+                    <li class="page-item disabled"><a class="page-link bg-dark text-white-50" href="#">السابق</a></li>
+                    <li class="page-item active"><a class="page-link btn-gold" style="color:black;" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link bg-dark text-white-50" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link bg-dark text-white-50" href="#">التالي</a></li>
+                </ul>
+            </nav>
+        </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const currentPath = window.location.pathname.split("/").pop();
+            const navLinks = document.querySelectorAll('#sidebar .nav-link');
+
+            navLinks.forEach(link => {
+                const linkHref = link.getAttribute('href');
+                link.classList.remove('active'); 
+
+                if (linkHref === currentPath) {
+                    link.classList.add('active');
+                } else if (currentPath === 'add_product.html' && linkHref === 'products.html') {
+                    link.classList.add('active');
+                } else if (currentPath.startsWith('edit_product.html') && linkHref === 'products.html') {
+                    link.classList.add('active');
+                } else if (currentPath === 'create_purchase_order.html' && linkHref === 'purchase_orders.html') {
+                    link.classList.add('active');
+                } else if (currentPath.startsWith('purchase_order_details.html') && linkHref === 'purchase_orders.html') {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

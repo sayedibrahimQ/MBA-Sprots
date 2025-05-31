@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تعديل المنتج - MBA</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ffc107; /* Gold */
+            --secondary-color: #1a1a1a; /* Dark background */
+            --text-color: #f8f9fa;
+            --card-bg: #23272b; /* Darker card background */
+            --border-color: rgba(255, 193, 7, 0.2);
+            --sidebar-width: 260px;
+        }
+        * {
+            font-family: 'Cairo', sans-serif;
+            scroll-behavior: smooth;
+        }
+        body {
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        #sidebar {
+            width: var(--sidebar-width);
+            background-color: #111315;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            transition: width 0.3s ease;
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1000;
+            border-left: 1px solid var(--border-color);
+        }
+        #sidebar .sidebar-header {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        #sidebar .sidebar-header i { margin-left: 10px; }
+        #sidebar .nav-link {
+            color: rgba(255,255,255,0.7);
+            padding: 10px 15px;
+            margin-bottom: 5px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+        }
+        #sidebar .nav-link i { margin-left: 12px; width: 20px; text-align: center; }
+        #sidebar .nav-link:hover, #sidebar .nav-link.active {
+            background-color: var(--primary-color);
+            color: #000;
+        }
+        #sidebar .nav-link:hover { transform: translateX(-5px); }
+        #sidebar .nav-link.active { font-weight: 700; box-shadow: 0 4px 15px rgba(255,193,7,0.2); }
+        #sidebar .nav-link.active i { color: #000; }
+        #sidebar .nav-item.logout { margin-top: auto; }
+        #main-content {
+            flex-grow: 1;
+            padding: 25px;
+            margin-right: var(--sidebar-width);
+            transition: margin-right 0.3s ease;
+        }
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .content-header h1 { color: var(--primary-color); font-size: 2rem; font-weight: 700; }
+        .btn-gold {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: #000;
+            font-weight: 600;
+        }
+        .btn-gold:hover { background-color: #e0a800; border-color: #d39e00; color: #000; }
+        .btn-outline-secondary-custom {
+            color: var(--text-color);
+            border-color: rgba(255,255,255,0.3);
+        }
+        .btn-outline-secondary-custom:hover {
+            color: #000;
+            background-color: rgba(255,255,255,0.7);
+            border-color: rgba(255,255,255,0.7);
+        }
+        .data-section-card {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .form-label { font-weight: 600; margin-bottom: 0.5rem; color: rgba(255,255,255,0.8);}
+        .form-control-dark, .form-select-dark {
+            background-color: #2a2f34;
+            color: var(--text-color);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+        }
+        .form-control-dark:focus, .form-select-dark:focus {
+            background-color: #2a2f34;
+            color: var(--text-color);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25);
+        }
+        .form-control-dark::placeholder { color: rgba(255,255,255,0.5); }
+        .form-check-input-dark:checked {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        .color-input-group .form-control-color {
+            width: 60px; 
+            height: calc(1.5em + 1rem + 2px); 
+            padding: 0.25rem;
+        }
+        .image-preview-container {
+            width: 150px; height: 150px; 
+            border: 2px dashed var(--border-color); 
+            border-radius: 8px; 
+            display: flex; align-items: center; justify-content: center; 
+            background-color: #2a2f34; margin-top: 10px; overflow: hidden;
+        }
+        .image-preview-container img { max-width: 100%; max-height: 100%; object-fit: cover; }
+        .image-preview-container span { color: rgba(255,255,255,0.5); }
+
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            #sidebar { width: 100%; height: auto; position: static; border-left: none; border-bottom: 1px solid var(--border-color); }
+            #main-content { margin-right: 0; padding: 15px; }
+            .content-header { flex-direction: column; align-items: flex-start; }
+            .content-header h1 { font-size: 1.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <aside id="sidebar">
+        <div class="sidebar-header"><i class="fas fa-tachometer-alt"></i> MBA Admin</div>
+        <ul class="nav flex-column">
+            <li class="nav-item"><a class="nav-link" href="dashboard.html"><i class="fas fa-tachometer-alt fa-fw"></i> لوحة التحكم</a></li>
+            <li class="nav-item"><a class="nav-link active" href="products.html"><i class="fas fa-box-open fa-fw"></i> المنتجات</a></li>
+            <li class="nav-item"><a class="nav-link" href="low_stock_alerts.html"><i class="fas fa-exclamation-triangle fa-fw"></i> تنبيهات المخزون</a></li>
+            <li class="nav-item"><a class="nav-link" href="purchase_orders.html"><i class="fas fa-file-invoice-dollar fa-fw"></i> أوامر الشراء</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-shopping-cart fa-fw"></i> الطلبات</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-users fa-fw"></i> العملاء</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-chart-line fa-fw"></i> التقارير</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-truck fa-fw"></i> الشحنات</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-cog fa-fw"></i> الإعدادات</a></li>
+            <li class="nav-item logout"><a class="nav-link" href="#"><i class="fas fa-sign-out-alt fa-fw"></i> تسجيل الخروج</a></li>
+        </ul>
+    </aside>
+
+    <main id="main-content">
+        <div class="content-header">
+            <h1><i class="fas fa-edit me-2"></i> تعديل المنتج</h1>
+            <a href="products.html" class="btn btn-outline-secondary-custom"><i class="fas fa-arrow-right me-2"></i> العودة لقائمة المنتجات</a>
+        </div>
+
+        <div class="data-section-card">
+            <form id="editProductForm">
+                <input type="hidden" id="productId" value="1">
+
+                <div class="row mb-3">
+                    <div class="col-md-8">
+                        <label for="productName" class="form-label">اسم المنتج <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control form-control-dark" id="productName" value="حذاء رياضي فائق الأداء" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="productBrand" class="form-label">العلامة التجارية</label>
+                        <input type="text" class="form-control form-control-dark" id="productBrand" value="MBA سبورتس">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-8">
+                        <label for="productSku" class="form-label">SKU <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control form-control-dark" id="productSku" value="MBA-SHOE-001" required>
+                    </div>
+                     <div class="col-md-4">
+                        <label for="productCategory" class="form-label">الفئة <span class="text-danger">*</span></label>
+                        <select class="form-select form-select-dark" id="productCategory" required>
+                            <option value="shoes" selected>أحذية</option>
+                            <option value="shirts">قمصان</option>
+                            <option value="pants">سراويل</option>
+                            <option value="accessories">إكسسوارات</option>
+                            <option value="equipment">معدات</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="productDescription" class="form-label">وصف المنتج</label>
+                    <textarea class="form-control form-control-dark" id="productDescription" rows="3">هذا الحذاء مصمم خصيصًا للرياضيين الباحثين عن أقصى درجات الراحة والأداء. مصنوع من مواد عالية الجودة تضمن التهوية والمتانة.</textarea>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <label for="purchaseCost" class="form-label">تكلفة الشراء (ر.س)</label>
+                        <input type="number" step="0.01" class="form-control form-control-dark" id="purchaseCost" value="150.00">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="productPrice" class="form-label">سعر البيع (ر.س) <span class="text-danger">*</span></label>
+                        <input type="number" step="0.01" class="form-control form-control-dark" id="productPrice" value="299.00" required>
+                    </div>
+                     <div class="col-md-3">
+                        <label for="reorderLevel" class="form-label">مستوى إعادة الطلب</label>
+                        <input type="number" class="form-control form-control-dark" id="reorderLevel" value="20">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="productStock" class="form-label">إجمالي المخزون (سيحسب تلقائياً)</label>
+                        <input type="number" class="form-control form-control-dark" id="productStock" value="120" readonly>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">المقاسات المتاحة (لتحديد خيارات الأصناف)</label>
+                        <div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input form-check-input-dark" type="checkbox" id="sizeS" value="S" checked>
+                                <label class="form-check-label" for="sizeS">S</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input form-check-input-dark" type="checkbox" id="sizeM" value="M" checked>
+                                <label class="form-check-label" for="sizeM">M</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input form-check-input-dark" type="checkbox" id="sizeL" value="L" checked>
+                                <label class="form-check-label" for="sizeL">L</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input form-check-input-dark" type="checkbox" id="sizeXL" value="XL">
+                                <label class="form-check-label" for="sizeXL">XL</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input form-check-input-dark" type="checkbox" id="sizeOneSize" value="OneSize">
+                                <label class="form-check-label" for="sizeOneSize">مقاس واحد</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">الألوان المتاحة (لتحديد خيارات الأصناف)</label>
+                        <div id="colorInputsContainer" class="d-flex flex-wrap gap-2">
+                            <div class="color-input-group d-flex align-items-center mb-2">
+                                <input type="color" class="form-control form-control-color me-2" value="#000000" data-color-name="أسود">
+                                <input type="text" class="form-control form-control-dark form-control-sm w-auto" placeholder="اسم اللون" value="أسود">
+                                <button type="button" class="btn btn-sm btn-outline-danger ms-1 remove-color-btn"><i class="fas fa-times"></i></button>
+                            </div>
+                            <div class="color-input-group d-flex align-items-center mb-2">
+                                <input type="color" class="form-control form-control-color me-2" value="#FFFFFF" data-color-name="أبيض">
+                                <input type="text" class="form-control form-control-dark form-control-sm w-auto" placeholder="اسم اللون" value="أبيض">
+                                <button type="button" class="btn btn-sm btn-outline-danger ms-1 remove-color-btn"><i class="fas fa-times"></i></button>
+                            </div>
+                             <div class="color-input-group d-flex align-items-center mb-2">
+                                <input type="color" class="form-control form-control-color me-2" value="#FF0000" data-color-name="أحمر">
+                                <input type="text" class="form-control form-control-dark form-control-sm w-auto" placeholder="اسم اللون" value="أحمر">
+                                <button type="button" class="btn btn-sm btn-outline-danger ms-1 remove-color-btn"><i class="fas fa-times"></i></button>
+                            </div>
+                        </div>
+                        <button type="button" id="addColorBtn" class="btn btn-sm btn-outline-gold mt-2"><i class="fas fa-plus"></i> إضافة لون آخر</button>
+                    </div>
+                </div>
+
+                <!-- Stock Variants Section -->
+                <div class="mb-3 data-section-card p-3" style="background-color: rgba(0,0,0,0.1);">
+                    <h5 class="mb-3 text-warning">مخزون الأصناف المتغيرة <span class="text-danger">*</span></h5>
+                    <div id="stockVariantsContainer">
+                        <!-- Example Pre-filled Variant Row 1 -->
+                        <div class="row stock-variant-row gx-2 gy-2 mb-2 align-items-center border-bottom pb-2 border-secondary">
+                            <div class="col-md-3">
+                                <label class="form-label form-label-sm d-md-none">المقاس</label>
+                                <select class="form-select form-select-dark form-select-sm variant-size" required>
+                                    <option value="S" selected>S</option> 
+                                    <!-- Other options populated by JS -->
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label form-label-sm d-md-none">اللون</label>
+                                <select class="form-select form-select-dark form-select-sm variant-color" required>
+                                   <option value="#000000" data-color-name="أسود" selected>أسود</option>
+                                   <!-- Other options populated by JS -->
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label form-label-sm d-md-none">الكمية</label>
+                                <input type="number" class="form-control form-control-dark form-control-sm variant-quantity" value="50" placeholder="0" min="0" required>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label form-label-sm d-md-none">SKU للإصدار</label>
+                                <input type="text" class="form-control form-control-dark form-control-sm variant-sku" value="MBA-SHOE-001-S-BLK" placeholder="اختياري">
+                            </div>
+                            <div class="col-md-1 d-flex align-items-end">
+                                <button type="button" class="btn btn-sm btn-outline-danger remove-variant-btn"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <!-- Example Pre-filled Variant Row 2 -->
+                        <div class="row stock-variant-row gx-2 gy-2 mb-2 align-items-center border-bottom pb-2 border-secondary">
+                            <div class="col-md-3">
+                                <label class="form-label form-label-sm d-md-none">المقاس</label>
+                                <select class="form-select form-select-dark form-select-sm variant-size" required>
+                                    <option value="M" selected>M</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label form-label-sm d-md-none">اللون</label>
+                                <select class="form-select form-select-dark form-select-sm variant-color" required>
+                                    <option value="#FF0000" data-color-name="أحمر" selected>أحمر</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label form-label-sm d-md-none">الكمية</label>
+                                <input type="number" class="form-control form-control-dark form-control-sm variant-quantity" value="70" placeholder="0" min="0" required>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label form-label-sm d-md-none">SKU للإصدار</label>
+                                <input type="text" class="form-control form-control-dark form-control-sm variant-sku" value="MBA-SHOE-001-M-RED" placeholder="اختياري">
+                            </div>
+                            <div class="col-md-1 d-flex align-items-end">
+                                <button type="button" class="btn btn-sm btn-outline-danger remove-variant-btn"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" id="addStockVariantBtn" class="btn btn-sm btn-gold mt-2"><i class="fas fa-plus"></i> إضافة صنف متغير</button>
+                </div>
+                <!-- End Stock Variants Section -->
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="supplierName" class="form-label">اسم المورد</label>
+                        <input type="text" class="form-control form-control-dark" id="supplierName" value="مورد ملابس رياضية معتمد">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="warehouseLocation" class="form-label">موقع التخزين</label>
+                        <input type="text" class="form-control form-control-dark" id="warehouseLocation" value="المستودع A - قسم الأحذية - الرف 3">
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="productImageCurrent" class="form-label">صورة المنتج الحالية</label>
+                    <div class="image-preview-container mb-2" id="imagePreview">
+                        <!-- Placeholder for current image, would be populated by backend -->
+                        <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 150 150'><rect fill='%23e0e0e0' width='150' height='150'/><text x='50%' y='50%' fill='%23757575' dy='.3em' text-anchor='middle' font-size='18'>صورة المنتج</text></svg>" alt="Product Preview">
+                    </div>
+                    <label for="productImageNew" class="form-label">تغيير صورة المنتج (اختياري)</label>
+                    <input class="form-control form-control-dark" type="file" id="productImageNew" accept="image/*">
+                </div>
+
+                <div class="d-flex justify-content-end">
+                    <a href="products.html" class="btn btn-outline-secondary-custom me-2">إلغاء</a>
+                    <button type="submit" class="btn btn-gold"><i class="fas fa-save me-2"></i> حفظ التعديلات</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const currentPath = window.location.pathname.split("/").pop();
+            const navLinks = document.querySelectorAll('#sidebar .nav-link');
+
+            navLinks.forEach(link => {
+                const linkHref = link.getAttribute('href');
+                link.classList.remove('active');
+
+                if (linkHref === currentPath) {
+                    link.classList.add('active');
+                } else if (currentPath === 'add_product.html' && linkHref === 'products.html') {
+                    link.classList.add('active');
+                } else if (currentPath.startsWith('edit_product.html') && linkHref === 'products.html') {
+                    link.classList.add('active');
+                } else if (currentPath === 'create_purchase_order.html' && linkHref === 'purchase_orders.html') {
+                    link.classList.add('active');
+                } else if (currentPath.startsWith('purchase_order_details.html') && linkHref === 'purchase_orders.html') {
+                    link.classList.add('active');
+                }
+            });
+
+            const productImageInput = document.getElementById('productImageNew');
+            const imagePreview = document.getElementById('imagePreview');
+            productImageInput.addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        imagePreview.innerHTML = `<img src="${e.target.result}" alt="New Product Preview">`;
+                    }
+                    reader.readAsDataURL(file);
+                } 
+                // else: Keep current image if no new file is selected
+            });
+
+            const addColorBtn = document.getElementById('addColorBtn');
+            const colorInputsContainer = document.getElementById('colorInputsContainer');
+
+            function createColorInput(colorValue = '#ffffff', colorName = '') {
+                const newColorGroup = document.createElement('div');
+                newColorGroup.classList.add('color-input-group', 'd-flex', 'align-items-center', 'mb-2');
+                newColorGroup.innerHTML = `
+                    <input type="color" class="form-control form-control-color me-2" value="${colorValue}">
+                    <input type="text" class="form-control form-control-dark form-control-sm w-auto" placeholder="اسم اللون" value="${colorName}">
+                    <button type="button" class="btn btn-sm btn-outline-danger ms-1 remove-color-btn"><i class="fas fa-times"></i></button>
+                `;
+                colorInputsContainer.appendChild(newColorGroup);
+                const newColorNameInput = newColorGroup.querySelector('input[type="text"]');
+                const newColorPicker = newColorGroup.querySelector('input[type="color"]');
+                
+                newColorPicker.dataset.colorName = newColorNameInput.value || newColorPicker.value; // Set initial data attribute
+                newColorPicker.addEventListener('input', () => {
+                    newColorPicker.dataset.colorName = newColorNameInput.value || newColorPicker.value;
+                    updateVariantColorOptions();
+                });
+                newColorNameInput.addEventListener('change', () => {
+                    newColorPicker.dataset.colorName = newColorNameInput.value || newColorPicker.value;
+                    updateVariantColorOptions();
+                });
+
+                updateRemoveButtons();
+                updateVariantColorOptions();
+            }
+
+            function updateRemoveButtons() {
+                const allColorGroups = colorInputsContainer.querySelectorAll('.color-input-group');
+                allColorGroups.forEach((group) => {
+                    const removeButton = group.querySelector('.remove-color-btn');
+                    if (removeButton) {
+                        removeButton.style.display = (allColorGroups.length > 1) ? 'inline-block' : 'none';
+                        removeButton.onclick = function() {
+                            group.remove();
+                            updateRemoveButtons();
+                            updateVariantColorOptions();
+                        };
+                    }
+                });
+            }
+
+            addColorBtn.addEventListener('click', () => createColorInput('#ffffff', ''));
+            // Initialize listeners for pre-existing color inputs
+            colorInputsContainer.querySelectorAll('.color-input-group').forEach(group => {
+                const colorPicker = group.querySelector('input[type="color"]');
+                const colorNameInput = group.querySelector('input[type="text"]');
+                if(colorPicker && colorNameInput){
+                    colorPicker.dataset.colorName = colorNameInput.value || colorPicker.value; // Ensure data attribute is set
+                    colorPicker.addEventListener('input', () => {
+                        colorPicker.dataset.colorName = colorNameInput.value || colorPicker.value;
+                        updateVariantColorOptions();
+                    });
+                    colorNameInput.addEventListener('change', () => {
+                        colorPicker.dataset.colorName = colorNameInput.value || colorPicker.value;
+                        updateVariantColorOptions();
+                    });
+                }
+            });
+            updateRemoveButtons();
+
+            // --- Stock Variants Logic --- //
+            const addStockVariantBtn = document.getElementById('addStockVariantBtn');
+            const stockVariantsContainer = document.getElementById('stockVariantsContainer');
+            const availableSizeCheckboxes = document.querySelectorAll('.form-check-input[id^="size"]');
+
+            function getSelectedSizes() {
+                const sizes = [];
+                availableSizeCheckboxes.forEach(checkbox => {
+                    if (checkbox.checked) {
+                        sizes.push({ value: checkbox.value, text: checkbox.parentElement.querySelector('.form-check-label').textContent });
+                    }
+                });
+                return sizes;
+            }
+
+            function getDefinedColors() {
+                const colors = [];
+                colorInputsContainer.querySelectorAll('.color-input-group input[type="color"]').forEach(colorPicker => {
+                    colors.push({ value: colorPicker.value, text: colorPicker.dataset.colorName || colorPicker.value });
+                });
+                return colors;
+            }
+
+            function updateVariantSizeOptions(selectElement, preselectedValue = null) {
+                const selectedSizes = getSelectedSizes();
+                let valueToRestore = preselectedValue || selectElement.value; // Use preselectedValue if provided (for initial load)
+                selectElement.innerHTML = '<option value="" disabled>اختر مقاس...</option>';
+                selectedSizes.forEach(size => {
+                    const option = document.createElement('option');
+                    option.value = size.value;
+                    option.textContent = size.text;
+                    selectElement.appendChild(option);
+                });
+
+                if (selectedSizes.find(s => s.value === valueToRestore)) {
+                    selectElement.value = valueToRestore;
+                } else if (selectedSizes.length > 0 && selectElement.required) {
+                     selectElement.value = "";
+                } else if (selectedSizes.length === 0) {
+                     selectElement.innerHTML = '<option value="" disabled selected>حدد مقاسات متاحة أولاً</option>';
+                }
+                 if (selectElement.options.length > 1 && selectElement.value === "" && !preselectedValue) selectElement.selectedIndex = 1; 
+            }
+
+            function updateVariantColorOptions(selectElement, preselectedValue = null) {
+                const definedColors = getDefinedColors();
+                const allVariantColorSelects = selectElement ? [selectElement] : stockVariantsContainer.querySelectorAll('.variant-color');
+                
+                allVariantColorSelects.forEach(sel => {
+                    let valueToRestore = preselectedValue || sel.value;
+                    let previousTextContent = sel.querySelector(`option[value="${valueToRestore}"]`)?.textContent || "";
+
+                    sel.innerHTML = '<option value="" disabled>اختر لون...</option>';
+                    definedColors.forEach(color => {
+                        const option = document.createElement('option');
+                        option.value = color.value;
+                        option.textContent = color.text;
+                        option.style.backgroundColor = color.value;
+                        option.style.color = isColorDark(color.value) ? '#FFF' : '#000';
+                        sel.appendChild(option);
+                    });
+
+                    if (definedColors.find(c => c.value === valueToRestore)) {
+                        sel.value = valueToRestore;
+                    } else if (definedColors.length > 0 && sel.required) {
+                        sel.value = "";
+                    } else if (definedColors.length === 0) {
+                         sel.innerHTML = '<option value="" disabled selected>حدد ألوان متاحة أولاً</option>';
+                    }
+                    if (sel.options.length > 1 && sel.value === "" && !preselectedValue) sel.selectedIndex = 1; 
+                });
+            }
+
+            function isColorDark(hexColor) {
+                const hex = hexColor.replace('#', '');
+                const r = parseInt(hex.substring(0, 2), 16);
+                const g = parseInt(hex.substring(2, 4), 16);
+                const b = parseInt(hex.substring(4, 6), 16);
+                const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+                return brightness < 128;
+            }
+
+            availableSizeCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', () => {
+                    stockVariantsContainer.querySelectorAll('.variant-size').forEach(sel => updateVariantSizeOptions(sel));
+                });
+            });
+
+            function createStockVariantRow(sizeVal = '', colorVal = '', quantityVal = '', skuVal = '') {
+                const newVariantRow = document.createElement('div');
+                newVariantRow.classList.add('row', 'stock-variant-row', 'gx-2', 'gy-2', 'mb-2', 'align-items-center', 'border-bottom', 'pb-2', 'border-secondary');
+                newVariantRow.innerHTML = `
+                    <div class="col-md-3">
+                        <label class="form-label form-label-sm d-md-none">المقاس</label>
+                        <select class="form-select form-select-dark form-select-sm variant-size" required>
+                            <option value="" disabled selected>اختر مقاس...</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label form-label-sm d-md-none">اللون</label>
+                        <select class="form-select form-select-dark form-select-sm variant-color" required>
+                            <option value="" disabled selected>اختر لون...</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label form-label-sm d-md-none">الكمية</label>
+                        <input type="number" class="form-control form-control-dark form-control-sm variant-quantity" value="${quantityVal}" placeholder="0" min="0" required>
+                    </div>
+                     <div class="col-md-2">
+                        <label class="form-label form-label-sm d-md-none">SKU للإصدار</label>
+                        <input type="text" class="form-control form-control-dark form-control-sm variant-sku" value="${skuVal}" placeholder="اختياري">
+                    </div>
+                    <div class="col-md-1 d-flex align-items-end">
+                        <button type="button" class="btn btn-sm btn-outline-danger remove-variant-btn"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
+                stockVariantsContainer.appendChild(newVariantRow);
+                const sizeSelect = newVariantRow.querySelector('.variant-size');
+                const colorSelect = newVariantRow.querySelector('.variant-color');
+                const quantityInput = newVariantRow.querySelector('.variant-quantity');
+
+                updateVariantSizeOptions(sizeSelect, sizeVal);
+                updateVariantColorOptions(colorSelect, colorVal);
+                updateRemoveVariantButtons();
+                
+                quantityInput.addEventListener('input', updateTotalStock);
+            }
+
+            function updateRemoveVariantButtons() {
+                const removeButtons = stockVariantsContainer.querySelectorAll('.remove-variant-btn');
+                removeButtons.forEach(btn => {
+                    btn.style.display = (stockVariantsContainer.children.length > 0) ? 'inline-block' : 'none'; // Always show if rows exist
+                    btn.onclick = function() {
+                        this.closest('.stock-variant-row').remove();
+                        updateRemoveVariantButtons();
+                        updateTotalStock();
+                        if (stockVariantsContainer.children.length === 0) { // If all removed, add a fresh one
+                           // createStockVariantRow(); // Optional: auto-add one if all are deleted
+                        }
+                    };
+                });
+                 // No need to hide the first button if it's the only one, always allow removal for edit page.
+            }
+            
+            function updateTotalStock() {
+                let total = 0;
+                stockVariantsContainer.querySelectorAll('.variant-quantity').forEach(input => {
+                    total += parseInt(input.value) || 0;
+                });
+                document.getElementById('productStock').value = total;
+            }
+
+            addStockVariantBtn.addEventListener('click', () => createStockVariantRow());
+            
+            // Initialize pre-filled variant rows and their options
+            stockVariantsContainer.querySelectorAll('.stock-variant-row').forEach(row => {
+                const sizeSelect = row.querySelector('.variant-size');
+                const colorSelect = row.querySelector('.variant-color');
+                const quantityInput = row.querySelector('.variant-quantity');
+
+                updateVariantSizeOptions(sizeSelect, sizeSelect.value); // Pass current value for pre-selection
+                updateVariantColorOptions(colorSelect, colorSelect.value); // Pass current value for pre-selection
+                quantityInput.addEventListener('input', updateTotalStock);
+            });
+            updateRemoveVariantButtons(); // Call for pre-filled rows
+            updateTotalStock(); // Initial calculation for pre-filled values
+
+            document.getElementById('editProductForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                alert('تم تحديث المنتج (تجريبي)!');
+            });
+        });
+    </script>
+</body>
+</html> 

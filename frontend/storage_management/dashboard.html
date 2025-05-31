@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم المخزون - MBA</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script> <!-- Added Chart.js -->
+    <style>
+        :root {
+            --primary-color: #ffc107; /* Gold */
+            --secondary-color: #1a1a1a; /* Dark background */
+            --text-color: #f8f9fa;
+            --card-bg: #23272b; /* Darker card background */
+            --border-color: rgba(255, 193, 7, 0.2);
+        }
+
+        * {
+            font-family: 'Cairo', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        #sidebar {
+            width: 260px;
+            background-color: #111315; /* Even darker sidebar */
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            transition: width 0.3s ease;
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1000;
+            border-left: 1px solid var(--border-color);
+        }
+
+        #sidebar .sidebar-header {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        #sidebar .sidebar-header i {
+            margin-left: 10px;
+        }
+
+        #sidebar .nav-link {
+            color: rgba(255,255,255,0.7);
+            padding: 10px 15px; /* Adjusted padding */
+            margin-bottom: 5px; /* Adjusted margin */
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+        }
+        #sidebar .nav-link i {
+            margin-left: 12px; /* Space between icon and text */
+            width: 20px; /* Fixed width for icons */
+            text-align: center;
+        }
+
+        #sidebar .nav-link:hover {
+            background-color: var(--primary-color);
+            color: #000;
+            transform: translateX(-5px);
+        }
+
+        #sidebar .nav-link.active {
+            background-color: var(--primary-color);
+            color: #000;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(255,193,7,0.2);
+        }
+        #sidebar .nav-link.active i {
+            color: #000;
+        }
+        
+        #sidebar .nav-item.logout {
+            margin-top: auto;
+        }
+
+        #main-content {
+            flex-grow: 1;
+            padding: 20px; /* Adjusted padding */
+            margin-right: 260px; /* Same as sidebar width */
+            transition: margin-right 0.3s ease;
+            background: linear-gradient(135deg, #1e1e1e 0%, #2d3436 100%);
+        }
+        
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px; /* Adjusted margin */
+            padding-bottom: 15px; /* Adjusted padding */
+            border-bottom: 1px solid var(--border-color);
+        }
+        .content-header h1 {
+            color: var(--primary-color);
+            font-size: 1.8rem; /* Adjusted font size for mobile */
+            font-weight: 700;
+        }
+        .user-profile-widget {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-color);
+        }
+        .user-profile-widget img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--primary-color);
+        }
+
+        .kpi-card {
+            background-color: var(--card-bg);
+            padding: 20px; /* Adjusted padding */
+            border-radius: 12px;
+            margin-bottom: 20px; /* Adjusted margin */
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3), 0 0 20px rgba(255,193,7,0.1);
+        }
+        .kpi-card .card-body { padding: 0; }
+        .kpi-card .card-title {
+            font-size: 0.9rem; /* Adjusted font size */
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .kpi-card .card-value {
+            font-size: 1.8rem; /* Adjusted font size */
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+         .kpi-card .card-icon {
+            font-size: 2rem; /* Adjusted font size */
+            color: var(--primary-color);
+            opacity: 0.6;
+        }
+        .kpi-card .card-text.text-muted {
+             color: rgba(255,255,255,0.5) !important;
+             font-size: 0.85rem;
+        }
+        .kpi-card.low-stock-alert .card-value,
+        .kpi-card.out-of-stock-alert .card-value {
+            color: #dc3545; /* Red for alerts */
+        }
+         .kpi-card.low-stock-alert .card-icon,
+        .kpi-card.out-of-stock-alert .card-icon {
+            color: #dc3545; 
+        }
+
+
+        .data-section-card {
+            background-color: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .data-section-card h3 {
+            color: var(--primary-color);
+            font-size: 1.3rem; /* Adjusted font size */
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+        }
+        .table-dark-custom {
+            background-color: transparent;
+            color: var(--text-color);
+        }
+        .table-dark-custom th {
+            background-color: rgba(0,0,0,0.3);
+            color: var(--primary-color);
+            font-weight: 600;
+            border-bottom: 2px solid var(--border-color) !important;
+        }
+        .table-dark-custom td, .table-dark-custom th {
+            border-color: var(--border-color);
+            vertical-align: middle;
+        }
+        .table-dark-custom tbody tr:hover {
+            background-color: rgba(255, 193, 7, 0.05);
+        }
+        .table-dark-custom .badge {
+            font-size: 0.75rem; /* Adjusted font size */
+            padding: 0.4em 0.6em; /* Adjusted padding */
+        }
+        .table-dark-custom .product-img-sm {
+            width: 35px; /* Adjusted size */
+            height: 35px; /* Adjusted size */
+            object-fit: cover;
+            border-radius: 5px;
+            margin-left: 8px; /* Adjusted margin */
+            border: 1px solid var(--border-color);
+        }
+        .btn-outline-gold {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        .btn-outline-gold:hover {
+            color: var(--secondary-color);
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        .chart-container canvas {
+            max-width: 100%;
+            /* height: auto !important;  Temporarily commented out to let Chart.js manage height based on container */
+        }
+        .progress-bar-custom {
+            background-color: var(--primary-color) !important;
+        }
+        
+        @media (max-width: 991px) { /* For medium devices like tablets */
+            #sidebar {
+                 width: 220px; /* Slightly reduce sidebar for tablets */
+            }
+            #main-content {
+                margin-right: 220px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column; /* Stack sidebar and content vertically */
+            }
+            #sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+                border-left: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+            #main-content {
+                margin-right: 0;
+                padding: 15px;
+            }
+            .content-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+             .content-header h1 { font-size: 1.6rem; } /* Further adjust for mobile */
+             .user-profile-widget { margin-top: 10px; }
+             .kpi-card .card-value { font-size: 1.6rem; } /* Adjust KPI value font size for mobile */
+             .kpi-card .card-icon { font-size: 1.8rem; } /* Adjust KPI icon font size for mobile */
+             .data-section-card h3 { font-size: 1.2rem; } /* Adjust section titles for mobile */
+             .table-dark-custom .product-img-sm {
+                 width: 30px;
+                 height: 30px;
+             }
+             .chart-container {
+                 height: 180px; /* Adjust chart height for mobile */
+             }
+        }
+    </style>
+</head>
+<body>
+    <aside id="sidebar">
+        <div class="sidebar-header">
+            <i class="fas fa-tachometer-alt"></i> MBA Admin
+        </div>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link active" href="dashboard.html">
+                    <i class="fas fa-tachometer-alt fa-fw"></i> لوحة التحكم
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="products.html">
+                    <i class="fas fa-box-open fa-fw"></i> المنتجات
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="low_stock_alerts.html">
+                    <i class="fas fa-exclamation-triangle fa-fw"></i> تنبيهات المخزون
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="purchase_orders.html">
+                    <i class="fas fa-file-invoice-dollar fa-fw"></i> أوامر الشراء
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="fas fa-shopping-cart fa-fw"></i> الطلبات
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="fas fa-users fa-fw"></i> العملاء
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="fas fa-chart-line fa-fw"></i> التقارير
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="fas fa-truck fa-fw"></i> الشحنات
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="fas fa-cog fa-fw"></i> الإعدادات
+                </a>
+            </li>
+            <li class="nav-item logout">
+                <a class="nav-link" href="#">
+                    <i class="fas fa-sign-out-alt fa-fw"></i> تسجيل الخروج
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <main id="main-content">
+        <div class="content-header">
+            <h1>لوحة تحكم المخزون</h1>
+            <div class="user-profile-widget">
+                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%23ffc107' width='100' height='100'/><text x='50%' y='50%' fill='%23000' dy='.3em' text-anchor='middle' font-size='40' font-family='Cairo'>A</text></svg>" alt="User Avatar">
+                <span>أهلاً، مدير المخزون</span>
+            </div>
+        </div>
+
+        <!-- KPI Cards Row -->
+        <div class="row">
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 mb-4">
+                <div class="kpi-card h-100">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <div class="card-title text-uppercase">إجمالي المنتجات</div>
+                                <div class="card-value">1,482</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-boxes card-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 mb-4">
+                <div class="kpi-card low-stock-alert h-100">
+                     <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <div class="card-title text-uppercase">تنبيهات نقص المخزون</div>
+                                <div class="card-value">31</div>
+                                <p class="card-text text-muted mb-0">منتجات تحتاج إعادة طلب</p>
+                            </div>
+                            <div class="col-auto">
+                                 <i class="fas fa-exclamation-triangle card-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 mb-4">
+                <div class="kpi-card out-of-stock-alert h-100">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <div class="card-title text-uppercase">منتجات نفدت</div>
+                                <div class="card-value">12</div>
+                                <p class="card-text text-muted mb-0">خارج المخزون حالياً</p>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-ban card-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+             <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 mb-4">
+                <div class="kpi-card h-100">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <div class="card-title text-uppercase">قيمة المخزون</div>
+                                <div class="card-value">412,500 <small style="font-size:0.6em">ر.س</small></div>
+                                <p class="card-text text-muted mb-0">القيمة الإجمالية الحالية</p>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-dollar-sign card-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Top Selling Products -->
+            <div class="col-lg-7 mb-4">
+                <div class="data-section-card h-100">
+                    <h3><i class="fas fa-star text-warning me-2"></i> المنتجات الأكثر مبيعًا</h3>
+                    <div class="table-responsive">
+                        <table class="table table-dark-custom table-hover">
+                            <thead>
+                                <tr>
+                                    <th>المنتج</th>
+                                    <th>الوحدات المباعة</th>
+                                    <th>المخزون الحالي</th>
+                                    <th>الحالة</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50'><rect fill='%23e0e0e0' width='50' height='50'/><text x='50%' y='50%' fill='%23757575' dy='.3em' text-anchor='middle' font-size='10'>حذاء</text></svg>" alt="منتج" class="product-img-sm">
+                                        حذاء رياضي فائق
+                                    </td>
+                                    <td>385</td>
+                                    <td>115</td>
+                                    <td><span class="badge bg-success">متوفر</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50'><rect fill='%23d1d1d1' width='50' height='50'/><text x='50%' y='50%' fill='%23616161' dy='.3em' text-anchor='middle' font-size='10'>تيشيرت</text></svg>" alt="منتج" class="product-img-sm">
+                                        تيشيرت تدريب برو
+                                    </td>
+                                    <td>310</td>
+                                    <td>28</td>
+                                    <td><span class="badge bg-warning text-dark">مخزون منخفض</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50'><rect fill='%23c2c2c2' width='50' height='50'/><text x='50%' y='50%' fill='%23424242' dy='.3em' text-anchor='middle' font-size='10'>شورت</text></svg>" alt="منتج" class="product-img-sm">
+                                        شورت رياضي مريح
+                                    </td>
+                                    <td>240</td>
+                                    <td>0</td>
+                                    <td><span class="badge bg-danger">نفد المخزون</span></td>
+                                </tr>
+                                 <tr>
+                                    <td>
+                                        <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50'><rect fill='%23b3b3b3' width='50' height='50'/><text x='50%' y='50%' fill='%23212121' dy='.3em' text-anchor='middle' font-size='10'>كرة</text></svg>" alt="منتج" class="product-img-sm">
+                                        كرة قدم احترافية
+                                    </td>
+                                    <td>195</td>
+                                    <td>60</td>
+                                    <td><span class="badge bg-success">متوفر</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50'><rect fill='%23a4a4a4' width='50' height='50'/><text x='50%' y='50%' fill='%23000000' dy='.3em' text-anchor='middle' font-size='10'>جاكيت</text></svg>" alt="منتج" class="product-img-sm">
+                                        جاكيت تدريب مقاوم للماء
+                                    </td>
+                                    <td>150</td>
+                                    <td>85</td>
+                                    <td><span class="badge bg-success">متوفر</span></td>
+                                </tr>
+                                 <tr>
+                                    <td>
+                                        <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50'><rect fill='%23959595' width='50' height='50'/><text x='50%' y='50%' fill='%23000000' dy='.3em' text-anchor='middle' font-size='10'>قبعة</text></svg>" alt="منتج" class="product-img-sm">
+                                        قبعة رياضية بشعار MBA
+                                    </td>
+                                    <td>120</td>
+                                    <td>5</td>
+                                    <td><span class="badge bg-warning text-dark">مخزون منخفض</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="chart-container mt-4">
+                        <h5 class="text-muted mb-3">رسم بياني للمبيعات (أكثر 5 منتجات)</h5>
+                        <div class="chart-container">
+                           <canvas id="topSellingChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shipments & Quick Stats -->
+            <div class="col-lg-5 mb-4">
+                <div class="data-section-card mb-4">
+                    <h3><i class="fas fa-shipping-fast text-warning me-2"></i> حركة الشحنات</h3>
+                     <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active btn-outline-gold me-2" id="pills-incoming-tab" data-bs-toggle="pill" data-bs-target="#pills-incoming" type="button" role="tab" aria-controls="pills-incoming" aria-selected="true">الواردة</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link btn-outline-gold" id="pills-outgoing-tab" data-bs-toggle="pill" data-bs-target="#pills-outgoing" type="button" role="tab" aria-controls="pills-outgoing" aria-selected="false">الصادرة</button>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="pills-tabContent">
+                        <div class="tab-pane fade show active" id="pills-incoming" role="tabpanel" aria-labelledby="pills-incoming-tab">
+                            <table class="table table-sm table-dark-custom">
+                                <thead><tr><th>المنتج</th><th>الكمية</th><th>التاريخ المتوقع</th></tr></thead>
+                                <tbody>
+                                    <tr><td>حذاء رياضي فائق</td><td>75</td><td>2024-08-20</td></tr>
+                                    <tr><td>تيشيرت تدريب برو</td><td>120</td><td>2024-08-22</td></tr>
+                                    <tr><td>كرة قدم احترافية</td><td>100</td><td>2024-08-25</td></tr>
+                                    <tr><td>قبعة رياضية</td><td>200</td><td>2024-09-01</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="tab-pane fade" id="pills-outgoing" role="tabpanel" aria-labelledby="pills-outgoing-tab">
+                             <table class="table table-sm table-dark-custom">
+                                <thead><tr><th>رقم الطلب</th><th>المنتجات</th><th>الحالة</th></tr></thead>
+                                <tbody>
+                                    <tr><td>#ORD10238</td><td>2</td><td><span class="badge bg-info text-dark">قيد التجهيز</span></td></tr>
+                                    <tr><td>#ORD10239</td><td>1</td><td><span class="badge bg-success">تم الشحن</span></td></tr>
+                                    <tr><td>#ORD10240</td><td>5</td><td><span class="badge bg-warning text-dark">معلق</span></td></tr>
+                                    <tr><td>#ORD10241</td><td>2</td><td><span class="badge bg-success">تم الشحن</span></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="data-section-card">
+                    <h3><i class="fas fa-stopwatch text-warning me-2"></i> إحصائيات سريعة</h3>
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item bg-transparent d-flex justify-content-between align-items-center border-0 px-0">
+                           طلبات اليوم
+                           <span class="badge bg-primary rounded-pill fs-6">18</span>
+                        </div>
+                         <div class="list-group-item bg-transparent d-flex justify-content-between align-items-center border-0 px-0">
+                           إجمالي المبيعات (اليوم)
+                           <span class="badge bg-success rounded-pill fs-6">2,450 ر.س</span>
+                        </div>
+                        <div class="list-group-item bg-transparent d-flex justify-content-between align-items-center border-0 px-0">
+                           مستوى المخزون العام
+                           <div class="progress w-50" style="height: 10px;">
+                                <div class="progress-bar progress-bar-custom" role="progressbar" style="width: 68%;" aria-valuenow="68" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <span>68%</span>
+                        </div>
+                        <div class="list-group-item bg-transparent d-flex justify-content-between align-items-center border-0 px-0">
+                            متوسط قيمة الطلب
+                            <span class="badge bg-info text-dark rounded-pill fs-6">136 ر.س</span>
+                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Charts Row -->
+        <div class="row">
+            <div class="col-lg-6 col-md-12 mb-4">
+                <div class="data-section-card h-100">
+                    <h3><i class="fas fa-pie-chart text-warning me-2"></i> مستويات المخزون حسب الفئة</h3>
+                    <div class="chart-container" style="height: 320px;">
+                        <canvas id="stockByCategoryChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-12 mb-4">
+                <div class="data-section-card h-100">
+                    <h3><i class="fas fa-chart-line text-warning me-2"></i> اتجاه الشحنات (آخر 7 أيام)</h3>
+                     <div class="chart-container" style="height: 320px;">
+                        <canvas id="shipmentTrendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+             <div class="col-lg-12 mb-4">
+                <div class="data-section-card h-100">
+                    <h3><i class="fas fa-tasks text-warning me-2"></i> نظرة عامة على حالة المخزون</h3>
+                    <div class="chart-container" style="max-width: 400px; margin: auto; height: 320px;">
+                        <canvas id="inventoryStatusChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get CSS variables with fallback values
+            function getCSSVariable(varName, fallback) {
+                const value = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+                return value || fallback;
+            }
+
+            const primaryColor = getCSSVariable('--primary-color', '#ffc107');
+            const textColor = getCSSVariable('--text-color', '#ffffff');
+            const cardBg = getCSSVariable('--card-bg', '#2d3436');
+            const borderColor = getCSSVariable('--border-color', 'rgba(255, 255, 255, 0.2)');
+
+            // Chart.js Default Styling
+            Chart.defaults.color = textColor;
+            Chart.defaults.borderColor = borderColor;
+            Chart.defaults.font.family = 'Cairo, sans-serif';
+
+            // 1. Top Selling Products Chart (Bar Chart)
+            const topSellingCanvas = document.getElementById('topSellingChart');
+            if (topSellingCanvas) {
+                try {
+                    new Chart(topSellingCanvas, {
+                        type: 'bar',
+                        data: {
+                            labels: ['حذاء رياضي', 'تيشيرت تدريب', 'شورت رياضي', 'كرة قدم', 'جاكيت تدريب'],
+                            datasets: [{
+                                label: 'الوحدات المباعة',
+                                data: [385, 310, 240, 195, 150],
+                                backgroundColor: primaryColor,
+                                borderColor: primaryColor,
+                                borderWidth: 1,
+                                borderRadius: 5,
+                                hoverBackgroundColor: 'rgba(255, 193, 7, 0.8)'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    grid: {
+                                        color: 'rgba(255, 255, 255, 0.1)'
+                                    },
+                                    ticks: { 
+                                        color: textColor,
+                                        font: {
+                                            family: 'Cairo'
+                                        }
+                                    }
+                                },
+                                x: {
+                                    grid: {
+                                        display: false
+                                    },
+                                    ticks: { 
+                                        color: textColor,
+                                        font: {
+                                            family: 'Cairo'
+                                        }
+                                    }
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    display: false
+                                },
+                                tooltip: {
+                                    backgroundColor: cardBg,
+                                    titleColor: primaryColor,
+                                    bodyColor: textColor,
+                                    borderColor: borderColor,
+                                    borderWidth: 1
+                                }
+                            }
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error creating top selling chart:', error);
+                }
+            }
+
+            // 2. Stock Levels by Category (Doughnut Chart)
+            const stockByCategoryCanvas = document.getElementById('stockByCategoryChart');
+            if (stockByCategoryCanvas) {
+                try {
+                    new Chart(stockByCategoryCanvas, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['أحذية', 'ملابس علوية', 'ملابس سفلية', 'إكسسوارات', 'معدات'],
+                            datasets: [{
+                                label: 'توزيع المخزون',
+                                data: [450, 620, 350, 280, 150],
+                                backgroundColor: [
+                                    primaryColor,
+                                    'rgba(255, 193, 7, 0.75)',
+                                    'rgba(255, 193, 7, 0.55)',
+                                    'rgba(255, 193, 7, 0.35)',
+                                    'rgba(108, 117, 125, 0.6)'
+                                ],
+                                borderColor: cardBg,
+                                borderWidth: 2,
+                                hoverOffset: 8,
+                                hoverBorderColor: primaryColor
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                    labels: { 
+                                        color: textColor, 
+                                        boxWidth: 15, 
+                                        padding: 20,
+                                        font: {
+                                            family: 'Cairo'
+                                        }
+                                    }
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            let label = context.label || '';
+                                            if (label) {
+                                                label += ': ';
+                                            }
+                                            if (context.parsed !== null) {
+                                                label += context.parsed + ' قطعة';
+                                            }
+                                            return label;
+                                        }
+                                    },
+                                    backgroundColor: cardBg,
+                                    titleColor: primaryColor,
+                                    bodyColor: textColor,
+                                    borderColor: borderColor,
+                                    borderWidth: 1
+                                }
+                            }
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error creating stock category chart:', error);
+                }
+            }
+
+            // 3. Shipment Trends (Line Chart)
+            const shipmentTrendCanvas = document.getElementById('shipmentTrendChart');
+            if (shipmentTrendCanvas) {
+                try {
+                    new Chart(shipmentTrendCanvas, {
+                        type: 'line',
+                        data: {
+                            labels: ['السبت', 'الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'],
+                            datasets: [
+                                {
+                                    label: 'شحنات واردة',
+                                    data: [12, 19, 10, 22, 15, 25, 18],
+                                    borderColor: primaryColor,
+                                    backgroundColor: 'rgba(255, 193, 7, 0.15)',
+                                    tension: 0.4,
+                                    fill: true,
+                                    pointBackgroundColor: primaryColor,
+                                    pointRadius: 4, 
+                                    pointHoverRadius: 7,
+                                    pointBorderColor: cardBg,
+                                    pointBorderWidth: 2,
+                                    pointHoverBorderColor: primaryColor
+                                },
+                                {
+                                    label: 'شحنات صادرة',
+                                    data: [20, 25, 18, 30, 22, 35, 26],
+                                    borderColor: 'rgba(108, 117, 125, 0.8)',
+                                    backgroundColor: 'rgba(108, 117, 125, 0.15)',
+                                    tension: 0.4,
+                                    fill: true,
+                                    pointBackgroundColor: 'rgba(108, 117, 125, 0.8)',
+                                    pointRadius: 4,
+                                    pointHoverRadius: 7,
+                                    pointBorderColor: cardBg,
+                                    pointBorderWidth: 2,
+                                    pointHoverBorderColor: '#6c757d'
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    grid: { 
+                                        color: 'rgba(255, 255, 255, 0.08)' 
+                                    },
+                                    ticks: { 
+                                        color: textColor, 
+                                        padding: 10,
+                                        font: {
+                                            family: 'Cairo'
+                                        }
+                                    }
+                                },
+                                x: {
+                                    grid: { 
+                                        display: false 
+                                    },
+                                    ticks: { 
+                                        color: textColor, 
+                                        padding: 10,
+                                        font: {
+                                            family: 'Cairo'
+                                        }
+                                    }
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                    labels: { 
+                                        color: textColor, 
+                                        boxWidth: 15, 
+                                        padding: 20, 
+                                        usePointStyle: true,
+                                        font: {
+                                            family: 'Cairo'
+                                        }
+                                    }
+                                },
+                                tooltip: {
+                                    mode: 'index',
+                                    intersect: false,
+                                    backgroundColor: cardBg,
+                                    titleColor: primaryColor,
+                                    bodyColor: textColor,
+                                    borderColor: borderColor,
+                                    borderWidth: 1,
+                                    padding: 10,
+                                    titleMarginBottom: 6,
+                                    bodySpacing: 4
+                                }
+                            },
+                            interaction: {
+                                mode: 'nearest',
+                                axis: 'x',
+                                intersect: false
+                            }
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error creating shipment trend chart:', error);
+                }
+            }
+
+            // 4. Inventory Status Overview (Doughnut Chart)
+            const inventoryStatusCanvas = document.getElementById('inventoryStatusChart');
+            if (inventoryStatusCanvas) {
+                try {
+                    new Chart(inventoryStatusCanvas, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['متوفر', 'مخزون منخفض', 'نفد المخزون'],
+                            datasets: [{
+                                label: 'حالة المخزون',
+                                data: [1250, 310, 122],
+                                backgroundColor: [
+                                    'rgba(40, 167, 69, 0.8)',
+                                    'rgba(255, 193, 7, 0.8)',
+                                    'rgba(220, 53, 69, 0.8)'
+                                ],
+                                borderColor: cardBg,
+                                borderWidth: 2,
+                                hoverBackgroundColor: [
+                                    'rgba(40, 167, 69, 1)',
+                                    'rgba(255, 193, 7, 1)',
+                                    'rgba(220, 53, 69, 1)'
+                                ],
+                                hoverBorderWidth: 2,
+                                hoverBorderColor: textColor,
+                                hoverOffset: 10
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            cutout: '60%', 
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                    labels: { 
+                                        color: textColor, 
+                                        boxWidth: 15, 
+                                        padding: 20,
+                                        font: {
+                                            family: 'Cairo'
+                                        }
+                                    }
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            let label = context.label || '';
+                                            if (label) { 
+                                                label += ': '; 
+                                            }
+                                            if (context.parsed !== null) {
+                                                label += context.parsed + ' منتج';
+                                            }
+                                            return label;
+                                        }
+                                    },
+                                    backgroundColor: cardBg,
+                                    titleColor: primaryColor,
+                                    bodyColor: textColor,
+                                    borderColor: borderColor,
+                                    borderWidth: 1,
+                                    padding: 10
+                                }
+                            }
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error creating inventory status chart:', error);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

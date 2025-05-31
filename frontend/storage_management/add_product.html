@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إضافة منتج جديد - MBA</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ffc107; /* Gold */
+            --secondary-color: #1a1a1a; /* Dark background */
+            --text-color: #f8f9fa;
+            --card-bg: #23272b; /* Darker card background */
+            --border-color: rgba(255, 193, 7, 0.2);
+            --sidebar-width: 260px;
+        }
+        * {
+            font-family: 'Cairo', sans-serif;
+            scroll-behavior: smooth;
+        }
+        body {
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        #sidebar {
+            width: var(--sidebar-width);
+            background-color: #111315;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            transition: width 0.3s ease;
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1000;
+            border-left: 1px solid var(--border-color);
+        }
+        #sidebar .sidebar-header {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        #sidebar .sidebar-header i { margin-left: 10px; }
+        #sidebar .nav-link {
+            color: rgba(255,255,255,0.7);
+            padding: 10px 15px;
+            margin-bottom: 5px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+        }
+        #sidebar .nav-link i { margin-left: 12px; width: 20px; text-align: center; }
+        #sidebar .nav-link:hover, #sidebar .nav-link.active {
+            background-color: var(--primary-color);
+            color: #000;
+        }
+        #sidebar .nav-link:hover { transform: translateX(-5px); }
+        #sidebar .nav-link.active { font-weight: 700; box-shadow: 0 4px 15px rgba(255,193,7,0.2); }
+        #sidebar .nav-link.active i { color: #000; }
+        #sidebar .nav-item.logout { margin-top: auto; }
+        #main-content {
+            flex-grow: 1;
+            padding: 25px;
+            margin-right: var(--sidebar-width);
+            transition: margin-right 0.3s ease;
+        }
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .content-header h1 { color: var(--primary-color); font-size: 2rem; font-weight: 700; }
+        .btn-gold {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: #000;
+            font-weight: 600;
+        }
+        .btn-gold:hover { background-color: #e0a800; border-color: #d39e00; color: #000; }
+        .btn-outline-secondary-custom {
+            color: var(--text-color);
+            border-color: rgba(255,255,255,0.3);
+        }
+        .btn-outline-secondary-custom:hover {
+            color: #000;
+            background-color: rgba(255,255,255,0.7);
+            border-color: rgba(255,255,255,0.7);
+        }
+        .data-section-card {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .form-label { font-weight: 600; margin-bottom: 0.5rem; color: rgba(255,255,255,0.8);}
+        .form-control-dark, .form-select-dark {
+            background-color: #2a2f34;
+            color: var(--text-color);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+        }
+        .form-control-dark:focus, .form-select-dark:focus {
+            background-color: #2a2f34;
+            color: var(--text-color);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25);
+        }
+        .form-control-dark::placeholder { color: rgba(255,255,255,0.5); }
+        .form-check-input-dark:checked {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        .color-input-group .form-control-color {
+            width: 60px; /* More compact color picker */
+            height: calc(1.5em + 1rem + 2px); /* Match other input height */
+            padding: 0.25rem;
+        }
+        .image-preview-container {
+            width: 150px; height: 150px; 
+            border: 2px dashed var(--border-color); 
+            border-radius: 8px; 
+            display: flex; align-items: center; justify-content: center; 
+            background-color: #2a2f34; margin-top: 10px; overflow: hidden;
+        }
+        .image-preview-container img { max-width: 100%; max-height: 100%; object-fit: cover; }
+        .image-preview-container span { color: rgba(255,255,255,0.5); }
+
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            #sidebar { width: 100%; height: auto; position: static; border-left: none; border-bottom: 1px solid var(--border-color); }
+            #main-content { margin-right: 0; padding: 15px; }
+            .content-header { flex-direction: column; align-items: flex-start; }
+            .content-header h1 { font-size: 1.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <aside id="sidebar">
+        <div class="sidebar-header"><i class="fas fa-tachometer-alt"></i> MBA Admin</div>
+        <ul class="nav flex-column">
+            <li class="nav-item"><a class="nav-link" href="dashboard.html"><i class="fas fa-tachometer-alt fa-fw"></i> لوحة التحكم</a></li>
+            <li class="nav-item"><a class="nav-link active" href="products.html"><i class="fas fa-box-open fa-fw"></i> المنتجات</a></li>
+            <li class="nav-item"><a class="nav-link" href="low_stock_alerts.html"><i class="fas fa-exclamation-triangle fa-fw"></i> تنبيهات المخزون</a></li>
+            <li class="nav-item"><a class="nav-link" href="purchase_orders.html"><i class="fas fa-file-invoice-dollar fa-fw"></i> أوامر الشراء</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-shopping-cart fa-fw"></i> الطلبات</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-users fa-fw"></i> العملاء</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-chart-line fa-fw"></i> التقارير</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-truck fa-fw"></i> الشحنات</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-cog fa-fw"></i> الإعدادات</a></li>
+            <li class="nav-item logout"><a class="nav-link" href="#"><i class="fas fa-sign-out-alt fa-fw"></i> تسجيل الخروج</a></li>
+        </ul>
+    </aside>
+
+    <main id="main-content">
+        <div class="content-header">
+            <h1><i class="fas fa-plus-circle me-2"></i> إضافة منتج جديد</h1>
+            <a href="products.html" class="btn btn-outline-secondary-custom"><i class="fas fa-arrow-right me-2"></i> العودة لقائمة المنتجات</a>
+        </div>
+
+        <div class="data-section-card">
+            <form id="addProductForm">
+                <div class="row mb-3">
+                    <div class="col-md-8">
+                        <label for="productName" class="form-label">اسم المنتج <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control form-control-dark" id="productName" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="productBrand" class="form-label">العلامة التجارية</label>
+                        <input type="text" class="form-control form-control-dark" id="productBrand" placeholder="مثال: نايكي, أديداس">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-8">
+                        <label for="productSku" class="form-label">SKU <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control form-control-dark" id="productSku" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="productCategory" class="form-label">الفئة <span class="text-danger">*</span></label>
+                        <select class="form-select form-select-dark" id="productCategory" required>
+                            <option value="" disabled selected>اختر فئة...</option>
+                            <option value="shoes">أحذية</option>
+                            <option value="shirts">قمصان</option>
+                            <option value="pants">سراويل</option>
+                            <option value="accessories">إكسسوارات</option>
+                            <option value="equipment">معدات</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="productDescription" class="form-label">وصف المنتج</label>
+                    <textarea class="form-control form-control-dark" id="productDescription" rows="3"></textarea>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <label for="purchaseCost" class="form-label">تكلفة الشراء (ر.س)</label>
+                        <input type="number" step="0.01" class="form-control form-control-dark" id="purchaseCost" placeholder="0.00">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="productPrice" class="form-label">سعر البيع (ر.س) <span class="text-danger">*</span></label>
+                        <input type="number" step="0.01" class="form-control form-control-dark" id="productPrice" required placeholder="0.00">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="reorderLevel" class="form-label">مستوى إعادة الطلب</label>
+                        <input type="number" class="form-control form-control-dark" id="reorderLevel" placeholder="0">
+                    </div>
+                     <div class="col-md-3">
+                        <label for="productStock" class="form-label">إجمالي المخزون (سيحسب تلقائياً)</label>
+                        <input type="number" class="form-control form-control-dark" id="productStock" placeholder="0" readonly>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">المقاسات المتاحة (لتحديد خيارات الأصناف)</label>
+                        <div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input form-check-input-dark" type="checkbox" id="sizeS" value="S">
+                                <label class="form-check-label" for="sizeS">S</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input form-check-input-dark" type="checkbox" id="sizeM" value="M">
+                                <label class="form-check-label" for="sizeM">M</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input form-check-input-dark" type="checkbox" id="sizeL" value="L">
+                                <label class="form-check-label" for="sizeL">L</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input form-check-input-dark" type="checkbox" id="sizeXL" value="XL">
+                                <label class="form-check-label" for="sizeXL">XL</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input form-check-input-dark" type="checkbox" id="sizeOneSize" value="OneSize">
+                                <label class="form-check-label" for="sizeOneSize">مقاس واحد</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">الألوان المتاحة (لتحديد خيارات الأصناف)</label>
+                        <div id="colorInputsContainer" class="d-flex flex-wrap gap-2">
+                            <!-- Color inputs will be added here by JS -->
+                            <div class="color-input-group d-flex align-items-center">
+                                <input type="color" class="form-control form-control-color me-2" value="#000000" data-color-name="أسود">
+                                <input type="text" class="form-control form-control-dark form-control-sm w-auto" placeholder="اسم اللون" value="أسود">
+                                <button type="button" class="btn btn-sm btn-outline-danger ms-1 remove-color-btn" style="display:none;"><i class="fas fa-times"></i></button>
+                            </div>
+                        </div>
+                        <button type="button" id="addColorBtn" class="btn btn-sm btn-outline-gold mt-2"><i class="fas fa-plus"></i> إضافة لون آخر</button>
+                    </div>
+                </div>
+
+                <!-- Stock Variants Section -->
+                <div class="mb-3 data-section-card p-3" style="background-color: rgba(0,0,0,0.1);">
+                    <h5 class="mb-3 text-warning">مخزون الأصناف المتغيرة <span class="text-danger">*</span></h5>
+                    <div id="stockVariantsContainer">
+                        <!-- Variant rows will be added here by JS -->
+                        <div class="row stock-variant-row gx-2 gy-2 mb-2 align-items-center border-bottom pb-2 border-secondary">
+                            <div class="col-md-3">
+                                <label class="form-label form-label-sm">المقاس</label>
+                                <select class="form-select form-select-dark form-select-sm variant-size" required>
+                                    <option value="" disabled selected>اختر مقاس...</option>
+                                    <!-- Options will be populated by JS based on selected sizes -->
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label form-label-sm">اللون</label>
+                                <select class="form-select form-select-dark form-select-sm variant-color" required>
+                                    <option value="" disabled selected>اختر لون...</option>
+                                    <!-- Options will be populated by JS based on selected colors -->
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label form-label-sm">الكمية <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control form-control-dark form-control-sm variant-quantity" placeholder="0" min="0" required>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label form-label-sm">SKU لللإصدار</label>
+                                <input type="text" class="form-control form-control-dark form-control-sm variant-sku" placeholder="اختياري">
+                            </div>
+                            <div class="col-md-1 d-flex align-items-end">
+                                <button type="button" class="btn btn-sm btn-outline-danger remove-variant-btn" style="display:none;"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" id="addStockVariantBtn" class="btn btn-sm btn-gold mt-2"><i class="fas fa-plus"></i> إضافة صنف متغير</button>
+                </div>
+                <!-- End Stock Variants Section -->
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="supplierName" class="form-label">اسم المورد</label>
+                        <input type="text" class="form-control form-control-dark" id="supplierName" placeholder="مثال: مورد الأقمشة الدولي">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="warehouseLocation" class="form-label">موقع التخزين</label>
+                        <input type="text" class="form-control form-control-dark" id="warehouseLocation" placeholder="مثال: الرف A-01, المستودع الرئيسي">
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="productImage" class="form-label">صورة المنتج</label>
+                    <input class="form-control form-control-dark" type="file" id="productImage" accept="image/*">
+                    <div class="image-preview-container" id="imagePreview">
+                        <span><i class="fas fa-image fa-2x"></i></span>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end">
+                    <a href="products.html" class="btn btn-outline-secondary-custom me-2">إلغاء</a>
+                    <button type="submit" class="btn btn-gold"><i class="fas fa-save me-2"></i> حفظ المنتج</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const currentPath = window.location.pathname.split("/").pop();
+            const navLinks = document.querySelectorAll('#sidebar .nav-link');
+
+            navLinks.forEach(link => {
+                const linkHref = link.getAttribute('href');
+                link.classList.remove('active');
+
+                if (linkHref === currentPath) {
+                    link.classList.add('active');
+                } else if (currentPath === 'add_product.html' && linkHref === 'products.html') {
+                    link.classList.add('active');
+                } else if (currentPath.startsWith('edit_product.html') && linkHref === 'products.html') {
+                    link.classList.add('active');
+                } else if (currentPath === 'create_purchase_order.html' && linkHref === 'purchase_orders.html') {
+                    link.classList.add('active');
+                } else if (currentPath.startsWith('purchase_order_details.html') && linkHref === 'purchase_orders.html') {
+                    link.classList.add('active');
+                }
+            });
+
+            // Image preview handler
+            const productImageInput = document.getElementById('productImage');
+            const imagePreview = document.getElementById('imagePreview');
+            productImageInput.addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        imagePreview.innerHTML = `<img src="${e.target.result}" alt="Product Preview">`;
+                    }
+                    reader.readAsDataURL(file);
+                } else {
+                    imagePreview.innerHTML = '<span><i class="fas fa-image fa-2x"></i></span>';
+                }
+            });
+
+            // Dynamic color input fields
+            const addColorBtn = document.getElementById('addColorBtn');
+            const colorInputsContainer = document.getElementById('colorInputsContainer');
+            // let colorInputCount = 1; // No longer strictly needed if we count children
+
+            function createColorInput(colorValue = '#ffffff', colorName = '') {
+                // colorInputCount++; // Not essential
+                const newColorGroup = document.createElement('div');
+                newColorGroup.classList.add('color-input-group', 'd-flex', 'align-items-center', 'mb-2');
+                newColorGroup.innerHTML = `
+                    <input type="color" class="form-control form-control-color me-2" value="${colorValue}">
+                    <input type="text" class="form-control form-control-dark form-control-sm w-auto" placeholder="اسم اللون" value="${colorName}">
+                    <button type="button" class="btn btn-sm btn-outline-danger ms-1 remove-color-btn"><i class="fas fa-times"></i></button>
+                `;
+                colorInputsContainer.appendChild(newColorGroup);
+                const newColorNameInput = newColorGroup.querySelector('input[type="text"]');
+                const newColorPicker = newColorGroup.querySelector('input[type="color"]');
+                newColorPicker.addEventListener('input', () => {
+                    newColorPicker.dataset.colorName = newColorNameInput.value || newColorPicker.value;
+                    updateVariantColorOptions(); // Update variant dropdowns when colors change
+                });
+                newColorNameInput.addEventListener('change', () => {
+                    newColorPicker.dataset.colorName = newColorNameInput.value || newColorPicker.value;
+                     updateVariantColorOptions();
+                });
+                newColorPicker.dataset.colorName = newColorNameInput.value || newColorPicker.value; // Initial set
+
+                updateRemoveButtons();
+                updateVariantColorOptions();
+            }
+
+            function updateRemoveButtons() {
+                const allColorGroups = colorInputsContainer.querySelectorAll('.color-input-group');
+                allColorGroups.forEach((group, index) => {
+                    const removeButton = group.querySelector('.remove-color-btn');
+                    if (removeButton) {
+                        removeButton.style.display = (allColorGroups.length > 1) ? 'inline-block' : 'none';
+                        removeButton.onclick = function() {
+                            group.remove();
+                            updateRemoveButtons();
+                            updateVariantColorOptions(); // Update variant dropdowns when colors are removed
+                        };
+                    }
+                });
+            }
+            
+            addColorBtn.addEventListener('click', () => createColorInput('#ffffff', ''));
+            // Initialize listeners for the first pre-existing color input
+            const initialColorPicker = colorInputsContainer.querySelector('input[type="color"]');
+            const initialColorNameInput = colorInputsContainer.querySelector('input[type="text"]');
+            if(initialColorPicker && initialColorNameInput){
+                initialColorPicker.addEventListener('input', () => {
+                    initialColorPicker.dataset.colorName = initialColorNameInput.value || initialColorPicker.value;
+                    updateVariantColorOptions();
+                });
+                initialColorNameInput.addEventListener('change', () => {
+                     initialColorPicker.dataset.colorName = initialColorNameInput.value || initialColorPicker.value;
+                     updateVariantColorOptions();
+                });
+                 if(initialColorNameInput.value) initialColorPicker.dataset.colorName = initialColorNameInput.value;
+            }
+            updateRemoveButtons();
+
+            // --- Stock Variants Logic --- //
+            const addStockVariantBtn = document.getElementById('addStockVariantBtn');
+            const stockVariantsContainer = document.getElementById('stockVariantsContainer');
+            const availableSizeCheckboxes = document.querySelectorAll('.form-check-input[id^="size"]');
+
+            function getSelectedSizes() {
+                const sizes = [];
+                availableSizeCheckboxes.forEach(checkbox => {
+                    if (checkbox.checked) {
+                        sizes.push({ value: checkbox.value, text: checkbox.parentElement.querySelector('.form-check-label').textContent });
+                    }
+                });
+                return sizes;
+            }
+
+            function getDefinedColors() {
+                const colors = [];
+                colorInputsContainer.querySelectorAll('.color-input-group input[type="color"]').forEach(colorPicker => {
+                    colors.push({ value: colorPicker.value, text: colorPicker.dataset.colorName || colorPicker.value });
+                });
+                return colors;
+            }
+
+            function updateVariantSizeOptions(selectElement) {
+                const selectedSizes = getSelectedSizes();
+                let currentVal = selectElement.value;
+                selectElement.innerHTML = '<option value="" disabled>اختر مقاس...</option>';
+                selectedSizes.forEach(size => {
+                    const option = document.createElement('option');
+                    option.value = size.value;
+                    option.textContent = size.text;
+                    selectElement.appendChild(option);
+                });
+                if (selectedSizes.find(s => s.value === currentVal)) {
+                    selectElement.value = currentVal;
+                } else if (selectedSizes.length > 0 && selectElement.required) {
+                    selectElement.value = ""; // Reset if previous value no longer valid
+                } else if (selectedSizes.length === 0) {
+                     selectElement.innerHTML = '<option value="" disabled selected>حدد مقاسات متاحة أولاً</option>';
+                }
+                 if (selectElement.options.length > 1 && selectElement.value === "") selectElement.selectedIndex = 1; // Select first actual size if available and not set
+
+            }
+
+            function updateVariantColorOptions(selectElement) {
+                const definedColors = getDefinedColors();
+                let currentVal = selectElement ? selectElement.value : null;
+                const allVariantColorSelects = stockVariantsContainer.querySelectorAll('.variant-color');
+                
+                allVariantColorSelects.forEach(sel => {
+                    if(!selectElement || sel === selectElement) { // If specific element passed, update only it or all if null
+                        let localCurrentVal = sel.value;
+                        sel.innerHTML = '<option value="" disabled>اختر لون...</option>';
+                        definedColors.forEach(color => {
+                            const option = document.createElement('option');
+                            option.value = color.value; // Store hex value
+                            option.textContent = color.text; // Display name or hex
+                            option.style.backgroundColor = color.value; // Show color in dropdown
+                            option.style.color = isColorDark(color.value) ? '#FFF' : '#000'; // Adjust text for visibility
+                            sel.appendChild(option);
+                        });
+                        if (definedColors.find(c => c.value === localCurrentVal)) {
+                            sel.value = localCurrentVal;
+                        } else if (definedColors.length > 0 && sel.required) {
+                            sel.value = "";
+                        } else if (definedColors.length === 0) {
+                            sel.innerHTML = '<option value="" disabled selected>حدد ألوان متاحة أولاً</option>';
+                        }
+                        if (sel.options.length > 1 && sel.value === "") sel.selectedIndex = 1; 
+                    }
+                });
+            }
+            
+            function isColorDark(hexColor) {
+                const hex = hexColor.replace('#', '');
+                const r = parseInt(hex.substring(0, 2), 16);
+                const g = parseInt(hex.substring(2, 4), 16);
+                const b = parseInt(hex.substring(4, 6), 16);
+                const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+                return brightness < 128;
+            }
+
+
+            availableSizeCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', () => {
+                    stockVariantsContainer.querySelectorAll('.variant-size').forEach(sel => updateVariantSizeOptions(sel));
+                });
+            });
+
+            function createStockVariantRow() {
+                const newVariantRow = document.createElement('div');
+                newVariantRow.classList.add('row', 'stock-variant-row', 'gx-2', 'gy-2', 'mb-2', 'align-items-center', 'border-bottom', 'pb-2', 'border-secondary');
+                newVariantRow.innerHTML = `
+                    <div class="col-md-3">
+                        <label class="form-label form-label-sm d-md-none">المقاس</label>
+                        <select class="form-select form-select-dark form-select-sm variant-size" required>
+                            <option value="" disabled selected>اختر مقاس...</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label form-label-sm d-md-none">اللون</label>
+                        <select class="form-select form-select-dark form-select-sm variant-color" required>
+                            <option value="" disabled selected>اختر لون...</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label form-label-sm d-md-none">الكمية</label>
+                        <input type="number" class="form-control form-control-dark form-control-sm variant-quantity" placeholder="0" min="0" required>
+                    </div>
+                     <div class="col-md-2">
+                        <label class="form-label form-label-sm d-md-none">SKU للإصدار</label>
+                        <input type="text" class="form-control form-control-dark form-control-sm variant-sku" placeholder="اختياري">
+                    </div>
+                    <div class="col-md-1 d-flex align-items-end">
+                        <button type="button" class="btn btn-sm btn-outline-danger remove-variant-btn"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
+                stockVariantsContainer.appendChild(newVariantRow);
+                const sizeSelect = newVariantRow.querySelector('.variant-size');
+                const colorSelect = newVariantRow.querySelector('.variant-color');
+                const quantityInput = newVariantRow.querySelector('.variant-quantity');
+
+                updateVariantSizeOptions(sizeSelect);
+                updateVariantColorOptions(colorSelect);
+                updateRemoveVariantButtons();
+                
+                quantityInput.addEventListener('input', updateTotalStock);
+            }
+
+            function updateRemoveVariantButtons() {
+                const removeButtons = stockVariantsContainer.querySelectorAll('.remove-variant-btn');
+                removeButtons.forEach(btn => {
+                    btn.style.display = (stockVariantsContainer.children.length > 1) ? 'inline-block' : 'none';
+                    btn.onclick = function() {
+                        this.closest('.stock-variant-row').remove();
+                        updateRemoveVariantButtons();
+                        updateTotalStock();
+                    };
+                });
+                if (stockVariantsContainer.children.length === 1) {
+                    const firstRemoveBtn = stockVariantsContainer.querySelector('.remove-variant-btn');
+                    if(firstRemoveBtn) firstRemoveBtn.style.display = 'none';
+                }
+            }
+            
+            function updateTotalStock() {
+                let total = 0;
+                stockVariantsContainer.querySelectorAll('.variant-quantity').forEach(input => {
+                    total += parseInt(input.value) || 0;
+                });
+                document.getElementById('productStock').value = total;
+            }
+
+            addStockVariantBtn.addEventListener('click', createStockVariantRow);
+            // Initialize the first variant row and its options
+            const firstVariantRow = stockVariantsContainer.querySelector('.stock-variant-row');
+            if (firstVariantRow) {
+                updateVariantSizeOptions(firstVariantRow.querySelector('.variant-size'));
+                updateVariantColorOptions(firstVariantRow.querySelector('.variant-color'));
+                firstVariantRow.querySelector('.variant-quantity').addEventListener('input', updateTotalStock);
+            }
+            updateRemoveVariantButtons();
+            updateTotalStock(); // Initial calculation if any default values
+
+            // Form submission (placeholder)
+            document.getElementById('addProductForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                // In a real application, you would gather form data and send it to the server.
+                alert('تم حفظ المنتج (تجريبي)!'); 
+                // Optionally, redirect or clear form: this.reset(); imagePreview.innerHTML = '<span><i class="fas fa-image fa-2x"></i></span>';
+            });
+        });
+    </script>
+</body>
+</html> 

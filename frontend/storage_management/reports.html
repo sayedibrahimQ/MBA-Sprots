@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>صفحة التقارير - MBA</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ffc107; /* Gold */
+            --secondary-color: #1a1a1a; /* Dark background */
+            --text-color: #f8f9fa;
+            --card-bg: #23272b; /* Darker card background */
+            --border-color: rgba(255, 193, 7, 0.2);
+            --sidebar-width: 260px;
+        }
+
+        * {
+            font-family: 'Cairo', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        #sidebar {
+            width: var(--sidebar-width);
+            background-color: #111315;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            transition: width 0.3s ease;
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1000;
+            border-left: 1px solid var(--border-color);
+        }
+
+        #sidebar .sidebar-header {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        #sidebar .sidebar-header i { margin-left: 10px; }
+
+        #sidebar .nav-link {
+            color: rgba(255,255,255,0.7);
+            padding: 10px 15px;
+            margin-bottom: 5px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+        }
+        #sidebar .nav-link i { margin-left: 12px; width: 20px; text-align: center; }
+
+        #sidebar .nav-link:hover,
+        #sidebar .nav-link.active {
+            background-color: var(--primary-color);
+            color: #000;
+        }
+        #sidebar .nav-link:hover {  transform: translateX(-5px); }
+        #sidebar .nav-link.active { font-weight: 700; box-shadow: 0 4px 15px rgba(255,193,7,0.2); }
+        #sidebar .nav-link.active i { color: #000; }
+        
+        #sidebar .nav-item.logout { margin-top: auto; }
+
+        #main-content {
+            flex-grow: 1;
+            padding: 25px;
+            margin-right: var(--sidebar-width);
+            transition: margin-right 0.3s ease;
+        }
+        
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .content-header h1 {
+            color: var(--primary-color);
+            font-size: 2rem;
+            font-weight: 700;
+        }
+         .content-header .btn-group .btn {
+            font-size: 0.85rem;
+        }
+        
+        .btn-gold {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: #000;
+            font-weight: 600;
+        }
+        .btn-gold:hover {
+            background-color: #e0a800;
+            border-color: #d39e00;
+            color: #000;
+        }
+        .btn-outline-gold {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        .btn-outline-gold:hover {
+            color: var(--secondary-color);
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .data-section-card {
+            background-color: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .data-section-card .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .data-section-card .report-header h3 {
+            color: var(--primary-color);
+            font-size: 1.3rem;
+            margin-bottom: 0;
+            font-weight: 600;
+        }
+        .table-dark-custom {
+            background-color: transparent;
+            color: var(--text-color);
+        }
+        .table-dark-custom th {
+            background-color: rgba(0,0,0,0.3);
+            color: var(--primary-color);
+            font-weight: 600;
+            border-bottom: 2px solid var(--border-color) !important;
+        }
+        .table-dark-custom td, .table-dark-custom th {
+            border-color: var(--border-color);
+            vertical-align: middle;
+        }
+        .table-dark-custom tbody tr:hover {
+            background-color: rgba(255, 193, 7, 0.05);
+        }
+        .product-img-sm {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-left: 10px;
+            border: 1px solid var(--border-color);
+        }
+        .form-control-dark, .form-select-dark {
+            background-color: #2a2f34;
+            color: var(--text-color);
+            border-color: var(--border-color);
+        }
+        .form-control-dark:focus, .form-select-dark:focus {
+            background-color: #2a2f34;
+            color: var(--text-color);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25);
+        }
+        .chart-placeholder {
+            background-color: rgba(255,255,255,0.05);
+            border: 1px dashed var(--border-color);
+            border-radius: 8px;
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255,255,255,0.5);
+        }
+
+        /* Custom Bar Chart Styles */
+        .bar-chart-container {
+            display: flex;
+            flex-wrap: wrap; /* Allow product groups to wrap */
+            align-items: flex-end;
+            justify-content: flex-start; /* Start items from left, let them wrap */
+            /* height: 250px; */ /* Let height be auto based on content after filter + legend */
+            min-height: 250px; /* Ensure it has some minimum height */
+            padding: 10px; /* Reduced top/bottom padding */
+            background-color: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            direction: ltr; /* Ensure chart is LTR even in RTL page */
+            overflow: hidden; /* Prevent internal scrollbars on this container */
+        }
+        .bar-chart-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin: 0 5px; /* Space between groups */
+            position: relative; /* For absolute positioning of labels if needed */
+        }
+        .bars-wrapper {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center; /* Center bars within the group */
+            height: 210px; /* Explicit height for bars to grow within */
+            border-bottom: 1px solid var(--border-color); /* X-axis */
+            border-left: 1px solid var(--border-color);   /* Y-axis */
+            padding-left: 5px; /* Small padding so bars don't touch Y-axis */
+            padding-bottom: 1px; /* Prevent bars sitting directly on X-axis line */
+            position: relative; /* For potential grid lines later */
+        }
+        .bar-chart-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* For horizontal alignment if bar was narrower */
+            justify-content: flex-end; /* Push .bar child to the bottom */
+            width: 35px; /* Width of each bar */
+            margin: 0 2px; /* Space between bars in a group */
+            height: 100%; /* Take full height of .bars-wrapper (210px) */
+        }
+        .bar {
+            width: 100%; /* Bar takes full width of .bar-chart-item */
+            background-color: var(--primary-color);
+            /* margin-bottom: 5px; */ /* Removed as justify-content on parent handles bottom alignment */
+            border-radius: 4px 4px 0 0;
+            transition: height 0.5s ease-in-out;
+            position: relative;
+            min-height: 1px; /* Ensure bar is at least minimally visible if height calc fails */
+        }
+        .bar.inventory {
+            background-color: #6c757d; /* A different color for inventory - Bootstrap secondary */
+        }
+        .bar .bar-value {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            color: var(--text-color);
+            font-weight: bold;
+        }
+        .bar-label {
+            font-size: 0.75rem;
+            color: var(--text-color);
+            margin-top: 5px;
+            word-wrap: break-word;
+        }
+        /* End Custom Bar Chart Styles */
+
+        /* Custom Line Chart Styles */
+        .line-chart-container {
+            display: grid;
+            grid-template-areas:
+                "y-labels chart-area"
+                ".        x-labels";
+            grid-template-columns: 80px 1fr; /* Increased Y-labels width */
+            grid-template-rows: 300px 40px;  /* Fixed chart area height and X-labels height */
+            gap: 0; /* Remove gaps between grid areas */
+            padding: 15px;
+            background-color: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            position: relative;
+            direction: ltr;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        #inventoryValuationChartYLabels {
+            grid-area: y-labels;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding-right: 15px;
+            padding-top: 0;
+            padding-bottom: 0;
+            position: relative;
+        }
+
+        #inventoryValuationChartPoints {
+            grid-area: chart-area;
+            position: relative;
+            border-left: 2px solid var(--border-color);
+            border-bottom: 2px solid var(--border-color);
+            background-color: rgba(0,0,0,0.1);
+            width: 100%;
+            height: 100%;
+            overflow: hidden; /* Prevent elements from going outside */
+            box-sizing: border-box;
+        }
+
+        #inventoryValuationChartXLabels {
+            grid-area: x-labels;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding-top: 10px;
+            padding-left: 0;
+            padding-right: 0;
+            position: relative;
+        }
+
+        /* Chart point and line styles - these are applied by JavaScript */
+        .line-chart-point {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--primary-color);
+            border: 2px solid #fff;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 10;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .line-chart-line {
+            position: absolute;
+            height: 2px;
+            background: var(--primary-color);
+            z-index: 5;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        /* Tooltip styles */
+        .line-chart-point:hover::after {
+            content: attr(title);
+            position: absolute;
+            bottom: 120%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            white-space: nowrap;
+            z-index: 20;
+        }
+
+        .line-chart-point:hover::before {
+            content: '';
+            position: absolute;
+            bottom: 110%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 4px solid transparent;
+            border-top-color: rgba(0,0,0,0.8);
+            z-index: 19;
+        }
+
+        /* Chart label styles */
+        .chart-label-x,
+        .chart-label-y {
+            font-size: 11px;
+            color: #999;
+            font-weight: 500;
+        }
+
+        .chart-label-y {
+            text-align: right;
+            line-height: 1;
+        }
+
+        .chart-label-x {
+            text-align: center;
+        }
+
+        /* Wrapper for product performance chart to control overflow and ensure it fits */
+        .table-responsive.chart-section-wrapper {
+            overflow-x: hidden !important; 
+            width: 100%;
+            box-sizing: border-box;
+            padding: 0; /* Remove default padding if any from table-responsive that might affect width */
+        }
+
+        /* End Custom Line Chart Styles */
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            #sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+                border-left: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+            #main-content {
+                margin-right: 0;
+                padding: 15px;
+            }
+            .content-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+             .content-header h1 { font-size: 1.6rem; }
+             .content-header .btn-group { margin-top:10px; width:100%; }
+             .content-header .btn-group .btn { flex-grow:1; }
+             .data-section-card .report-header {
+                flex-direction: column;
+                align-items: flex-start;
+             }
+             .data-section-card .report-header .btn-group {
+                margin-top: 10px;
+                width: 100%;
+             }
+             .data-section-card .report-header .btn-group .btn { flex-grow:1; }
+
+             /* Mobile chart adjustments */
+             .line-chart-container {
+                grid-template-columns: 60px 1fr;
+                grid-template-rows: 250px 35px;
+                padding: 10px;
+             }
+             
+             #inventoryValuationChartYLabels {
+                padding-right: 10px;
+             }
+             
+             .chart-label-x,
+             .chart-label-y {
+                font-size: 10px;
+             }
+        }
+    </style>
+</head>
+<body>
+    <aside id="sidebar">
+        <div class="sidebar-header">
+            <i class="fas fa-tachometer-alt"></i> MBA Admin
+        </div>
+        <ul class="nav flex-column">
+            <li class="nav-item"><a class="nav-link" href="dashboard.html"><i class="fas fa-tachometer-alt fa-fw"></i> لوحة التحكم</a></li>
+            <li class="nav-item"><a class="nav-link" href="products.html"><i class="fas fa-box-open fa-fw"></i> المنتجات</a></li>
+            <li class="nav-item"><a class="nav-link" href="low_stock_alerts.html"><i class="fas fa-exclamation-triangle fa-fw"></i> تنبيهات المخزون</a></li>
+            <li class="nav-item"><a class="nav-link" href="purchase_orders.html"><i class="fas fa-file-invoice-dollar fa-fw"></i> أوامر الشراء</a></li>
+            <li class="nav-item"><a class="nav-link" href="returns_restocking.html"><i class="fas fa-undo-alt fa-fw"></i> المرتجعات وإعادة التخزين</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-shopping-cart fa-fw"></i> الطلبات</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-users fa-fw"></i> العملاء</a></li>
+            <li class="nav-item"><a class="nav-link active" href="reports.html"><i class="fas fa-chart-line fa-fw"></i> التقارير</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-truck fa-fw"></i> الشحنات</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-cog fa-fw"></i> الإعدادات</a></li>
+            <li class="nav-item logout"><a class="nav-link" href="#"><i class="fas fa-sign-out-alt fa-fw"></i> تسجيل الخروج</a></li>
+        </ul>
+    </aside>
+
+    <main id="main-content">
+        <div class="content-header">
+            <h1><i class="fas fa-chart-pie me-2"></i> صفحة التقارير</h1>
+             <div class="btn-group">
+                <button type="button" class="btn btn-sm btn-outline-gold"><i class="far fa-file-pdf me-1"></i> تحميل كل التقارير (PDF)</button>
+                <button type="button" class="btn btn-sm btn-outline-gold"><i class="far fa-file-excel me-1"></i> تحميل كل التقارير (Excel)</button>
+            </div>
+        </div>
+
+        <!-- Inventory Report (Stock Levels) -->
+        <div class="data-section-card">
+            <div class="report-header">
+                <h3><i class="fas fa-boxes me-2"></i> تقرير المخزون (مستويات المخزون)</h3>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-outline-gold"><i class="far fa-file-pdf me-1"></i> PDF</button>
+                    <button type="button" class="btn btn-sm btn-outline-gold"><i class="far fa-file-excel me-1"></i> Excel</button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-dark-custom table-hover">
+                    <thead>
+                        <tr>
+                            <th>المنتج</th>
+                            <th>SKU</th>
+                            <th>الفئة</th>
+                            <th>الكمية الحالية</th>
+                            <th>حالة المخزون</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50'><rect fill='%23e0e0e0' width='50' height='50'/><text x='50%' y='50%' fill='%23757575' dy='.3em' text-anchor='middle' font-size='10'>منتج</text></svg>" alt="Product" class="product-img-sm"> حذاء رياضي ألفا</td>
+                            <td>MBA-SHOE-001</td>
+                            <td>أحذية</td>
+                            <td>120</td>
+                            <td><span class="badge bg-success">متوفر</span></td>
+                        </tr>
+                        <tr>
+                             <td><img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50'><rect fill='%23d1d1d1' width='50' height='50'/><text x='50%' y='50%' fill='%23616161' dy='.3em' text-anchor='middle' font-size='10'>منتج</text></svg>" alt="Product" class="product-img-sm"> تيشيرت تدريب برو</td>
+                            <td>MBA-TSHIRT-005</td>
+                            <td>قمصان</td>
+                            <td>8</td>
+                            <td><span class="badge bg-warning text-dark">مخزون منخفض</span></td>
+                        </tr>
+                        <tr>
+                             <td><img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50'><rect fill='%23c2c2c2' width='50' height='50'/><text x='50%' y='50%' fill='%23424242' dy='.3em' text-anchor='middle' font-size='10'>منتج</text></svg>" alt="Product" class="product-img-sm"> شورت رياضي مريح</td>
+                            <td>MBA-SHORT-003</td>
+                            <td>سراويل</td>
+                            <td>0</td>
+                            <td><span class="badge bg-danger">نفد المخزون</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Stock Movement Report -->
+        <div class="data-section-card">
+            <div class="report-header">
+                <h3><i class="fas fa-exchange-alt me-2"></i> تقرير حركة المخزون (داخل/خارج)</h3>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-outline-gold"><i class="far fa-file-pdf me-1"></i> PDF</button>
+                    <button type="button" class="btn btn-sm btn-outline-gold"><i class="far fa-file-excel me-1"></i> Excel</button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-dark-custom table-hover">
+                    <thead>
+                        <tr>
+                            <th>المنتج</th>
+                            <th>التاريخ والوقت</th>
+                            <th>النوع</th>
+                            <th>الكمية</th>
+                            <th>المرجع (طلب/أمر شراء)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>حذاء رياضي ألفا</td>
+                            <td>2024-07-30 10:15</td>
+                            <td><span class="badge bg-success">داخل</span></td>
+                            <td>50</td>
+                            <td>PO-2024-001</td>
+                        </tr>
+                        <tr>
+                            <td>تيشيرت تدريب برو</td>
+                            <td>2024-07-30 14:30</td>
+                            <td><span class="badge bg-danger">خارج</span></td>
+                            <td>5</td>
+                            <td>ORD-10255</td>
+                        </tr>
+                         <tr>
+                            <td>حذاء رياضي ألفا</td>
+                            <td>2024-07-31 09:00</td>
+                            <td><span class="badge bg-danger">خارج</span></td>
+                            <td>2</td>
+                            <td>ORD-10258</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Low-Stock Items Report -->
+        <div class="data-section-card">
+            <div class="report-header">
+                <h3><i class="fas fa-exclamation-triangle me-2"></i> تقرير المنتجات ذات المخزون المنخفض</h3>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-outline-gold"><i class="far fa-file-pdf me-1"></i> PDF</button>
+                    <button type="button" class="btn btn-sm btn-outline-gold"><i class="far fa-file-excel me-1"></i> Excel</button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                 <table class="table table-dark-custom table-hover">
+                    <thead>
+                        <tr>
+                            <th>المنتج</th>
+                            <th>SKU</th>
+                            <th>الكمية الحالية</th>
+                            <th>حد إعادة الطلب</th>
+                            <th>الحالة</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>تيشيرت تدريب برو</td>
+                            <td>MBA-TSHIRT-005</td>
+                            <td>8</td>
+                            <td>10</td>
+                            <td><span class="badge bg-warning text-dark">تحت الحد</span></td>
+                        </tr>
+                        <tr>
+                            <td>قبعة رياضية بشعار MBA</td>
+                            <td>MBA-ACC-012</td>
+                            <td>3</td>
+                            <td>5</td>
+                             <td><span class="badge bg-warning text-dark">تحت الحد</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Product Performance (Sales vs. Inventory) -->
+        <div class="data-section-card">
+            <div class="report-header">
+                <h3><i class="fas fa-chart-line me-2"></i> تقرير أداء المنتج (المبيعات مقابل المخزون)</h3>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-outline-gold"><i class="far fa-file-pdf me-1"></i> PDF</button>
+                    <button type="button" class="btn btn-sm btn-outline-gold"><i class="far fa-file-excel me-1"></i> Excel</button>
+                </div>
+            </div>
+            <p class="text-muted">يتضمن هذا التقرير عادةً مخططات ورسوم بيانية. سيتم عرض البيانات الجدولية كعينة.</p>
+            <div class="table-responsive chart-section-wrapper">
+                <table class="table table-dark-custom table-hover">
+                    <thead>
+                        <tr>
+                            <th>المنتج</th>
+                            <th>الوحدات المباعة (آخر 30 يوم)</th>
+                            <th>الإيرادات (آخر 30 يوم)</th>
+                            <th>المخزون الحالي</th>
+                            <th>معدل البيع (%)</th> 
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>حذاء رياضي ألفا</td>
+                            <td>85</td>
+                            <td>25,415 ر.س</td>
+                            <td>120</td>
+                            <td>41.46%</td> <!-- (85 / (120+85)) * 100 -->
+                        </tr>
+                        <tr>
+                            <td>تيشيرت تدريب برو</td>
+                            <td>150</td>
+                            <td>19,425 ر.س</td>
+                            <td>8</td>
+                            <td>94.93%</td> <!-- (150 / (8+150)) * 100 -->
+                        </tr>
+                    </tbody>
+                </table>
+                <!-- Filter for Product Performance Chart -->
+                <div class="row mb-2">
+                    <div class="col-md-4">
+                        <label for="productPerformanceFilter" class="form-label form-label-sm">فلترة حسب المنتج:</label>
+                        <select id="productPerformanceFilter" class="form-select form-select-sm form-control-dark">
+                            <!-- Options will be populated by JavaScript -->
+                        </select>
+                    </div>
+                </div>
+                <!-- Legend for Grouped Bar Chart -->
+                <div class="mt-1 mb-2 text-center" style="font-size: 0.9rem;">
+                    <span style="display: inline-block; width: 12px; height: 12px; background-color: var(--primary-color); border-radius: 2px; margin-left: 5px; margin-right: 2px;"></span> الوحدات المباعة
+                    <span style="display: inline-block; width: 12px; height: 12px; background-color: #6c757d; border-radius: 2px; margin-left: 15px; margin-right: 2px;"></span> المخزون الحالي
+                </div>
+                <!-- Grouped Bar Chart for Product Performance -->
+                <div class="bar-chart-container mt-1">
+                    <div class="bar-chart-group">
+                        <div class="bars-wrapper">
+                            <div class="bar-chart-item">
+                                <div class="bar" style="height: 56.67%;" title="الوحدات المباعة: 85">
+                                    <span class="bar-value">85</span>
+                                </div>
+                            </div>
+                            <div class="bar-chart-item">
+                                <div class="bar inventory" style="height: 80%;" title="المخزون الحالي: 120">
+                                    <span class="bar-value">120</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bar-label mt-2">حذاء رياضي ألفا</div>
+                    </div>
+                    <div class="bar-chart-group">
+                        <div class="bars-wrapper">
+                            <div class="bar-chart-item">
+                                <div class="bar" style="height: 100%;" title="الوحدات المباعة: 150">
+                                    <span class="bar-value">150</span>
+                                </div>
+                            </div>
+                            <div class="bar-chart-item">
+                                <div class="bar inventory" style="height: 5.33%;" title="المخزون الحالي: 8">
+                                    <span class="bar-value">8</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bar-label mt-2">تيشيرت تدريب برو</div>
+                    </div>
+                    <!-- Add more groups as needed for other products -->
+                     <div class="bar-chart-group">
+                        <div class="bars-wrapper">
+                            <div class="bar-chart-item">
+                                <div class="bar" style="height: 30%;" title="الوحدات المباعة: 45">
+                                    <span class="bar-value">45</span>
+                                </div>
+                            </div>
+                            <div class="bar-chart-item">
+                                <div class="bar inventory" style="height: 50%;" title="المخزون الحالي: 75">
+                                    <span class="bar-value">75</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bar-label mt-2">منتج وهمي أ</div>
+                    </div>
+                </div>
+                <!-- End Grouped Bar Chart -->
+            </div>
+        </div>
+
+        <!-- Inventory Valuation Over Time Report -->
+        <div class="data-section-card">
+            <div class="report-header">
+                 <h3><i class="fas fa-dollar-sign me-2"></i> تقرير تقييم المخزون عبر الزمن</h3>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-outline-gold"><i class="far fa-file-pdf me-1"></i> PDF</button>
+                    <button type="button" class="btn btn-sm btn-outline-gold"><i class="far fa-file-excel me-1"></i> Excel</button>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="valuationPeriod" class="form-label">اختر الفترة:</label>
+                <select id="valuationPeriod" class="form-select form-select-dark w-auto d-inline-block">
+                    <option selected>آخر 30 يومًا</option>
+                    <option>آخر 3 أشهر</option>
+                    <option>آخر 6 أشهر</option>
+                    <option>هذا العام</option>
+                </select>
+            </div>
+            <!-- Line Chart for Inventory Valuation -->
+            <div class="line-chart-container mt-3">
+                <div class="line-chart-labels-y" id="inventoryValuationChartYLabels">
+                    <!-- Y-axis labels will be added by JS -->
+                </div>
+                <div class="line-chart-points" id="inventoryValuationChartPoints">
+                    <!-- Points will be added by JS -->
+                </div>
+                <div class="line-chart-labels-x" id="inventoryValuationChartXLabels">
+                    <!-- X-axis labels will be added by JS -->
+                </div>
+            </div>
+            <!-- End Line Chart -->
+            <div class="table-responsive mt-3">
+                <table class="table table-sm table-dark-custom">
+                    <thead><tr><th>التاريخ</th><th>قيمة المخزون (ر.س)</th><th>التغيير عن الفترة السابقة</th></tr></thead>
+                    <tbody>
+                        <tr><td>2024-07-01</td><td>450,000</td><td>-</td></tr>
+                        <tr><td>2024-07-15</td><td>435,500</td><td class="text-danger">-14,500</td></tr>
+                        <tr><td>2024-07-30</td><td>412,500</td><td class="text-danger">-23,000</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Navigation active state handler
+            function setActiveNavigation() {
+                const currentPath = window.location.pathname.split("/").pop();
+                const navLinks = document.querySelectorAll('#sidebar .nav-link');
+                
+                navLinks.forEach(link => {
+                    const linkPath = link.getAttribute('href');
+                    link.classList.remove('active');
+                    
+                    if (linkPath === currentPath) {
+                        link.classList.add('active');
+                    } else if (isParentActive(currentPath, linkPath)) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+    
+            // Helper function to check if parent navigation should be active
+            function isParentActive(currentPath, linkPath) {
+                const parentChildMap = {
+                    'products.html': ['add_product.html', 'edit_product.html'],
+                    'purchase_orders.html': ['create_purchase_order.html', 'purchase_order_details.html']
+                };
+    
+                if (parentChildMap[linkPath]) {
+                    return parentChildMap[linkPath].some(childPath => 
+                        currentPath === childPath || currentPath.startsWith(childPath.split('.')[0])
+                    );
+                }
+                return false;
+            }
+    
+            // Inventory Valuation Chart
+            function initializeInventoryValuationChart() {
+                const pointsContainer = document.getElementById('inventoryValuationChartPoints');
+                const labelsXContainer = document.getElementById('inventoryValuationChartXLabels');
+                const labelsYContainer = document.getElementById('inventoryValuationChartYLabels');
+
+                if (!pointsContainer || !labelsXContainer || !labelsYContainer) {
+                    console.warn('Chart component(s) not found. Cannot initialize.');
+                    return;
+                }
+
+                // Static data for the example
+                const chartData = [
+                    { date: '01-07', value: 450000 }, { date: '15-07', value: 435500 },
+                    { date: '30-07', value: 412500 }, { date: '15-08', value: 420000 },
+                    { date: '30-08', value: 460000 }
+                ];
+
+                function calculateRange(data) {
+                    const values = data.map(point => point.value);
+                    let minOriginal = Math.min(...values);
+                    let maxOriginal = Math.max(...values);
+                    let minValue, maxValue;
+
+                    if (minOriginal === maxOriginal) {
+                        if (minOriginal === 0) { minValue = 0; maxValue = 100; } // Arbitrary range for flat zero line
+                        else { 
+                            const padding = Math.abs(minOriginal) * 0.2 || 10; // Ensure some padding
+                            minValue = minOriginal - padding;
+                            maxValue = maxOriginal + padding; 
+                        }
+                    } else {
+                        const padding = (maxOriginal - minOriginal) * 0.1; // 10% padding
+                        minValue = Math.max(0, minOriginal - padding); // Don't go below 0 for financial data
+                        maxValue = maxOriginal + padding;
+                    }
+                    // Ensure there's always some range, even after padding if values were close or zero
+                    if (minValue === maxValue) maxValue = minValue + 10;
+                    return { minValue, maxValue, valueRange: maxValue - minValue };
+                }
+
+                function drawSVGArea(data, minValue, valueRange, container, chartWidth, chartHeight) {
+                    if (valueRange <= 0 || chartWidth <= 0 || chartHeight <= 0 || data.length < 1) return;
+                    let pathD = `M 0 ${chartHeight}`;
+                    data.forEach((point, index) => {
+                        const x = (data.length === 1) ? chartWidth / 2 : (index / (data.length - 1)) * chartWidth;
+                        let yValue = ((point.value - minValue) / valueRange) * chartHeight;
+                        const y = chartHeight - Math.max(0, Math.min(yValue, chartHeight)); // Clamp to bounds
+                        pathD += ` L ${x.toFixed(2)} ${y.toFixed(2)}`;
+                    });
+                    pathD += ` L ${chartWidth.toFixed(2)} ${chartHeight} Z`;
+
+                    const svgNS = "http://www.w3.org/2000/svg";
+                    const svg = document.createElementNS(svgNS, "svg");
+                    svg.setAttribute("width", "100%"); svg.setAttribute("height", "100%");
+                    svg.setAttribute("viewBox", `0 0 ${chartWidth} ${chartHeight}`);
+                    svg.setAttribute("preserveAspectRatio", "none");
+                    svg.style.cssText = "position: absolute; left: 0; bottom: 0; z-index: 3; overflow: visible;";
+                    const path = document.createElementNS(svgNS, "path");
+                    path.setAttribute("d", pathD);
+                    path.setAttribute("fill", "rgba(255, 193, 7, 0.2)");
+                    path.setAttribute("stroke", "var(--primary-color)");
+                    path.setAttribute("stroke-width", "2");
+                    path.setAttribute("stroke-linejoin", "round"); path.setAttribute("stroke-linecap", "round");
+                    svg.appendChild(path);
+                    container.appendChild(svg);
+                }
+
+                function drawPoints(data, minValue, valueRange, container, chartWidth, chartHeight) {
+                    if (valueRange <= 0 || chartWidth <= 0 || chartHeight <= 0) return;
+                    data.forEach((point, index) => {
+                        const xPercent = data.length === 1 ? 50 : (index / (data.length - 1)) * 100;
+                        let yCalc = ((point.value - minValue) / valueRange) * 100;
+                        const yPercent = Math.max(0, Math.min(yCalc, 100)); // Clamp to 0-100%
+
+                        const pointEl = document.createElement('div');
+                        pointEl.className = 'line-chart-point';
+                        pointEl.style.left = `${xPercent.toFixed(2)}%`;
+                        pointEl.style.bottom = `${yPercent.toFixed(2)}%`;
+                        pointEl.style.transform = 'translate(-50%, 50%)';
+                        pointEl.title = `${point.date}: ${point.value.toLocaleString()} ر.س`;
+                        container.appendChild(pointEl);
+                    });
+                }
+
+                function drawLabels(data, minValue, maxValue, valueRange, xCont, yCont) {
+                    if (valueRange < 0) return;
+                    xCont.innerHTML = ''; yCont.innerHTML = ''; 
+                    // X Labels (already styled by CSS via .chart-label-x)
+                    data.forEach(point => {
+                        const label = document.createElement('span');
+                        label.className = 'chart-label-x';
+                        label.textContent = point.date;
+                        xCont.appendChild(label);
+                    });
+                    // Y Labels (already styled by CSS via .chart-label-y)
+                    const yAxisTicks = 5;
+                    for (let i = 0; i < yAxisTicks; i++) {
+                        const value = minValue + (valueRange / (yAxisTicks - 1)) * i;
+                        const label = document.createElement('span');
+                        label.className = 'chart-label-y';
+                        if (value >= 1000000) { label.textContent = `${(value / 1000000).toFixed(1)}M`; }
+                        else if (value >= 1000) { label.textContent = `${Math.round(value / 1000)}K`; }
+                        else { label.textContent = Math.round(value).toLocaleString(); }
+                        // Insert Y labels in reverse order for top-to-bottom display if flex-direction is column-reverse or similar
+                        // Or rely on CSS to space them (e.g. justify-content: space-between on Y container)
+                        yCont.insertBefore(label, yCont.firstChild); //Prepends for natural top to bottom if container is normal flex column
+                    }
+                }
+
+                function renderActualChart() {
+                    if (pointsContainer.clientWidth === 0 || pointsContainer.clientHeight === 0) {
+                        requestAnimationFrame(renderActualChart);
+                        return;
+                    }
+                    pointsContainer.innerHTML = ''; 
+                    labelsXContainer.innerHTML = ''; 
+                    labelsYContainer.innerHTML = '';
+
+                    if (chartData.length < 1) { // Allow single point, though area/line won't draw fully
+                        pointsContainer.innerHTML = '<div style="text-align:center; padding: 20px; color: #999;">No data</div>';
+                        return;
+                    }
+                     if (chartData.length === 1) { // If only one point, area might not be meaningful, just show the point
+                        // pointsContainer.innerHTML = '<div style="text-align:center; padding: 20px; color: #999;">Only one data point</div>';
+                        // return; // Or proceed to draw the single point
+                    }
+
+                    const { minValue, maxValue, valueRange } = calculateRange(chartData);
+                    if (valueRange <= 0 && !(minValue === 0 && maxValue === 0 && chartData.every(p => p.value === 0))) { // Allow if all are zero
+                        pointsContainer.innerHTML = '<div style="text-align:center; padding: 20px; color: #999;">Invalid data range for chart</div>';
+                        return;
+                    }
+
+                    const chartWidth = pointsContainer.clientWidth;
+                    const chartHeight = pointsContainer.clientHeight;
+                    
+                    if(chartData.length > 1) { // Only draw area if more than one point
+                        drawSVGArea(chartData, minValue, valueRange, pointsContainer, chartWidth, chartHeight);
+                    }
+                    drawPoints(chartData, minValue, valueRange, pointsContainer, chartWidth, chartHeight);
+                    drawLabels(chartData, minValue, maxValue, valueRange, labelsXContainer, labelsYContainer);
+                }
+                
+                // Initial and Resize Trigger
+                const triggerRender = () => {
+                    requestAnimationFrame(renderActualChart);
+                };
+
+                triggerRender(); // Initial call
+                
+                // Store reference to the trigger for the debounced resize handler
+                pointsContainer._triggerRender = triggerRender; 
+            }
+    
+            // Product Performance Chart Filter Logic
+            function initializeProductPerformanceFilter() {
+                const filterSelect = document.getElementById('productPerformanceFilter');
+                const chartContainer = document.querySelector('.bar-chart-container'); // Assuming this is unique enough or adjust selector
+                if (!filterSelect || !chartContainer) {
+                    console.warn('Product performance filter or chart container not found.');
+                    return;
+                }
+                const productGroups = chartContainer.querySelectorAll('.bar-chart-group');
+                const productNames = new Set();
+
+                productGroups.forEach(group => {
+                    const labelElement = group.querySelector('.bar-label');
+                    if (labelElement) {
+                        productNames.add(labelElement.textContent.trim());
+                    }
+                });
+
+                // Populate filter
+                filterSelect.innerHTML = '<option value="all">جميع المنتجات</option>'; // Default all option
+                productNames.forEach(name => {
+                    const option = document.createElement('option');
+                    option.value = name;
+                    option.textContent = name;
+                    filterSelect.appendChild(option);
+                });
+
+                // Add event listener
+                filterSelect.addEventListener('change', function() {
+                    const selectedProduct = this.value;
+                    productGroups.forEach(group => {
+                        const labelElement = group.querySelector('.bar-label');
+                        if (labelElement) {
+                            if (selectedProduct === 'all' || labelElement.textContent.trim() === selectedProduct) {
+                                group.style.display = 'flex'; // Or 'block' or initial display type
+                            } else {
+                                group.style.display = 'none';
+                            }
+                        }
+                    });
+                });
+            }
+    
+            // Initialize components
+            setActiveNavigation();
+            initializeInventoryValuationChart();
+            initializeProductPerformanceFilter(); // Initialize the new filter
+    
+            // Handle window resize
+            window.addEventListener('resize', debounce(() => {
+                const chartPointsEl = document.getElementById('inventoryValuationChartPoints');
+                if (chartPointsEl && typeof chartPointsEl._triggerRender === 'function') {
+                    chartPointsEl._triggerRender();
+                }
+            }, 250));
+        });
+    </script>
+</body>
+</html> 
