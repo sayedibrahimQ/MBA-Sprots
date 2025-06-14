@@ -1,0 +1,751 @@
+{% extends "ecommerce/base.html" %}
+{% load static %}
+{% block css %}
+
+.hero-section {
+    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.85)), 
+                url('https://images.unsplash.com/photo-1552064442-09027158509b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+    background-size: cover;
+    background-position: center center;
+    padding: 80px 0;
+    text-align: center;
+    margin-bottom: 40px;
+    border-bottom: 2px solid rgba(255,193,7,0.3);
+    position: relative;
+}
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(ellipse at center, rgba(0,0,0,0.1) 0%,rgba(0,0,0,0.5) 60%,rgba(0,0,0,0.8) 100%);
+}
+.hero-title {
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: #ffc107;
+    margin-bottom: 15px;
+    text-shadow: 0 2px 15px rgba(0,0,0,0.7);
+    position: relative;
+    z-index: 1;
+}
+.hero-subtitle {
+    font-size: 1.2rem;
+    color: rgba(255,255,255,0.85);
+    margin-bottom: 0;
+    font-weight: 400;
+    text-shadow: 0 1px 10px rgba(0,0,0,0.6);
+    position: relative;
+    z-index: 1;
+}
+
+.breadcrumb-custom {
+    background: transparent; 
+    padding: 10px 0; 
+    margin: 25px 0; 
+    display: flex; 
+    align-items: center;
+    font-size: 0.9rem;
+}
+.breadcrumb-custom .breadcrumb-item { 
+    display: flex; 
+    align-items: center;
+}
+.breadcrumb-custom .breadcrumb-item a {
+    color: #ffc107; 
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+.breadcrumb-custom .breadcrumb-item a:hover {
+    color: #ffdb6a; 
+}
+.breadcrumb-custom .breadcrumb-item.active {
+    color: rgba(255,255,255,0.8);
+}
+.breadcrumb-custom .breadcrumb-item + .breadcrumb-item::before {
+    padding: 0 0.5rem;
+    color: rgba(255,255,255,0.5);
+    content: ">"; 
+}
+.breadcrumb {
+    display: none; 
+}
+
+.content-card-themed {
+    background: rgba(0,0,0,0.75);
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.5);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,193,7,0.25);
+    margin-bottom: 40px;
+}
+
+.section-title-card {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #ffc107;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255,193,7,0.2);
+    position: relative;
+    text-align: right; 
+}
+.section-title-card::before {
+    content: '';
+    position: absolute;
+    right: 0; 
+    bottom: -1px; 
+    width: 60px; 
+    height: 3px;
+    background: linear-gradient(to left, #ffc107, #ff8c00); 
+    border-radius: 2px;
+}
+
+.sidebar .form-check-input {
+    background-color: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,193,7,0.3);
+    border-radius: 0.25em;
+}
+.sidebar .form-check-input:checked {
+    background-color: #ffc107;
+    border-color: #ffc107;
+}
+.sidebar .form-check-input:focus {
+    box-shadow: 0 0 0 0.2rem rgba(255,193,7,0.25);
+}
+.sidebar .form-check-label {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.8);
+}
+.sidebar .form-label {
+    color: #ffc107;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+}
+.sidebar .form-range {
+}
+.sidebar .form-range::-webkit-slider-thumb {
+    background: #ffc107;
+}
+.sidebar .form-range::-moz-range-thumb {
+    background: #ffc107;
+}
+.sidebar .form-range::-ms-thumb {
+    background: #ffc107;
+}
+
+/* Themed form controls for sidebar (and potentially main content sort) */
+.form-control, .form-select {
+    background-color: rgba(0,0,0,0.25);
+    border: 1px solid rgba(255,193,7,0.3);
+    color: #fff;
+    border-radius: 8px; /* Consistent border radius */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.form-control:focus, .form-select:focus {
+    background-color: rgba(0,0,0,0.35);
+    border-color: #ffc107;
+    box-shadow: 0 0 0 0.2rem rgba(255,193,7,0.25);
+    color: #fff;
+}
+.form-control::placeholder {
+    color: rgba(255,255,255,0.5);
+}
+.form-select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffc107' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: left 0.75rem center; /* Adjusted for RTL */
+    background-size: 16px 12px;
+    padding-right: 0.75rem; /* Default padding */
+    padding-left: 2.25rem; /* Space for the arrow */
+}
+.form-control-sm {
+    font-size: 0.8rem; /* Adjust as needed */
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+}
+
+/* Button Theming */
+.btn-gold {
+    background: linear-gradient(45deg, #ffc107, #ff8c00);
+    border: none;
+    color: #000;
+    font-weight: 600; /* Adjusted from 700 to match other gold buttons */
+    padding: 10px 20px;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    display: inline-flex; /* To align icon and text */
+    align-items: center;
+    justify-content: center;
+}
+.btn-gold:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 15px rgba(255,193,7,0.3);
+    color: #000;
+}
+.btn-gold:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(255,193,7,0.25), 0 8px 15px rgba(255,193,7,0.3);
+}
+.btn-gold i {
+    margin-left: 8px; /* Space between icon and text */
+}
+
+/* Main content area title and sort */
+.category-products-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(255,193,7,0.2);
+}
+.category-products-header h4 {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #ffc107;
+    margin-bottom: 0;
+}
+.category-products-header .form-select {
+    width: auto;
+    min-width: 200px; /* Ensure it has some width */
+}
+
+/* Standardized Product Card CSS (from product.html / index.html) */
+.product-card {
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    margin-bottom: 30px; 
+    border: 1px solid rgba(255,193,7,0.2);
+    position: relative; 
+    height: 100%; /* Added to ensure cards in a row have same height if content differs slightly before flex fixes */
+    display: flex; /* Added for consistent inner layout */
+    flex-direction: column; /* Added for consistent inner layout */
+}
+
+.product-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4); 
+    border-color: #ffc107; 
+}
+
+.product-card .wishlist-icon {
+    position: absolute;
+    top: 15px;
+    right: 15px; 
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.product-card .wishlist-icon i {
+     color: #ffc107; 
+}
+
+.product-card .wishlist-icon:hover {
+    background: #ffc107;
+    transform: scale(1.1);
+}
+
+.product-card .wishlist-icon:hover i {
+    color: #000; 
+}
+
+.product-card .product-card-img {
+    height: 250px; 
+    object-fit: cover;
+    transition: transform 0.3s ease;
+    width: 100%; 
+}
+
+.product-card:hover .product-card-img {
+    transform: scale(1.05);
+}
+
+.product-card .product-info { 
+    padding: 20px;
+    text-align: right; 
+    display: flex; /* Added for flex layout */
+    flex-direction: column; /* Added for flex layout */
+    flex-grow: 1; /* Allow this section to grow and push button to bottom */
+}
+
+.product-card .product-info h5 { 
+    font-size: 1.05rem; 
+    font-weight: 600;
+    margin-bottom: 10px;
+    line-height: 1.4;
+    color: #fff; 
+    min-height: 44px; 
+}
+
+.product-card .product-info .product-description-sm { 
+    color: rgba(255,255,255,0.7);
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+    min-height: 36px; 
+}
+
+.product-card .price-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto; /* Pushes price and button to bottom if product-info is flex column */
+    margin-bottom: 15px;
+}
+
+.product-card .price {
+    color: #28a745; 
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+.product-card .old-price {
+    text-decoration: line-through;
+    color: rgba(255,255,255,0.5);
+    font-size: 0.9rem;
+    margin-left: 8px; 
+}
+
+.product-card .btn-add-to-cart-card {
+    background: #ffc107;
+    color: #000;
+    border: none;
+    border-radius: 20px; 
+    width: 100%; 
+    padding: 10px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    margin-top: auto; /* Push button to bottom if not already there due to price-area */
+}
+.product-card .btn-add-to-cart-card i {
+    margin-left: 8px; /* RTL: use margin-right */
+}
+
+.product-card .btn-add-to-cart-card:hover {
+    background: #ff8c00; 
+    transform: scale(1.03);
+    box-shadow: 0 5px 15px rgba(255,193,7,0.25);
+}
+
+.product-card .sale-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px; 
+    background: #dc3545; 
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    z-index: 5;
+}
+{% endblock css %}
+
+
+{% block content %}
+
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="container position-relative" style="z-index: 1;"> 
+            <h1 class="hero-title">اكتشف أحدث التشكيلات</h1>
+            <p class="hero-subtitle">أفضل الملابس والمعدات الرياضية من أشهر الماركات العالمية</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Breadcrumbs -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb-custom">
+                <li class="breadcrumb-item"><a href="index.html">الرئيسية</a></li>
+                <li class="breadcrumb-item active" aria-current="page">الفئات</li>
+            </ol>
+        </nav>
+
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3">
+                <div class="sidebar content-card-themed">
+                    <h5 class="section-title-card">الفلاتر</h5>
+                    
+                    <div class="mb-4">
+                        <h6>العلامة التجارية</h6>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="nike">
+                            <label class="form-check-label" for="nike">Nike</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="adidas">
+                            <label class="form-check-label" for="adidas">Adidas</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="puma">
+                            <label class="form-check-label" for="puma">Puma</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="umbro">
+                            <label class="form-check-label" for="umbro">Umbro</label>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h6>المقاس</h6>
+                        <select class="form-select">
+                            <option>اختر المقاس</option>
+                            <option value="39">39</option>
+                            <option value="40">40</option>
+                            <option value="41">41</option>
+                            <option value="42">42</option>
+                            <option value="43">43</option>
+                            <option value="44">44</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h6>نوع الملعب</h6>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="surface" id="fg">
+                            <label class="form-check-label" for="fg">العشب الطبيعي (FG)</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="surface" id="ag">
+                            <label class="form-check-label" for="ag">العشب الصناعي (AG)</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="surface" id="tf">
+                            <label class="form-check-label" for="tf">الملاعب الترابية (TF)</label>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h6>السعر</h6>
+                        <div class="row">
+                            <div class="col-6">
+                                <input type="number" class="form-control form-control-sm" placeholder="من">
+                            </div>
+                            <div class="col-6">
+                                <input type="number" class="form-control form-control-sm" placeholder="إلى">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-gold w-100"><i class="fas fa-filter"></i> &nbsp;تطبيق الفلتر</button>
+                </div>
+            </div>
+
+            <!-- Products Grid -->
+            <div class="col-lg-9">
+                <div class="category-products-header">
+                    <h4>أحذية كرة القدم <span class="text-white-50 fw-normal">(245 منتج)</span></h4>
+                    <select class="form-select w-auto">
+                        <option selected>ترتيب حسب: الأحدث</option>
+                        <option>السعر: من الأقل للأعلى</option>
+                        <option>السعر: من الأعلى للأقل</option>
+                        <option>الأكثر مبيعاً</option>
+                    </select>
+                </div>
+
+                <div class="row">
+                    <!-- Product 1 -->
+                    <div class="col-md-4 col-sm-6 mb-4">
+                        <div class="product-card">
+                            <div class="wishlist-icon" onclick="toggleWishlistCard(this)">
+                                <i class="far fa-heart"></i>
+                            </div>
+                            <span class="sale-badge">خصم 25%</span>
+                            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%23ff6b35' d='M50 100 Q150 50 250 100 Q150 150 50 100'/><circle fill='%23ffffff' cx='100' cy='80' r='15'/><circle fill='%23ffffff' cx='200' cy='120' r='15'/></svg>" class="product-card-img" alt="حذاء نايك ميركوريال سوبرفلاي 9 إليت">
+                            <div class="product-info">
+                                <h5>حذاء نايك ميركوريال سوبرفلاي 9 إليت</h5>
+                                <div class="price-area">
+                                    <span class="price">745 ج.م</span>
+                                    <span class="old-price">995 ج.م</span>
+                                </div>
+                                <button class="btn-add-to-cart-card" onclick="handleAddToCart(this)">
+                                    <i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 2 -->
+                    <div class="col-md-4 col-sm-6 mb-4">
+                        <div class="product-card">
+                            <div class="wishlist-icon" onclick="toggleWishlistCard(this)">
+                                <i class="far fa-heart"></i>
+                            </div>
+                            <span class="sale-badge" style="background-color: #007bff; color: white;">جديد</span>
+                            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%2300aaff' d='M50 100 Q150 60 250 100 Q150 140 50 100'/><circle fill='%23ffffff' cx='90' cy='90' r='12'/><circle fill='%23ffffff' cx='210' cy='110' r='12'/></svg>" class="product-card-img" alt="حذاء كرة قدم أديداس">
+                            <div class="product-info">
+                                <h5>حذاء أديداس إكس سبيدبورتال.1</h5>
+                                <div class="price-area">
+                                    <span class="price">850 ج.م</span>
+                                </div>
+                                <button class="btn-add-to-cart-card" onclick="handleAddToCart(this)">
+                                    <i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Product 2 -->
+                    <div class="col-md-4 col-sm-6 mb-4">
+                        <div class="product-card">
+                            <div class="wishlist-icon" onclick="toggleWishlistCard(this)">
+                                <i class="far fa-heart"></i>
+                            </div>
+                            <span class="sale-badge" style="background-color: #007bff; color: white;">جديد</span>
+                            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%2300aaff' d='M50 100 Q150 60 250 100 Q150 140 50 100'/><circle fill='%23ffffff' cx='90' cy='90' r='12'/><circle fill='%23ffffff' cx='210' cy='110' r='12'/></svg>" class="product-card-img" alt="حذاء كرة قدم أديداس">
+                            <div class="product-info">
+                                <h5>حذاء أديداس إكس سبيدبورتال.1</h5>
+                                <div class="price-area">
+                                    <span class="price">850 ج.م</span>
+                                </div>
+                                <button class="btn-add-to-cart-card" onclick="handleAddToCart(this)">
+                                    <i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Product 2 -->
+                    <div class="col-md-4 col-sm-6 mb-4">
+                        <div class="product-card">
+                            <div class="wishlist-icon" onclick="toggleWishlistCard(this)">
+                                <i class="far fa-heart"></i>
+                            </div>
+                            <span class="sale-badge" style="background-color: #007bff; color: white;">جديد</span>
+                            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%2300aaff' d='M50 100 Q150 60 250 100 Q150 140 50 100'/><circle fill='%23ffffff' cx='90' cy='90' r='12'/><circle fill='%23ffffff' cx='210' cy='110' r='12'/></svg>" class="product-card-img" alt="حذاء كرة قدم أديداس">
+                            <div class="product-info">
+                                <h5>حذاء أديداس إكس سبيدبورتال.1</h5>
+                                <div class="price-area">
+                                    <span class="price">850 ج.م</span>
+                                </div>
+                                <button class="btn-add-to-cart-card" onclick="handleAddToCart(this)">
+                                    <i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Product 2 -->
+                    <div class="col-md-4 col-sm-6 mb-4">
+                        <div class="product-card">
+                            <div class="wishlist-icon" onclick="toggleWishlistCard(this)">
+                                <i class="far fa-heart"></i>
+                            </div>
+                            <span class="sale-badge" style="background-color: #007bff; color: white;">جديد</span>
+                            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%2300aaff' d='M50 100 Q150 60 250 100 Q150 140 50 100'/><circle fill='%23ffffff' cx='90' cy='90' r='12'/><circle fill='%23ffffff' cx='210' cy='110' r='12'/></svg>" class="product-card-img" alt="حذاء كرة قدم أديداس">
+                            <div class="product-info">
+                                <h5>حذاء أديداس إكس سبيدبورتال.1</h5>
+                                <div class="price-area">
+                                    <span class="price">850 ج.م</span>
+                                </div>
+                                <button class="btn-add-to-cart-card" onclick="handleAddToCart(this)">
+                                    <i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Product 2 -->
+                    <div class="col-md-4 col-sm-6 mb-4">
+                        <div class="product-card">
+                            <div class="wishlist-icon" onclick="toggleWishlistCard(this)">
+                                <i class="far fa-heart"></i>
+                            </div>
+                            <span class="sale-badge" style="background-color: #007bff; color: white;">جديد</span>
+                            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%2300aaff' d='M50 100 Q150 60 250 100 Q150 140 50 100'/><circle fill='%23ffffff' cx='90' cy='90' r='12'/><circle fill='%23ffffff' cx='210' cy='110' r='12'/></svg>" class="product-card-img" alt="حذاء كرة قدم أديداس">
+                            <div class="product-info">
+                                <h5>حذاء أديداس إكس سبيدبورتال.1</h5>
+                                <div class="price-area">
+                                    <span class="price">850 ج.م</span>
+                                </div>
+                                <button class="btn-add-to-cart-card" onclick="handleAddToCart(this)">
+                                    <i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Product 2 -->
+                    <div class="col-md-4 col-sm-6 mb-4">
+                        <div class="product-card">
+                            <div class="wishlist-icon" onclick="toggleWishlistCard(this)">
+                                <i class="far fa-heart"></i>
+                            </div>
+                            <span class="sale-badge" style="background-color: #007bff; color: white;">جديد</span>
+                            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%2300aaff' d='M50 100 Q150 60 250 100 Q150 140 50 100'/><circle fill='%23ffffff' cx='90' cy='90' r='12'/><circle fill='%23ffffff' cx='210' cy='110' r='12'/></svg>" class="product-card-img" alt="حذاء كرة قدم أديداس">
+                            <div class="product-info">
+                                <h5>حذاء أديداس إكس سبيدبورتال.1</h5>
+                                <div class="price-area">
+                                    <span class="price">850 ج.م</span>
+                                </div>
+                                <button class="btn-add-to-cart-card" onclick="handleAddToCart(this)">
+                                    <i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Product 2 -->
+                    <div class="col-md-4 col-sm-6 mb-4">
+                        <div class="product-card">
+                            <div class="wishlist-icon" onclick="toggleWishlistCard(this)">
+                                <i class="far fa-heart"></i>
+                            </div>
+                            <span class="sale-badge" style="background-color: #007bff; color: white;">جديد</span>
+                            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%2300aaff' d='M50 100 Q150 60 250 100 Q150 140 50 100'/><circle fill='%23ffffff' cx='90' cy='90' r='12'/><circle fill='%23ffffff' cx='210' cy='110' r='12'/></svg>" class="product-card-img" alt="حذاء كرة قدم أديداس">
+                            <div class="product-info">
+                                <h5>حذاء أديداس إكس سبيدبورتال.1</h5>
+                                <div class="price-area">
+                                    <span class="price">850 ج.م</span>
+                                </div>
+                                <button class="btn-add-to-cart-card" onclick="handleAddToCart(this)">
+                                    <i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Product 2 -->
+                    <div class="col-md-4 col-sm-6 mb-4">
+                        <div class="product-card">
+                            <div class="wishlist-icon" onclick="toggleWishlistCard(this)">
+                                <i class="far fa-heart"></i>
+                            </div>
+                            <span class="sale-badge" style="background-color: #007bff; color: white;">جديد</span>
+                            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%2300aaff' d='M50 100 Q150 60 250 100 Q150 140 50 100'/><circle fill='%23ffffff' cx='90' cy='90' r='12'/><circle fill='%23ffffff' cx='210' cy='110' r='12'/></svg>" class="product-card-img" alt="حذاء كرة قدم أديداس">
+                            <div class="product-info">
+                                <h5>حذاء أديداس إكس سبيدبورتال.1</h5>
+                                <div class="price-area">
+                                    <span class="price">850 ج.م</span>
+                                </div>
+                                <button class="btn-add-to-cart-card" onclick="handleAddToCart(this)">
+                                    <i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <nav aria-label="Page navigation" class="mt-4">
+                    <ul class="pagination">
+                        <li class="page-item">
+                            <a class="page-link" href="#" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item"><a class="page-link" href="#">4</a></li>
+                        <li class="page-item"><a class="page-link" href="#">5</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+
+{% block scripts %}
+
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Add to cart functionality
+        document.querySelectorAll('.btn-cart').forEach(button => {
+            button.addEventListener('click', function() {
+                // Add animation effect
+                this.innerHTML = '<i class="fas fa-check me-1"></i>';
+                this.style.background = '#28a745';
+                
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fas fa-shopping-cart me-1"></i>';
+                    this.style.background = 'linear-gradient(45deg, #ffc107, #ff8c00)';
+                }, 1500);
+                
+                // Update cart counter
+                const cartBadge = document.querySelector('.fa-shopping-cart + .badge');
+                let currentCount = parseInt(cartBadge.textContent);
+                cartBadge.textContent = currentCount + 1;
+                cartBadge.style.animation = 'pulse 0.5s';
+            });
+        });
+        
+        // Search functionality
+        document.querySelector('.search-box button').addEventListener('click', function() {
+            const searchInput = document.querySelector('.search-box input');
+            if (searchInput.value.trim()) {
+                // Simulate search
+                alert('البحث عن: ' + searchInput.value);
+            }
+        });
+        
+        // Filter functionality
+        document.querySelector('.sidebar .btn-gold').addEventListener('click', function() {
+            this.textContent = 'جاري التطبيق...';
+            setTimeout(() => {
+                this.textContent = 'تطبيق الفلتر';
+                alert('تم تطبيق الفلتر بنجاح');
+            }, 1000);
+        });
+        
+        // Smooth scrolling for internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Add CSS animation for cart badge pulse
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.2); }
+                100% { transform: scale(1); }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Wishlist functionality
+        document.querySelectorAll('.fa-heart').forEach(heart => {
+            heart.addEventListener('click', function(e) {
+                e.preventDefault();
+                this.classList.toggle('fas');
+                this.classList.toggle('far');
+                if (this.classList.contains('fas')) {
+                    this.style.color = '#e74c3c';
+                } else {
+                    this.style.color = '';
+                }
+            });
+        });
+    </script>
+    
+{% endblock scripts %}

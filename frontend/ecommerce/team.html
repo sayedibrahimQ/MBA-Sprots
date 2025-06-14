@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الفرق - MBA متجر رياضي</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Cairo', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d3748 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .navbar {
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,193,7,0.3);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: #ffc107 !important;
+        }
+        
+        .nav-link {
+            color: rgba(255,255,255,0.8) !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin: 0 10px;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: #ffc107 !important;
+        }
+        
+        .main-content {
+            flex-grow: 1;
+            padding-top: 70px; /* Adjusted for fixed navbar */
+            padding-bottom: 50px;
+        }
+        
+        .page-header {
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            padding: 60px 0;
+            text-align: center;
+            margin-bottom: 50px;
+            border-bottom: 1px solid rgba(255,193,7,0.2);
+        }
+        
+        .page-header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #ffc107;
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #ffc107;
+            margin-bottom: 40px;
+            position: relative;
+            padding-right: 20px;
+            text-align: center; /* Centered for the teams page title */
+        }
+        
+        .section-title::before {
+            content: '';
+            position: absolute;
+            right: 50%; /* Centered */
+            transform: translateX(50%); /* Centered */
+            bottom: -10px; /* Below the title */
+            width: 80px; /* Width of the underline */
+            height: 4px;
+            background: linear-gradient(45deg, #ffc107, #ff8c00);
+            border-radius: 2px;
+        }
+
+        .team-card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,193,7,0.2);
+            margin-bottom: 30px;
+            height: 100%;
+        }
+
+        .team-card:hover {
+            transform: translateY(-10px);
+            border-color: #ffc107;
+            box-shadow: 0 15px 35px rgba(255,193,7,0.3);
+            background: rgba(255,193,7,0.1);
+        }
+
+        .team-logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: contain; /* Changed to contain to avoid cropping logos */
+            margin: 0 auto 20px auto;
+            background-color: rgba(255,255,255,0.1); /* Placeholder background for logo */
+            border: 3px solid #ffc107;
+            padding: 5px; /* Padding around logo */
+        }
+
+        .team-card h5 {
+            font-weight: 600;
+            font-size: 1.5rem;
+            color: #ffc107;
+            margin-bottom: 10px;
+        }
+
+        .team-card p {
+            color: rgba(255,255,255,0.8);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .btn-gold {
+            background: linear-gradient(45deg, #ffc107, #ff8c00);
+            border: none;
+            color: #000;
+            font-weight: 700;
+            padding: 10px 25px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .btn-gold:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255,193,7,0.4);
+            color: #000;
+        }
+        
+        .footer {
+            background: rgba(0,0,0,0.9);
+            padding: 30px 0;
+            text-align: center;
+            border-top: 1px solid rgba(255,193,7,0.3);
+            margin-top: auto; /* Pushes footer to bottom */
+        }
+        
+        .footer p {
+            margin: 0;
+            color: rgba(255,255,255,0.7);
+        }
+        .footer .social-icons a {
+            color: rgba(255,255,255,0.7);
+            margin: 0 10px;
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        }
+        .footer .social-icons a:hover {
+            color: #ffc107;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">MBA Sports</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">الرئيسية</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="categories.html">الأصناف</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="team.html">الفرق</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="collection-offer.html">العروض</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html">من نحن</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="cart.html"><i class="fas fa-shopping-cart"></i></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="profile.html"><i class="fas fa-user-circle"></i></a>
+                    </li>
+                     <li class="nav-item">
+                        <a class="nav-link" href="login.html">تسجيل الدخول</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="page-header">
+            <div class="container">
+                <h1>فرقنا المميزة</h1>
+            </div>
+        </div>
+
+        <div class="container">
+            <h2 class="section-title">استكشف الفرق الرياضية</h2>
+            
+            <div class="row mt-5">
+                <!-- Sample Team Card 1 -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="team-card">
+                        <img src="https://via.placeholder.com/120/FFC107/000000?Text=Team+Logo1" alt="شعار الفريق 1" class="team-logo">
+                        <h5>اسم الفريق الأول</h5>
+                        <p>وصف موجز عن الفريق الأول وإنجازاته الرئيسية. يشتهر الفريق بروحه القتالية.</p>
+                        <a href="#" class="btn-gold">مشاهدة المنتجات</a>
+                    </div>
+                </div>
+
+                <!-- Sample Team Card 2 -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="team-card">
+                        <img src="https://via.placeholder.com/120/FFC107/000000?Text=Team+Logo2" alt="شعار الفريق 2" class="team-logo">
+                        <h5>اسم الفريق الثاني</h5>
+                        <p>معلومات عن الفريق الثاني وتاريخه العريق في المنافسات المحلية والدولية.</p>
+                        <a href="#" class="btn-gold">مشاهدة المنتجات</a>
+                    </div>
+                </div>
+
+                <!-- Sample Team Card 3 -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="team-card">
+                        <img src="https://via.placeholder.com/120/FFC107/000000?Text=Team+Logo3" alt="شعار الفريق 3" class="team-logo">
+                        <h5>اسم الفريق الثالث</h5>
+                        <p>نبذة عن الفريق الثالث وأبرز اللاعبين الذين مروا بتاريخ النادي العريق.</p>
+                        <a href="#" class="btn-gold">مشاهدة المنتجات</a>
+                    </div>
+                </div>
+
+                <!-- Sample Team Card 4 -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="team-card">
+                        <img src="https://via.placeholder.com/120/FFC107/000000?Text=Team+Logo4" alt="شعار الفريق 4" class="team-logo">
+                        <h5>اسم الفريق الرابع</h5>
+                        <p>الفريق الرابع وقصته الملهمة في الصعود إلى القمة وتحقيق البطولات الكبرى.</p>
+                        <a href="#" class="btn-gold">مشاهدة المنتجات</a>
+                    </div>
+                </div>
+                
+                <!-- Add more team cards as needed -->
+                 <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="team-card">
+                        <img src="https://via.placeholder.com/120/FFC107/000000?Text=Team+Logo5" alt="شعار الفريق 5" class="team-logo">
+                        <h5>اسم الفريق الخامس</h5>
+                        <p>الفريق الخامس، رمز للعراقة والتميز في عالم الرياضة المحلية والإقليمية.</p>
+                        <a href="#" class="btn-gold">مشاهدة المنتجات</a>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="team-card">
+                        <img src="https://via.placeholder.com/120/FFC107/000000?Text=Team+Logo6" alt="شعار الفريق 6" class="team-logo">
+                        <h5>اسم الفريق السادس</h5>
+                        <p>تعرف على الفريق السادس الذي يمتلك قاعدة جماهيرية واسعة وشعبية كبيرة.</p>
+                        <a href="#" class="btn-gold">مشاهدة المنتجات</a>
+                    </div>
+                </div>
+                
+                 <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="team-card">
+                        <img src="https://via.placeholder.com/120/FFC107/000000?Text=Team+Logo7" alt="شعار الفريق 7" class="team-logo">
+                        <h5>اسم الفريق السابع</h5>
+                        <p>الفريق السابع، معروف بأسلوبه الهجومي وأداءه الممتع في المباريات.</p>
+                        <a href="#" class="btn-gold">مشاهدة المنتجات</a>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="team-card">
+                        <img src="https://via.placeholder.com/120/FFC107/000000?Text=Team+Logo8" alt="شعار الفريق 8" class="team-logo">
+                        <h5>اسم الفريق الثامن</h5>
+                        <p>الفريق الثامن، يركز على تطوير المواهب الشابة وصناعة نجوم المستقبل.</p>
+                        <a href="#" class="btn-gold">مشاهدة المنتجات</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="social-icons mb-3">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+            <p>&copy; 2023 MBA Sports. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

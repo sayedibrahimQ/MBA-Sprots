@@ -20,5 +20,5 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('ecommerce.urls', namespace='ecommerce')),
-    path('admin/', include('storagemanagement.urls', namespace='SM')),
+    path('admin-storage/', include('storagemanagement.urls', namespace='SM')),
 ]

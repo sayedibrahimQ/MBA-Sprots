@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تفاصيل العرض - MBA</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Cairo', sans-serif;
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d3748 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,193,7,0.3);
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: #ffc107 !important;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .navbar-brand:hover {
+            opacity: 0.85;
+            transform: scale(1.02);
+        }
+        .navbar-nav .nav-link {
+            color: rgba(255,255,255,0.8) !important;
+            font-weight: 500;
+            transition: color 0.3s ease, transform 0.3s ease;
+            padding-top: 0.8rem;
+            padding-bottom: 0.8rem;
+            position: relative;
+        }
+        .navbar-nav .nav-link:hover,
+        .navbar-nav .nav-link:focus {
+            color: #ffc107 !important;
+            transform: translateY(-2px);
+        }
+        .navbar-nav .nav-item .nav-link.active {
+            color: #ffc107 !important;
+            font-weight: 600;
+        }
+        .navbar-nav .nav-item .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%; 
+            height: 2.5px;
+            background-color: #ffc107;
+            border-radius: 2px;
+        }
+        .navbar-icons {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .navbar-icons .nav-link {
+            color: rgba(255,255,255,0.8) !important;
+            padding: 0.5rem 0.6rem;
+            transition: color 0.3s ease, transform 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+        .navbar-icons .nav-link:hover {
+            color: #ffc107 !important;
+            transform: translateY(-1px);
+        }
+        .navbar-icons .nav-link i {
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: color 0.3s ease, transform 0.3s ease;
+            vertical-align: middle;
+        }
+        .navbar-icons .nav-link:hover i {
+            transform: scale(1.1);
+        }
+        .navbar-icons .position-relative .badge {
+            font-size: 0.6em;
+            padding: 0.3em 0.5em;
+            top: 0px;
+            right: -5px;
+            line-height: 1;
+            border: 1px solid #1a1a1a;
+        }
+        .cart-badge {
+            position: relative;
+        }
+        .cart-badge::after {
+            content: attr(data-count);
+            position: absolute;
+            top: -6px;
+            right: -10px;
+            background: #ffc107;
+            color: #000;
+            border-radius: 50%;
+            min-width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            border: 1.5px solid #1a1a1a;
+            box-shadow: 0 0 8px rgba(255,193,7,0.5);
+        }
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #ffc107;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .user-avatar:hover {
+            transform: scale(1.12);
+            box-shadow: 0 0 18px rgba(255,193,7,0.6);
+        }
+        
+        .offer-hero-section {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.85)), 
+                        url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'); /* Placeholder image */
+            background-size: cover;
+            background-position: center center;
+            padding: 100px 0;
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 2px solid rgba(255,193,7,0.3);
+            position: relative;
+            color: white;
+        }
+        .offer-hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at center, rgba(0,0,0,0.1) 0%,rgba(0,0,0,0.5) 60%,rgba(0,0,0,0.8) 100%);
+        }
+        .offer-title {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #ffc107;
+            margin-bottom: 20px;
+            text-shadow: 0 3px 20px rgba(0,0,0,0.8);
+            position: relative;
+            z-index: 1;
+        }
+        .offer-subtitle {
+            font-size: 1.3rem;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 25px;
+            font-weight: 400;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.7);
+            position: relative;
+            z-index: 1;
+        }
+        .offer-details-banner {
+            font-size: 1.1rem;
+            background: rgba(0,0,0,0.6);
+            display: inline-block;
+            padding: 15px 25px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,193,7,0.3);
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+        .offer-details-banner strong {
+            color: #ffc107;
+        }
+        .offer-countdown {
+            font-size: 1.2rem;
+            font-weight: 600;
+            background-color: rgba(255,193,7,0.2);
+            border: 1px solid #ffc107;
+            padding: 10px 20px;
+            border-radius: 8px;
+            display: inline-block;
+            box-shadow: 0 0 15px rgba(255,193,7,0.3);
+            color: #ffc107;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .breadcrumb-custom {
+            background: transparent; 
+            padding: 10px 0; 
+            margin: 25px 0; 
+            display: flex; 
+            align-items: center;
+            font-size: 0.9rem;
+        }
+        .breadcrumb-custom .breadcrumb-item { 
+            display: flex; 
+            align-items: center;
+        }
+        .breadcrumb-custom .breadcrumb-item a {
+            color: #ffc107; 
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .breadcrumb-custom .breadcrumb-item a:hover {
+            color: #ffdb6a; 
+        }
+        .breadcrumb-custom .breadcrumb-item.active {
+            color: rgba(255,255,255,0.8);
+        }
+        .breadcrumb-custom .breadcrumb-item + .breadcrumb-item::before {
+            padding: 0 0.5rem;
+            color: rgba(255,255,255,0.5);
+            content: ">"; 
+        }
+        
+        .content-card-themed {
+            background: rgba(0,0,0,0.75);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.5);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,193,7,0.25);
+            margin-bottom: 40px;
+        }
+
+        .section-title-card {
+            font-size: 1.8rem; /* Increased size */
+            font-weight: 700; /* Bolder */
+            color: #ffc107;
+            margin-bottom: 30px; /* More space */
+            padding-bottom: 15px; /* More space */
+            border-bottom: 1px solid rgba(255,193,7,0.25); /* Slightly thicker border */
+            position: relative;
+            text-align: right; 
+        }
+        .section-title-card::before {
+            content: '';
+            position: absolute;
+            right: 0; 
+            bottom: -1px; 
+            width: 80px; /* Wider accent */
+            height: 3.5px; /* Thicker accent */
+            background: linear-gradient(to left, #ffc107, #ff8c00); 
+            border-radius: 2px;
+        }
+        
+        /* Button Theming */
+        .btn-gold {
+            background: linear-gradient(45deg, #ffc107, #ff8c00);
+            border: none;
+            color: #000;
+            font-weight: 600;
+            padding: 10px 20px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            display: inline-flex; 
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-gold:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 15px rgba(255,193,7,0.3);
+            color: #000;
+        }
+        .btn-gold:focus {
+            outline: none;
+            box-shadow: 0 0 0 0.2rem rgba(255,193,7,0.25), 0 8px 15px rgba(255,193,7,0.3);
+        }
+        .btn-gold i {
+            margin-left: 8px; 
+        }
+
+        /* Standardized Product Card CSS */
+        .product-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            margin-bottom: 30px; 
+            border: 1px solid rgba(255,193,7,0.2);
+            position: relative; 
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4); 
+            border-color: #ffc107; 
+        }
+        
+        .product-card .wishlist-icon {
+            position: absolute;
+            top: 15px;
+            right: 15px; 
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+        
+        .product-card .wishlist-icon i {
+             color: #ffc107; 
+        }
+
+        .product-card .wishlist-icon:hover {
+            background: #ffc107;
+            transform: scale(1.1);
+        }
+        
+        .product-card .wishlist-icon:hover i {
+            color: #000; 
+        }
+
+        .product-card .product-card-img {
+            height: 250px; 
+            object-fit: cover;
+            transition: transform 0.3s ease;
+            width: 100%; 
+        }
+        
+        .product-card:hover .product-card-img {
+            transform: scale(1.05);
+        }
+        
+        .product-card .product-info { 
+            padding: 20px;
+            text-align: right; 
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        
+        .product-card .product-info h5 { 
+            font-size: 1.05rem; 
+            font-weight: 600;
+            margin-bottom: 10px;
+            line-height: 1.4;
+            color: #fff; 
+            min-height: 44px; 
+        }
+        
+        .product-card .product-info .product-description-sm { 
+            color: rgba(255,255,255,0.7);
+            font-size: 0.85rem;
+            margin-bottom: 12px;
+            min-height: 36px; 
+        }
+        
+        .product-card .price-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            margin-bottom: 15px;
+        }
+
+        .product-card .price {
+            color: #28a745; 
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        .product-card .old-price {
+            text-decoration: line-through;
+            color: rgba(255,255,255,0.5);
+            font-size: 0.9rem;
+            margin-left: 8px; 
+        }
+        
+        .product-card .btn-add-to-cart-card {
+            background: #ffc107;
+            color: #000;
+            border: none;
+            border-radius: 20px; 
+            width: 100%; 
+            padding: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            margin-top: auto;
+        }
+        .product-card .btn-add-to-cart-card i {
+            margin-left: 8px; 
+        }
+        
+        .product-card .btn-add-to-cart-card:hover {
+            background: #ff8c00; 
+            transform: scale(1.03);
+            box-shadow: 0 5px 15px rgba(255,193,7,0.25);
+        }
+
+        .product-card .sale-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px; 
+            background: #dc3545; 
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            z-index: 5;
+        }
+
+        /* Footer CSS */
+        .footer {
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(10px); 
+            color: rgba(255,255,255,0.8);
+            padding: 50px 0 20px; 
+            margin-top: 50px;
+            border-top: 1px solid rgba(255,193,7,0.3); 
+        }
+        .footer h5 { 
+            color: #ffc107;
+            margin-bottom: 20px;
+            font-size: 1.1rem; 
+            font-weight: 600;
+        }
+        .footer a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-size: 0.9rem;
+            line-height: 2;
+            transition: color 0.3s ease;
+        }
+        .footer a:hover {
+            color: #ffc107;
+        }
+        .footer p {
+             color: rgba(255,255,255,0.7);
+             font-size: 0.9rem;
+             margin-bottom: 0.5rem;
+        }
+        .footer .app-download { 
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+        .footer .app-download img {
+            height: 40px;
+            border-radius: 5px;
+            border: 1px solid rgba(255,193,7,0.2); 
+            transition: transform 0.3s ease;
+        }
+        .footer .app-download img:hover {
+            transform: scale(1.05);
+        }
+        .footer .social-icons { 
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .footer .social-icons i {
+            font-size: 1.5rem; 
+            color: rgba(255,255,255,0.7);
+            cursor: pointer;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+        .footer .social-icons i:hover {
+            color: #ffc107; 
+            transform: scale(1.1);
+        }
+        .footer .copyright {
+            text-align: center;
+            margin-top: 40px; 
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,193,7,0.2); 
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+        }
+        .footer .navbar-brand-footer-text { 
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: #ffc107 !important; 
+            display: block;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">MBA</a>
+            
+            <div class="navbar-icons order-lg-last">
+                <a href="#" class="nav-link me-2"><i class="fas fa-search"></i></a>
+                <a href="#" class="nav-link me-2 position-relative">
+                    <i class="fas fa-heart"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark" style="font-size: 0.6em; padding: 0.2em 0.4em;">0</span>
+                </a>
+                <a href="cart.html" class="nav-link me-2 cart-badge position-relative" data-count="0">
+                    <i class="fas fa-shopping-cart"></i>
+                </a>
+                <a href="profile.html" class="nav-link">
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </a>
+            </div>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">الرئيسية</a></li>
+                    <li class="nav-item"><a class="nav-link" href="categories.html">الفئات</a></li>
+                    <li class="nav-item"><a class="nav-link" href="product.html">المنتجات</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="#">العروض</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">اتصل بنا</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Offer Hero Section -->
+    <div class="offer-hero-section">
+        <div class="container position-relative" style="z-index: 1;"> 
+            <h1 class="offer-title">عروض نهاية الأسبوع الذهبية</h1>
+            <p class="offer-subtitle">خصومات تصل إلى 50% على تشكيلة مختارة من الأحذية والملابس الرياضية!</p>
+            <div class="offer-details-banner">
+                <span>العرض ساري حتى: <strong>31 ديسمبر 2024</strong> | استخدم كود: <strong>WEEKEND50</strong></span>
+            </div>
+            <div class="offer-countdown" id="offerCountdownTimer">
+                ينتهي خلال: 03 يوم : 10 ساعة : 30 دقيقة : 15 ثانية
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Breadcrumbs -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb-custom">
+                <li class="breadcrumb-item"><a href="index.html">الرئيسية</a></li>
+                <li class="breadcrumb-item"><a href="#">العروض</a></li>
+                <li class="breadcrumb-item active" aria-current="page">عروض نهاية الأسبوع الذهبية</li>
+            </ol>
+        </nav>
+
+        <!-- Products in Offer -->
+        <div class="content-card-themed">
+            <h2 class="section-title-card">المنتجات المتضمنة في العرض</h2>
+            <div class="row">
+                <!-- Product 1 -->
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="product-card">
+                        <div class="wishlist-icon" onclick="toggleWishlistCard(this)">
+                            <i class="far fa-heart"></i>
+                        </div>
+                        <span class="sale-badge">خصم 50%</span>
+                        <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23e9ecef' width='300' height='200'/><text x='50%' y='50%' fill='%23adb5bd' dy='.3em' text-anchor='middle' font-size='20'>حذاء رياضي 1</text></svg>" class="product-card-img" alt="منتج في العرض">
+                        <div class="product-info">
+                            <h5>حذاء جري فائق الخفة</h5>
+                            <div class="price-area">
+                                <span class="price">250 ر.س</span>
+                                <span class="old-price">500 ر.س</span>
+                            </div>
+                            <button class="btn-add-to-cart-card" onclick="handleAddToCart(this)">
+                                <i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Product 2 -->
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="product-card">
+                        <div class="wishlist-icon" onclick="toggleWishlistCard(this)">
+                            <i class="far fa-heart"></i>
+                        </div>
+                        <span class="sale-badge">خصم 30%</span>
+                        <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23e9ecef' width='300' height='200'/><text x='50%' y='50%' fill='%23adb5bd' dy='.3em' text-anchor='middle' font-size='20'>تيشيرت رياضي</text></svg>" class="product-card-img" alt="منتج في العرض">
+                        <div class="product-info">
+                            <h5>تيشيرت رياضي بتقنية دراي-فيت</h5>
+                            <div class="price-area">
+                                <span class="price">105 ر.س</span>
+                                <span class="old-price">150 ر.س</span>
+                            </div>
+                            <button class="btn-add-to-cart-card" onclick="handleAddToCart(this)">
+                                <i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Product 3 -->
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="product-card">
+                        <div class="wishlist-icon" onclick="toggleWishlistCard(this)">
+                            <i class="far fa-heart"></i>
+                        </div>
+                        <span class="sale-badge">خصم 40%</span>
+                        <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23e9ecef' width='300' height='200'/><text x='50%' y='50%' fill='%23adb5bd' dy='.3em' text-anchor='middle' font-size='20'>شورت تدريب</text></svg>" class="product-card-img" alt="منتج في العرض">
+                        <div class="product-info">
+                            <h5>شورت تدريب مريح</h5>
+                            <div class="price-area">
+                                <span class="price">90 ر.س</span>
+                                <span class="old-price">150 ر.س</span>
+                            </div>
+                            <button class="btn-add-to-cart-card" onclick="handleAddToCart(this)">
+                                <i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Product 4 -->
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="product-card">
+                        <div class="wishlist-icon" onclick="toggleWishlistCard(this)">
+                            <i class="far fa-heart"></i>
+                        </div>
+                        <span class="sale-badge">خصم 25%</span>
+                        <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23e9ecef' width='300' height='200'/><text x='50%' y='50%' fill='%23adb5bd' dy='.3em' text-anchor='middle' font-size='20'>كرة قدم</text></svg>" class="product-card-img" alt="منتج في العرض">
+                        <div class="product-info">
+                            <h5>كرة قدم احترافية</h5>
+                            <div class="price-area">
+                                <span class="price">120 ر.س</span>
+                                <span class="old-price">160 ر.س</span>
+                            </div>
+                            <button class="btn-add-to-cart-card" onclick="handleAddToCart(this)">
+                                <i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Add more products as needed -->
+            </div>
+        </div>
+
+        <!-- Offer Terms and Conditions -->
+        <div class="content-card-themed">
+            <h2 class="section-title-card">شروط وأحكام العرض</h2>
+            <ul>
+                <li>العرض ساري حتى نفاد الكمية أو حتى 31 ديسمبر 2024.</li>
+                <li>يجب استخدام كود الخصم <strong>WEEKEND50</strong> عند الدفع للاستفادة من الخصم.</li>
+                <li>الخصم يطبق على المنتجات المختارة في هذه الصفحة فقط.</li>
+                <li>لا يمكن دمج هذا العرض مع عروض أو قسائم أخرى.</li>
+                <li>تحتفظ MBA Sports بالحق في تعديل أو إلغاء العرض في أي وقت.</li>
+                <li>تطبق الشروط والأحكام العامة للمتجر.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                    <h5 class="navbar-brand-footer-text">MBA</h5>
+                    <p>متجرك الأول لأحدث وأجود الملابس الرياضية. نقدم منتجات أصلية من أفضل الماركات العالمية.</p>
+                    <div class="social-icons">
+                        <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" title="Snapchat"><i class="fab fa-snapchat-ghost"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4 mb-lg-0">
+                    <h5>روابط مهمة</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#">عن MBA</a></li>
+                        <li><a href="#">الوظائف</a></li>
+                        <li><a href="#">سياسة الخصوصية</a></li>
+                        <li><a href="#">الشروط والأحكام</a></li>
+                        <li><a href="#">تواصل معنا</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4 mb-lg-0">
+                    <h5>حسابي</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="profile.html">ملفي الشخصي</a></li>
+                        <li><a href="cart.html">سلة التسوق</a></li>
+                        <li><a href="#">طلباتي</a></li>
+                        <li><a href="#">قائمة الأمنيات</a></li>
+                        <li><a href="#">تسجيل الخروج</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4 mb-lg-0">
+                    <h5>أقسام المتجر</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#">ملابس رياضية</a></li>
+                        <li><a href="#">أحذية</a></li>
+                        <li><a href="#">إكسسوارات</a></li>
+                        <li><a href="#">معدات رياضية</a></li>
+                        <li><a href="#">عروض وتخفيضات</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-12">
+                    <h5>اشترك في النشرة البريدية</h5>
+                    <form class="mb-3">
+                        <div class="input-group">
+                            <input type="email" class="form-control" placeholder="ادخل بريدك الإلكتروني" style="border-top-left-radius: 0; border-bottom-left-radius: 0; border-top-right-radius: 20px; border-bottom-right-radius: 20px;">
+                            <button class="btn btn-gold" type="submit" style="border-top-left-radius: 20px; border-bottom-left-radius: 20px; border-top-right-radius: 0; border-bottom-right-radius: 0; margin-right: -1px;">اشترك</button>
+                        </div>
+                    </form>
+                    <p>تابعنا ليصلك كل جديد وعروض حصرية.</p>
+                    <div class="app-download">
+                        <a href="#"><img src="https://via.placeholder.com/120x40.png?text=App+Store" alt="App Store"></a>
+                        <a href="#"><img src="https://via.placeholder.com/120x40.png?text=Google+Play" alt="Google Play"></a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                © 2024 MBA Sports. جميع الحقوق محفوظة.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Wishlist toggle for product cards
+        function toggleWishlistCard(element) {
+            const icon = element.querySelector('i');
+            icon.classList.toggle('far');
+            icon.classList.toggle('fas');
+            if (icon.classList.contains('fas')) {
+                // Added to wishlist
+                showNotification('تمت إضافة المنتج للمفضلة!', 'success');
+            } else {
+                // Removed from wishlist
+                showNotification('تمت إزالة المنتج من المفضلة.', 'info');
+            }
+        }
+
+        // Handle Add to Cart from product card
+        function handleAddToCart(buttonElement) {
+            // Basic animation
+            buttonElement.innerHTML = '<i class="fas fa-check"></i> &nbsp;تمت الإضافة';
+            buttonElement.classList.add('btn-success'); // Optional: change color
+            
+            // Update cart counter (example)
+            const cartBadge = document.querySelector('.cart-badge');
+            if (cartBadge) {
+                let currentCount = parseInt(cartBadge.getAttribute('data-count') || '0');
+                cartBadge.setAttribute('data-count', currentCount + 1);
+            }
+
+            showNotification('تمت إضافة المنتج إلى السلة بنجاح!', 'success');
+
+            setTimeout(() => {
+                buttonElement.innerHTML = '<i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة';
+                buttonElement.classList.remove('btn-success');
+            }, 2000);
+        }
+
+        // Simple Notification Function
+        function showNotification(message, type = 'info') {
+            const notificationArea = document.getElementById('notification-area') || createNotificationArea();
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+            alertDiv.setAttribute('role', 'alert');
+            alertDiv.style.position = 'fixed';
+            alertDiv.style.top = '20px';
+            alertDiv.style.right = '20px';
+            alertDiv.style.zIndex = '1050';
+            alertDiv.style.minWidth = '300px';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            notificationArea.appendChild(alertDiv);
+
+            // Auto-dismiss after 3 seconds
+            setTimeout(() => {
+                bootstrap.Alert.getOrCreateInstance(alertDiv).close();
+            }, 3000);
+        }
+
+        function createNotificationArea() {
+            let area = document.createElement('div');
+            area.id = 'notification-area';
+            area.style.position = 'fixed';
+            area.style.top = '80px'; /* Adjust if navbar is taller */
+            area.style.right = '20px';
+            area.style.zIndex = '1050';
+            document.body.appendChild(area);
+            return area;
+        }
+        
+        // Countdown Timer for Offer
+        function startOfferCountdown(endDateString, displayElementId) {
+            const countDownDate = new Date(endDateString).getTime();
+            const displayElement = document.getElementById(displayElementId);
+
+            if (!displayElement) return;
+
+            const interval = setInterval(function() {
+                const now = new Date().getTime();
+                const distance = countDownDate - now;
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                displayElement.innerHTML = `ينتهي خلال: ${days} يوم : ${hours} ساعة : ${minutes} دقيقة : ${seconds} ثانية`;
+
+                if (distance < 0) {
+                    clearInterval(interval);
+                    displayElement.innerHTML = "العرض انتهى";
+                }
+            }, 1000);
+        }
+
+        // Initialize countdown
+        document.addEventListener('DOMContentLoaded', function() {
+            // Example: Set offer end date (Year, Month (0-indexed), Day, Hour, Minute, Second)
+            // Let's set it to end in 3 days from now for demonstration
+            const offerEndDate = new Date();
+            offerEndDate.setDate(offerEndDate.getDate() + 3);
+            offerEndDate.setHours(offerEndDate.getHours() + 10);
+            offerEndDate.setMinutes(offerEndDate.getMinutes() + 30);
+            offerEndDate.setSeconds(offerEndDate.getSeconds() + 15);
+            
+            startOfferCountdown(offerEndDate.toISOString(), 'offerCountdownTimer');
+
+
+            // Update cart count from localStorage or a default value
+            const cartBadge = document.querySelector('.cart-badge');
+            if (cartBadge) {
+                 // This would typically be loaded from localStorage or backend
+                cartBadge.setAttribute('data-count', '0');
+            }
+
+            // Update wishlist count (similar logic for wishlist)
+            const wishlistBadge = document.querySelector('.fa-heart + .badge');
+            if (wishlistBadge) {
+                // This would typically be loaded from localStorage or backend
+                wishlistBadge.textContent = '0';
+            }
+        });
+    </script>
+</body>
+</html>

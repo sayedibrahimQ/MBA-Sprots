@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول - MBA</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Cairo', sans-serif;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            height: 100%;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d3748 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 100vh;
+        }
+        
+        .simple-header {
+            width: 100%;
+            padding: 25px 0;
+            text-align: center;
+        }
+        .simple-header .navbar-brand {
+            font-weight: 700;
+            font-size: 2.5rem;
+            color: #ffc107 !important;
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+        .simple-header .navbar-brand:hover {
+            opacity: 0.85;
+        }
+
+        .auth-main-content {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 20px;
+        }
+        
+        .auth-card {
+            background: rgba(0,0,0,0.75);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 45px rgba(0,0,0,0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,193,7,0.25);
+            width: 100%;
+            max-width: 450px;
+        }
+        
+        .form-card-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ffc107;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .form-label {
+            color: rgba(255,255,255,0.8);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        .form-control {
+            background-color: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,193,7,0.3);
+            color: #fff;
+            border-radius: 10px;
+            padding: 12px 15px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+            font-size: 0.95rem;
+        }
+        .form-control:focus {
+            background-color: rgba(255,255,255,0.12);
+            border-color: #ffc107;
+            box-shadow: 0 0 0 0.2rem rgba(255,193,7,0.25);
+            color: #fff;
+        }
+        .form-control::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+        .input-group {
+            position: relative;
+        }
+        .input-group .form-control {
+            padding-left: 40px;
+        }
+        .password-toggle {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255,255,255,0.6);
+            cursor: pointer;
+            transition: color 0.3s ease;
+            z-index: 100;
+        }
+        .password-toggle:hover {
+            color: #ffc107;
+        }
+        
+        .btn-gold {
+            background: linear-gradient(45deg, #ffc107, #ff8c00);
+            border: none;
+            color: #000;
+            font-weight: 700;
+            padding: 12px 25px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            font-size: 1.05rem;
+        }
+        .btn-gold:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 15px rgba(255,193,7,0.35);
+            color: #000;
+        }
+        .btn-gold:focus {
+            outline: none;
+            box-shadow: 0 0 0 0.2rem rgba(255,193,7,0.25), 0 8px 15px rgba(255,193,7,0.3);
+        }
+
+        .auth-links {
+            text-align: center;
+            margin-top: 25px;
+        }
+        .auth-links a {
+            color: #ffc107;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin: 0 10px;
+            transition: color 0.3s ease, text-decoration 0.3s ease;
+        }
+        .auth-links a:hover {
+            color: #ffdb6a;
+            text-decoration: underline;
+        }
+        .auth-links .separator {
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .social-login-divider {
+            text-align: center;
+            color: rgba(255,255,255,0.6);
+            margin: 30px 0 20px;
+            position: relative;
+        }
+        .social-login-divider::before,
+        .social-login-divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: calc(50% - 30px);
+            height: 1px;
+            background-color: rgba(255,193,7,0.2);
+        }
+        .social-login-divider::before {
+            right: 0;
+        }
+        .social-login-divider::after {
+            left: 0;
+        }
+        .social-login-buttons .btn {
+            width: 100%;
+            margin-bottom: 10px;
+            font-weight: 500;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .social-login-buttons .btn i {
+            margin-left: 10px;
+        }
+        .social-login-buttons .btn-google {
+            background-color: rgba(221, 75, 57, 0.1);
+            border-color: rgba(221, 75, 57, 0.4);
+            color: #fff;
+        }
+        .social-login-buttons .btn-google:hover {
+            background-color: rgba(221, 75, 57, 0.2);
+            border-color: #dd4b39;
+            color: #fff;
+        }
+        .social-login-buttons .btn-facebook {
+            background-color: rgba(59, 89, 152, 0.1);
+            border-color: rgba(59, 89, 152, 0.4);
+            color: #fff;
+        }
+        .social-login-buttons .btn-facebook:hover {
+            background-color: rgba(59, 89, 152, 0.2);
+            border-color: #3b5998;
+            color: #fff;
+        }
+
+        .simple-footer {
+            width: 100%;
+            text-align: center;
+            padding: 20px 0;
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+        }
+        .simple-footer a {
+            color: #ffc107;
+            text-decoration: none;
+        }
+        .simple-footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header class="simple-header">
+        <a class="navbar-brand" href="index.html">MBA</a>
+    </header>
+
+    <main class="auth-main-content">
+        <div class="auth-card">
+            <h1 class="form-card-title">تسجيل الدخول</h1>
+            <form>
+                <div class="mb-3">
+                    <label for="emailInput" class="form-label">البريد الإلكتروني</label>
+                    <input type="email" class="form-control" id="emailInput" placeholder="ادخل بريدك الإلكتروني" required>
+                </div>
+                <div class="mb-3">
+                    <label for="passwordInput" class="form-label">كلمة المرور</label>
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="passwordInput" placeholder="ادخل كلمة المرور" required>
+                        <span class="password-toggle" onclick="togglePasswordVisibility('passwordInput', this)">
+                            <i class="fas fa-eye"></i>
+                        </span>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="rememberMeCheck" style="background-color: rgba(255,255,255,0.1); border-color: rgba(255,193,7,0.3);">
+                        <label class="form-check-label" for="rememberMeCheck" style="font-size: 0.9rem; color: rgba(255,255,255,0.8);">
+                            تذكرني
+                        </label>
+                    </div>
+                    <a href="#" class="auth-links" style="font-size: 0.9rem; margin: 0;">نسيت كلمة المرور؟</a>
+                </div>
+                <button type="submit" class="btn btn-gold mb-3">تسجيل الدخول</button>
+            </form>
+            
+            <div class="social-login-divider"><span>أو</span></div>
+            
+            <div class="social-login-buttons">
+                <button type="button" class="btn btn-google"><i class="fab fa-google"></i>متابعة باستخدام جوجل</button>
+                <button type="button" class="btn btn-facebook"><i class="fab fa-facebook-f"></i>متابعة باستخدام فيسبوك</button>
+            </div>
+
+            <div class="auth-links mt-4">
+                <span>ليس لديك حساب؟</span>
+                <a href="signup.html">إنشاء حساب جديد</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="simple-footer">
+        <p>&copy; 2024 MBA Sports. جميع الحقوق محفوظة. <a href="#">سياسة الخصوصية</a> | <a href="#">شروط الخدمة</a></p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function togglePasswordVisibility(inputId, toggleElement) {
+            const passwordInput = document.getElementById(inputId);
+            const icon = toggleElement.querySelector('i');
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = "password";
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        // Form submission simulation (replace with actual login logic)
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Add your login logic here (e.g., AJAX request)
+            alert('تم إرسال بيانات تسجيل الدخول! (محاكاة)');
+            // Example: Redirect to profile page on successful login
+            // window.location.href = 'profile.html';
+        });
+    </script>
+</body>
+</html>

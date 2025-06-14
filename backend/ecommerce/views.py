@@ -1,684 +1,599 @@
-from django.shortcuts import render
-
-from datetime import timezone
-import json
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import login, logout, authenticate # Added authenticate
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-import uuid
-from .utils import send_facebook_add_to_cart_event, send_facebook_purchase_event, send_facebook_view_content_event
-from django.http import HttpResponse, JsonResponse
-from django.shortcuts import get_object_or_404, render, redirect
-from .models import DeliveryFees, Images, Order, OrderItem, Product, Question, Review, Size, Video
-from django.core.paginator import Paginator
-from .models import Cart, CartItem, Product, PromoCode, Customer
-from django.db.models import Sum
-from decimal import Decimal, InvalidOperation
-from django.views.decorators.csrf import csrf_exempt
-from .models import Emails
-from decimal import Decimal
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.db.models import Q, Count, Sum, F
+from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseForbidden, Http404 # Added HttpResponse* imports
+from .models import Product, Category, Cart, CartItem, Order, OrderItem, ProductImage, Review, Question, Customer, Promotion, ProductVariant, PromoCode, Team # Added ProductVariant, PromoCode
+from .forms import SignUpForm, CustomLoginForm, CustomerProfileForm, ReviewForm, QuestionForm # Removed OrderForm as it's not defined yet
+from .utils import get_cart, update_cart_totals, decrease_variant_stock, increase_variant_stock
+from django.utils import timezone # For offer filtering
+import uuid # For generating order ID
 
+# Create your views here.
+def index(request):
+    best_selling_products = Product.objects.filter(best_selling=True).order_by('-updated_at')[:8]
+    new_arrivals = Product.objects.order_by('-created_at')[:8]
+    # Active promotions that haven't ended and have started
+    active_promotions = Promotion.objects.filter(
+        active=True, 
+        start_date__lte=timezone.now(), 
+        end_date__gte=timezone.now()
+    ).order_by('-start_date')[:3]
+    # Categories with at least one product, ordered by name or some other criteria
+    top_categories = Category.objects.annotate(num_products=Count('products')).filter(num_products__gt=0).order_by('-num_products')[:6]
+    teams = Team.objects.all()[:6]
+    context = {
+        'best_selling_products': best_selling_products,
+        'new_arrival_products': new_arrivals,
+        'promotions': active_promotions,
+        'categories': top_categories,
+        'page_title': 'Homepage', # Example for base.html title block
+        'teams' : teams
+    }
+    return render(request, 'ecommerce/index.html', context)
 
-def admin_required(view_func):
-    decorated_view_func = login_required(
-        user_passes_test(lambda u: u.is_staff, login_url='/admin/login/')(view_func),
-        login_url='/admin/login/'
-    )
-    return decorated_view_func
+def teams(request):
+    teams = Team.objects.all()[:6]
+    context = {
+        'teams': teams
+    }
+    return render(request, 'ecommerce/team.html', context)
 
-def products(request):
-    products = Product.objects.all()
-    paginator = Paginator(products, 12)
-    page_number = request.GET.get('page')
-    page_object = paginator.get_page(page_number)
-    return render(request, 'products.html', {'prods' : page_object})
+def about_us(request):
+    return render(request, 'about.html',{})
 
-def productsClothes(request):
-    products = Product.objects.filter(category = 'Clothes')
-    paginator = Paginator(products, 12)
-    page_number = request.GET.get('page')
-    page_object = paginator.get_page(page_number)
-    return render(request, 'products.html', {'prods' : page_object})
+def product_list(request):
+    query = request.GET.get('q')
+    category_slug = request.GET.get('category') # Assuming category is passed as slug or ID
+    sort_by = request.GET.get('sort', '-created_at')
 
-def productsCareProducts(request):
-    products = Product.objects.filter(category = 'CareProducts')
-    paginator = Paginator(products, 12)
-    page_number = request.GET.get('page')
-    page_object = paginator.get_page(page_number)
-    return render(request, 'products.html', {'prods' : page_object})
+    # products = Product.objects.filter(Q(quantity__gt=0) | Q(variants__quantity__gt=0)).distinct() # Products with own stock or variant stock
+    products = Product.objects.all() # Products with own stock or variant stock
 
-def productsAccessories(request):
-    products = Product.objects.filter(category = 'Accessories')
-    paginator = Paginator(products, 12)
-    page_number = request.GET.get('page')
-    page_object = paginator.get_page(page_number)
-    return render(request, 'products.html', {'prods' : page_object})
+    if query:
+        products = products.filter(
+            Q(name__icontains=query) |
+            Q(description__icontains=query) |
+            Q(type__icontains=query) |
+            Q(category__category__icontains=query) # Assuming Category model has 'category' field for name
+        )
 
-def product(request, pid):
-    product = Product.objects.get(id=pid)
-    send_facebook_view_content_event(request, product)
-    qs = Question.objects.filter(product=product)
-    related_products = Product.objects.filter(type=product.type)
-    reviews = Review.objects.filter(product= product)
-    videos = Video.objects.filter(product= product)
-    sizes = Size.objects.filter(product = product)
-    colors = product.color.split(',')
-    images = Images.objects.filter(product=product)
-    return render(request,
-                  'single-product.html',
-                  {'product': product,
-                   'products': related_products,
-                   'questions' : qs,
-                   'reviews' : reviews,
-                   'videos' : videos,
-                   'images' : images,
-                   'sizes' : sizes, 
-                   'colors': colors
-                   })
+    selected_category_name = None
+    if category_slug:
+        try:
+            # Assuming category_slug is the name. Adjust if it's an ID or actual slug field.
+            category_obj = Category.objects.get(category__iexact=category_slug.replace('-',' ')) 
+            products = products.filter(category=category_obj)
+            selected_category_name = category_obj.category
+        except Category.DoesNotExist:
+            # products = Product.objects.none() # Or raise Http404
+            messages.warning(request, f"Category '{category_slug}' not found.")
+            pass # Show all products or handle as desired
+    
+    # Sorting logic (ensure display_price is available as a property or annotation)
+    # For DecimalField sorting with potential None (new_price), consider Coalesce or specific annotations if needed.
+    # A simple way is to ensure display_price property works well or sort on model fields directly.
+    valid_sort_options = {
+        'price_asc': 'price', # Simplified: use base price. Enhance with display_price later if complex.
+        'price_desc': '-price',
+        'name_asc': 'name',
+        'name_desc': '-name',
+        'newest': '-created_at',
+    }
+    products = products.order_by(valid_sort_options.get(sort_by, '-created_at'))
 
-def cart_view(request):
-    if request.user.is_authenticated:
-        cart, created = Cart.objects.get_or_create(user=request.user)
-        cart_items = CartItem.objects.filter(cart=cart)
-    else:
-        device_token = request.COOKIES.get('device')
-        cart, created = Cart.objects.get_or_create(device_token = device_token)
-        cart_items = CartItem.objects.filter(cart=cart)
+    # all_categories = Category.objects.annotate(num_products=Count('product')).filter(num_products__gt=0).order_by('category')
+    all_categories = Category.objects.all()
+    
+    context = {
+        'products': products,
+        'categories': all_categories,
+        'selected_category_name': selected_category_name,
+        'search_query': query,
+        'current_sort': sort_by,
+        'page_title': selected_category_name or 'All Products'
+    }
+    return render(request, 'ecommerce/categories.html', context) # Using categories.html for product listing
 
-    subtotal = sum((item.product.new_price if item.product.discount else item.product.price) * item.quantity for item in cart_items)
-    total = subtotal  # Add any additional fees or discounts here
+def products_by_category(request, category_name): # category_name could be slug from URL
+    category = get_object_or_404(Category, category__iexact=category_name.replace('-',' '))
+    products = Product.objects.filter(category=category).filter(Q(quantity__gt=0) | Q(variants__quantity__gt=0)).distinct()
+    all_categories = Category.objects.annotate(num_products=Count('product')).filter(num_products__gt=0).order_by('category')
+    
+    context = {
+        'products': products,
+        'categories': all_categories,
+        'selected_category_name': category.category,
+        'page_title': category.category
+    }
+    return render(request, 'ecommerce/categories.html', context)
+
+def category_list(request):
+    categories = Category.objects.annotate(num_products=Count('product')).filter(num_products__gt=0).order_by('category')
+    context = {
+        'categories': categories,
+        'page_title': 'Product Categories'
+    }
+    return render(request, 'ecommerce/category_list_page.html', context) # Create this template if needed
+
+def product_detail(request, id):
+    product = get_object_or_404(Product, id=id)
+    related_products = Product.objects.filter(category=product.category).exclude(id=id)[:4]
+    reviews = product.reviews.all().order_by('-created_at')
+    questions = product.questions.all().order_by('-created_at')
+    images = ProductImage.objects.filter(product=product)
+    additional_images = product.additional_images.all()
+    available_variants = product.variants.filter(quantity__gt=0).order_by('size')
+    images = images if images else None
+    review_form = ReviewForm()
+    question_form = QuestionForm()
 
     context = {
-        'cart_items': cart_items,
-        'subtotal': subtotal,
-        'total': total,
+        'product': product,
+        'available_variants': available_variants,
+        'related_products': related_products,
+        'reviews': reviews,
+        'questions': questions,
+        'images': images,
+        'additional_images': additional_images,
+        'review_form': review_form,
+        'question_form': question_form,
+        'page_title': product.name
     }
-    return render(request, 'cart.html', context)
+    return render(request, 'ecommerce/product.html', context)
 
+# --- Cart Views ---
+def cart_detail(request):
+    cart = get_cart(request)
+    context = {
+        'cart': cart,
+        'page_title': 'Your Shopping Cart'
+    }
+    return render(request, 'ecommerce/cart.html', context)
 
-def add_to_cart(request):
-    if request.method == 'POST':
-        product_id = request.POST.get('product_id')
-        size_id = request.POST.get('size_id')
-        color = request.POST.get('color')
-        product = get_object_or_404(Product, id=product_id)
-
-        # Check if the product's quantity is zero
-        if product.quantity == 0:
-            return JsonResponse({'status': 'out_of_stock', 'message': 'This product is out of stock!'})
-
-        if request.user.is_authenticated:
-            cart, created = Cart.objects.get_or_create(user=request.user)
-        else:
-            device_token = request.COOKIES.get('device')
-            cart, created = Cart.objects.get_or_create(device_token=device_token)
-
-        cart.number_of_items += 1
-
-        # Get or create the CartItem with the specific size
-        size = None
-        if size_id:
-            size = get_object_or_404(Size, id=size_id)
-        cart_item, created = CartItem.objects.get_or_create(
-            cart=cart, product=product, size=size, color = color if color else 'None'
-        )
-        cart_item.color = color if color else 'None'
-
-        if not created:
-            # Check if there's enough stock to increase the quantity (you might need to adjust this if stock depends on size)
-            if cart_item.quantity < product.quantity:
-                cart_item.quantity += 1
-            else:
-                return JsonResponse({'status': 'out_of_stock', 'message': 'Not enough stock available to add more items.'})
-
-        send_facebook_add_to_cart_event(request, product)
-        cart_item.save()
-        # Calculate new cart item count
-        total_items = CartItem.objects.filter(cart=cart).aggregate(total_items=Sum('quantity'))['total_items']
-
-        return JsonResponse({'status': 'success', 'cart_item_count': total_items})
-
-    return JsonResponse({'status': 'error'}, status=400)
-
-def get_product_sizes(request):
-    product_id = request.GET.get('product_id')
+def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-    sizes = Size.objects.filter(product = product)
-    size_list = []
-    for size in sizes:
-        size_list.append({'id': size.id, 'name': size.size})
-    print(size_list)
-    return JsonResponse({'status': 'success', 'sizes': size_list})
+    cart = get_cart(request)
+    
+    variant_id = request.POST.get('variant_id') # Expecting ProductVariant ID
+    quantity = int(request.POST.get('quantity', 1))
 
-def remove_from_cart(request, cart_item_id):
-    # Get the cart item based on its ID
-    cart_item = get_object_or_404(CartItem, id=cart_item_id)
+    if quantity <= 0:
+        messages.error(request, "Quantity must be a positive number.")
+        return redirect('ecommerce:product_detail', id=product_id)
 
-    if cart_item.quantity > 1:
-        # If the quantity is greater than 1, decrease the quantity by 1
-        cart_item.quantity -= 1
+    selected_variant = None
+    if product.variants.exists(): # Product has variants
+        if not variant_id:
+            messages.error(request, "Please select a size/variant for this product.")
+            return redirect('ecommerce:product_detail', id=product_id)
+        try:
+            selected_variant = ProductVariant.objects.get(id=variant_id, product=product)
+            if selected_variant.quantity < quantity:
+                messages.error(request, f"Not enough stock for {product.name} ({selected_variant.size}). Available: {selected_variant.quantity}")
+                return redirect('ecommerce:product_detail', id=product_id)
+        except ProductVariant.DoesNotExist:
+            messages.error(request, "Selected variant not found.")
+            return redirect('ecommerce:product_detail', id=product_id)
+    else: # Product does not have variants, check main product quantity
+        if product.quantity < quantity:
+            messages.error(request, f"Not enough stock for {product.name}. Available: {product.quantity}")
+            return redirect('ecommerce:product_detail', id=product_id)
+
+    # Determine color (can be part of variant or main product)
+    # For simplicity, using product's main color if not part of variant explicitly
+    color_to_add = selected_variant.product.color if selected_variant else product.color 
+
+    cart_item, created = CartItem.objects.get_or_create(
+        cart=cart,
+        product=product,
+        size=selected_variant, # This is a ProductVariant instance or None
+        color=color_to_add, # Or selected_variant.color if variants have distinct colors
+        defaults={'quantity': quantity}
+    )
+
+    if not created:
+        new_quantity = cart_item.quantity + quantity
+        # Stock check before increasing quantity
+        if selected_variant and selected_variant.quantity < new_quantity:
+            messages.error(request, f"Cannot add more. Not enough stock for {product.name} ({selected_variant.size}). Available: {selected_variant.quantity}, In Cart: {cart_item.quantity}")
+            return redirect('ecommerce:cart_detail')
+        elif not selected_variant and product.quantity < new_quantity:
+            messages.error(request, f"Cannot add more. Not enough stock for {product.name}. Available: {product.quantity}, In Cart: {cart_item.quantity}")
+            return redirect('ecommerce:cart_detail')
+        cart_item.quantity = new_quantity
         cart_item.save()
+        messages.success(request, f"Updated quantity for {product.name} in your cart.")
     else:
-        # If the quantity is 1, delete the item from the cart
+        messages.success(request, f"{product.name} ({selected_variant.size if selected_variant else 'Standard'}) added to cart.")
+
+    update_cart_totals(cart)
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest': # Handle AJAX request
+        return JsonResponse({'message': 'Item added/updated', 'cart_item_count': cart.number_of_items})
+    return redirect('ecommerce:cart_detail')
+
+def remove_from_cart(request, item_id):
+    cart = get_cart(request)
+    cart_item = get_object_or_404(CartItem, id=item_id, cart=cart) # Ensure item belongs to current cart
+    
+    product_name = cart_item.product.name
+    cart_item.delete()
+    messages.success(request, f"{product_name} removed from your cart.")
+    
+    update_cart_totals(cart)
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({'message': 'Item removed', 'cart_item_count': cart.number_of_items, 'cart_total_price': cart.total_price})
+    return redirect('ecommerce:cart_detail')
+
+def update_cart_item(request, item_id):
+    if request.method != 'POST':
+        return HttpResponseBadRequest("Only POST requests are allowed.")
+
+    cart = get_cart(request)
+    cart_item = get_object_or_404(CartItem, id=item_id, cart=cart)
+    
+    quantity = int(request.POST.get('quantity', 0))
+
+    if quantity <= 0:
+        product_name = cart_item.product.name
         cart_item.delete()
-
-    # Redirect back to the cart detail page
-    return redirect('store:cart_view')
-
-def get_delivery_fee(request):
-    city = request.GET.get('city')  # Get city from the AJAX request
-    if city:
-        try:
-            delivery_fee = DeliveryFees.objects.get(city=city).delivery_fee
-            return JsonResponse({'delivery_fee': delivery_fee})
-        except DeliveryFees.DoesNotExist:
-            return JsonResponse({'error': 'City not found'}, status=404)
-    return JsonResponse({'error': 'City not provided'}, status=400)
-
-@csrf_exempt 
-def apply_promo_code(request):
-    if request.method == 'POST':
-        promo_code = request.POST.get('promo_code')
-        cart_total = request.POST.get('cart_total')
-
-        if request.user.is_authenticated:
-            customer, created = Customer.objects.get_or_create(user=request.user)
-            cart = Cart.objects.get(user=request.user)
+        messages.success(request, f"{product_name} removed from cart.")
+    else:
+        # Stock check
+        if cart_item.size and cart_item.size.quantity < quantity:
+            messages.error(request, f"Not enough stock for {cart_item.product.name} ({cart_item.size.size}). Max: {cart_item.size.quantity}")
+        elif not cart_item.size and cart_item.product.quantity < quantity:
+            messages.error(request, f"Not enough stock for {cart_item.product.name}. Max: {cart_item.product.quantity}")
         else:
-            device_token = request.COOKIES.get('device')
-            customer, created = Customer.objects.get_or_create(device_token=device_token)
-            cart = Cart.objects.get(device_token=device_token)
-        try:
-            # Convert cart_total to Decimal
-            cart_total = Decimal(cart_total)  # Ensure it is a Decimal for accurate calculations
-        except (ValueError, InvalidOperation):
-            return JsonResponse({'status': 'error', 'message': 'Invalid cart total.'})
+            cart_item.quantity = quantity
+            cart_item.save()
+            messages.success(request, f"Updated quantity for {cart_item.product.name}.")
+            
+    update_cart_totals(cart)
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({
+            'message': 'Cart updated', 
+            'cart_item_count': cart.number_of_items,
+            'item_total_price': cart_item.get_total_price() if cart_item.pk else 0, # If item still exists
+            'cart_total_price': cart.total_price
+        })
+    return redirect('ecommerce:cart_detail')
 
-        try:
-            promo = PromoCode.objects.get(code=promo_code)
-            if promo.is_valid():
-                discount_amount = (promo.discount / 100) * cart_total  # Now this should work
-                new_total = cart_total - discount_amount
-                request.session['discount'] = promo.code  # Store discount in session
-                promo.used_count += 1
-                promo.save()
-                cart.total_price = new_total
-                cart.save()
-                return JsonResponse({'status': 'success', 'new_total': new_total, 'message': 'Promo code applied successfully!'})
+# --- Auth Views ---
+def signup_view(request):
+    if request.user.is_authenticated:
+        return redirect('ecommerce:index')
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend') # Specify backend
+            messages.success(request, 'Account created successfully! You are now logged in.')
+            return redirect('ecommerce:index')
+        else:
+            # Pass errors to template via messages or form errors
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{form.fields[field].label or field}: {error}")
+    else:
+        form = SignUpForm()
+    return render(request, 'ecommerce/signup.html', {'form': form, 'page_title': 'Create Account'})
+
+def login_view(request):
+    if request.user.is_authenticated:
+        return redirect('ecommerce:index')
+    if request.method == 'POST':
+        form = CustomLoginForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                messages.info(request, f'Welcome back, {username}!')
+                next_page = request.POST.get('next') or request.GET.get('next') # Check POST then GET for next
+                return redirect(next_page or 'ecommerce:index')
             else:
-                return JsonResponse({'status': 'error', 'message': 'Promo code is invalid or expired.'})
-        except PromoCode.DoesNotExist:
-            return JsonResponse({'status': 'error', 'message': 'Promo code does not exist.'})
+                messages.error(request, 'Invalid username or password.')
+        else:
+            # Form is not valid (e.g. fields missing)
+            messages.error(request, 'Please enter both username and password.') 
+    else:
+        form = CustomLoginForm()
+    return render(request, 'ecommerce/login.html', {'form': form, 'next': request.GET.get('next', ''), 'page_title': 'Login'})
 
-    return JsonResponse({'status': 'error'}, status=400)
+@login_required
+def logout_view(request):
+    logout(request)
+    messages.info(request, "You have been successfully logged out.")
+    return redirect('ecommerce:index')
 
+# --- User Profile & Orders ---
+@login_required
+def profile(request):
+    customer = get_object_or_404(Customer, user=request.user)
+    orders = Order.objects.filter(customer=customer).order_by('-created_at')
+    form = CustomerProfileForm(instance=customer) # For display or if edit is on same page
+    context = {
+        'customer': customer,
+        'orders': orders,
+        'form': form,
+        'page_title': 'My Profile'
+    }
+    return render(request, 'ecommerce/profile.html', context)
+
+@login_required
+def profile_edit(request):
+    customer = get_object_or_404(Customer, user=request.user)
+    if request.method == 'POST':
+        form = CustomerProfileForm(request.POST, request.FILES, instance=customer)
+        if form.is_valid():
+            form.save()
+            user = request.user
+            user.first_name = form.cleaned_data.get('first_name')
+            # user.last_name = form.cleaned_data.get('second_name') # Map to Customer.second_name
+            user.email = form.cleaned_data.get('email')
+            user.save()
+            messages.success(request, 'Profile updated successfully!')
+            return redirect('ecommerce:profile')
+        else:
+             for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{form.fields[field].label or field}: {error}")
+    else:
+        form = CustomerProfileForm(instance=customer)
+    # Typically, profile edit is a separate template or a modal on profile page
+    return render(request, 'ecommerce/profile_edit.html', {'form': form, 'page_title': 'Edit Profile'}) 
+
+@login_required
 def checkout(request):
+    cart = get_cart(request)
+    if not cart.items.exists():
+        messages.warning(request, "Your cart is empty. Add items to proceed to checkout.")
+        return redirect('ecommerce:cart_detail')
+
+    customer = None
     if request.user.is_authenticated:
-        customer, created = Customer.objects.get_or_create(user=request.user)
-    else:
-        device_token = request.COOKIES.get('device')
-        customer, created = Customer.objects.get_or_create(device_token=device_token)
-
-    # Retrieve cart and cart items
-    if request.user.is_authenticated:
-        cart = Cart.objects.get(user=request.user)
-    else:
-        cart = Cart.objects.get(device_token=device_token)
-
-    cart_items = CartItem.objects.filter(cart=cart)
-
-    # Calculate total price
-    total_price_without_discount = sum(Decimal(item.get_total_price()) for item in cart_items)
-    promoCode = request.session.get('discount')
-    promo = 'null'
-    if promoCode:
-        promo = PromoCode.objects.get(code=promoCode)
-        
-    # Get delivery city from cookie
-    pa = request.COOKIES.get('promo')
-    if pa == 'true':
-        total_price = cart.total_price
-    else:
-        total_price = sum(item.get_total_price() for item in cart_items)
-        cart.total_price = total_price
-        cart.save()
+        customer, _ = Customer.objects.get_or_create(
+            user=request.user, 
+            defaults={'email': request.user.email, 'first_name': request.user.first_name}
+        )
+    
+    # Simplified OrderForm - assuming it takes POST data for shipping etc.
+    # from .forms import OrderForm # You'll need to create this form
+    # order_form = OrderForm(request.POST or None, initial=initial_checkout_data(customer))
 
     if request.method == 'POST':
-        # Collect customer data for billing information
-        first_name = request.POST['first_name']
-        second_name = request.POST['second_name']
-        city = request.POST['city']
-        address = request.POST['Address']
-        phone = request.POST['phone1']
-        second_phone = request.POST['phone2']
-        email = request.POST['email']
+        # Extract data from POST - this needs to be robust
+        full_address = request.POST.get('fullAddress')
+        city = request.POST.get('city')
+        phone = request.POST.get('phone')
+        email = request.POST.get('email') # For guests or to confirm for logged-in users
+        note = request.POST.get('note')
+        promo_code_str = request.POST.get('promo_code')
 
-        # Update customer information
-        customer.first_name = first_name
-        customer.second_name = second_name
-        customer.phone = phone
-        customer.phone2 = second_phone
-        customer.fullAddress = address
-        customer.city = city
-        customer.email = email
-        customer.save()
+        # Validation (basic example, use Django forms for proper validation)
+        if not all([full_address, city, phone, email]):
+            messages.error(request, "Please fill in all required shipping details.")
+            return render(request, 'ecommerce/checkout.html', {'cart': cart, 'page_title': 'Checkout'}) # Re-render with error
 
-        total_price = Decimal(request.POST['total_price'])
-        
-        # Create order
-        try:
-            
-            order = Order.objects.create(
-                customer=customer,
-                total_price=total_price,
-                order_id=str(uuid.uuid3(int,int)),
-                promo_code=promo,
-                phone = phone,
-                email = email,
-                fullAddress=address,
-                city=city,
-                note='',
-                status='processing',
+        # Create Order
+        order_total_price = cart.total_price # Start with cart total
+        applied_promo = None
+        if promo_code_str:
+            try:
+                promo = PromoCode.objects.get(code=promo_code_str)
+                if promo.is_valid():
+                    discount_amount = (promo.discount / 100) * order_total_price
+                    order_total_price -= discount_amount
+                    applied_promo = promo
+                    messages.success(request, f"Promo code '{promo.code}' applied!")
+                else:
+                    messages.error(request, f"Promo code '{promo.code}' is invalid or expired.")
+            except PromoCode.DoesNotExist:
+                messages.error(request, "Invalid promo code.")
+
+        current_customer = customer
+        if not request.user.is_authenticated:
+            # For guests, you might create a temporary customer or store details directly on Order
+            # Here, we attempt to find/create a customer by email for guests (optional)
+            current_customer, _ = Customer.objects.get_or_create(
+                email=email, 
+                defaults={'first_name': request.POST.get('first_name', ''), 'phone': phone}
             )
-        except:
-            order = Order.objects.create(
-                customer=customer,
-                total_price=total_price,
-                order_id=str(uuid.uuid4()),
-                phone = phone,
-                email = email,
-                fullAddress=address,
-                city=city,
-                note='',
-                status='processing',
-            )
-            
-        # Save each order item
-        for item in cart_items:
+
+        order = Order.objects.create(
+            customer=current_customer if request.user.is_authenticated else None, # Link to customer if logged in
+            order_id=f"MBA-{str(uuid.uuid4())[:8].upper()}",
+            promo_code=applied_promo,
+            total_price=order_total_price,
+            fullAddress=full_address,
+            city=city,
+            phone=phone,
+            email=email, # Store email for guest orders too
+            note=note,
+            status='pending' # Or 'paid' if payment is integrated and successful
+        )
+
+        # Create OrderItems and decrease stock
+        for item in cart.items.all():
             OrderItem.objects.create(
                 order=order,
-                size = item.size,
-                color = item.color if item.color else 'None',
                 product=item.product,
                 quantity=item.quantity,
-                price=item.product.price,  # Storing product price at time of purchase
+                size=item.size.size if item.size else None, # Store size string
+                color=item.color,
+                price=item.product.display_price # Price at time of order
             )
-
-        return redirect('store:ordered', order_id=order.id)
-    
-    discount_am = total_price_without_discount - total_price
-    return render(request, 'checkout.html', {
-        'cart_items': cart_items,
-        'total_price': total_price,
-        'total_without_discount': total_price_without_discount,
-        'discount': discount_am,
-        'customer': customer,
-    })
-
-def checkout_single_product(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-    error_message = None
-    final_price = product.new_price if product.discount else product.price
-    sizes = Size.objects.filter(product = product)
-    colors = product.color.split(',')
-    if request.method == 'POST':
-        # Collect data from the form
-        name = request.POST.get('name')
-        email = request.POST.get('email')
-        phone = request.POST.get('phone')
-        address = request.POST.get('address')
-        city = request.POST.get('city')
-        color = request.POST.get('selected_color')
-        size = request.POST.get('size')
-        note = request.POST.get('note')
-        promo = None
-        promo_code_input = request.POST.get('promo_code')
-        if colors:
-            if not color:
-                error_message = 'Please select a color.'
-        if sizes:
-            if not size:
-                error_message = 'Please select a size.'
-        # Validate and apply promo code (optional)
-        if promo_code_input:
-            try:
-                promo = PromoCode.objects.get(code=promo_code_input, active=True)
-                if not promo.is_valid():
-                    error_message = 'Promo code has expired.'
-                else:
-                    discount_amount = final_price * (promo.discount / 100)
-                    final_price -= discount_amount
-            except PromoCode.DoesNotExist:
-                error_message = 'Invalid promo code.'
-
-        if not error_message:
-            if request.user.is_authenticated:
-                customer, created = Customer.objects.get_or_create(user=request.user)
-            else:
-                device_token = request.COOKIES.get('device')
-                customer, created = Customer.objects.get_or_create(device_token=device_token)
-            # Update customer information
-            customer.first_name = (name.split(' '))[0]
-            customer.second_name = (name.split(' '))[1]
-            customer.phone = phone
-            customer.phone2 = ' '
-            customer.fullAddress = address
-            customer.city = city
-            customer.email = email
-            customer.save()
-
-
-            # Save order details
-            order = Order.objects.create(
-            customer = customer,
-            promo_code=promo,
-            total_price =final_price,
-            fullAddress = address,
-            city = city,
-            email=email,
-            phone=phone,
-            note = note
-            )
-            orderItem = OrderItem.objects.create(
-                product=product,
-                order = order,
-                quantity = 1,
-                price = product.new_price if product.discount else product.price,
-                color = color,
-                size = size if sizes else None
-            )
-            messages.success(request, 'Your order has been placed successfully!')
-            return redirect('store:ordered', order_id=order.id)
-        else:
-            messages.error(request, error_message)
-
-    context = {
-        'product': product,
-        'final_price': final_price,
-        'sizes' : sizes,
-        'colors' : colors,
-    }
-    return render(request, 'checkout_single_product.html', context)
-
-
-def ordered(request, order_id):
-    order = Order.objects.get(id=order_id)
-
-    # Update order status to 'paid'
-    # order.status = 'processing'
-    order.status = 'processing'
-    order.save()
-    send_facebook_purchase_event(request, order)
-    # Update product quantity for each item in the order
-    order_items = OrderItem.objects.filter(order=order)
-    subject = "Order Confirmed - DirectFashionEG"
-    message = f"Thank you for your purchase { order.customer.first_name }! \n Your order is being processed and should arrive at your destination within 2-3 Days.\n TOTAL: {order.total_price} EGP \n Thank you again for your purchase. We would love to hear from you once you receive your items. \n Kind Regards, \n The DirectFashionEG"
-   
-    # send_order_confirmation_email(order)
-                
-    for item in order_items:
-        product = item.product
-        product.quantity -= item.quantity  # Decrease product stock
-        # product.orderd += item.quantity  
-        product.save()
-    # Retrieve cart and cart items
-    if request.user.is_authenticated:
-        cart = Cart.objects.get(user=request.user)
-    else:
-        device_token = request.COOKIES.get('device')
-        cart = Cart.objects.get(device_token=device_token)
-    cart_items = CartItem.objects.filter(cart=cart)
-    cart_items.delete()
-    send_order_confirmation_email(order)
-    return render(request, 'ordered.html', {
-        'order_items' : order_items,
-        'order' : order,
+            # Decrease stock
+            if item.size: # ProductVariant
+                if not decrease_variant_stock(item.size.id, item.quantity):
+                    messages.error(request, f"Critical: Stock issue for {item.product.name} ({item.size.size}). Order processing halted. Contact support.")
+                    order.status = 'failed' # Mark order as failed due to stock issue
+                    order.save()
+                    # TODO: Rollback or compensation logic might be needed here
+                    return redirect('ecommerce:checkout') # Or an error page
+            else: # Main product stock
+                if product.quantity < item.quantity:
+                     messages.error(request, f"Critical: Stock issue for {item.product.name}. Order processing halted. Contact support.")
+                     order.status = 'failed'
+                     order.save()
+                     return redirect('ecommerce:checkout')
+                item.product.quantity = F('quantity') - item.quantity
+                item.product.save()
         
-    })
+        if applied_promo:
+            applied_promo.used_count = F('used_count') + 1
+            applied_promo.save()
 
-def savemail(request):
-    if request.method == 'POST':
-        email = request.POST.get('email')
-        name = request.POST.get('name')
-        Emails.objects.create(name = name, email = email)    
-        return JsonResponse({'status': 'success'})
+        # Clear the cart (or mark as completed)
+        cart.items.all().delete() # Deletes cart items
+        update_cart_totals(cart) # Resets cart totals
+        # Optionally, delete the cart itself for guest users or mark as inactive for registered users
+        # if not request.user.is_authenticated and request.session.get('cart_id'):
+        #     Cart.objects.filter(device_token=request.session['cart_id']).delete()
+        #     del request.session['cart_id']
+
+        messages.success(request, f"Order #{order.order_id} placed successfully! Thank you for your purchase.")
+        return redirect('ecommerce:order_detail', order_id=order.id)
     
-    return JsonResponse({'status': 'error'}, status=400)
+    else: # GET request
+        initial_checkout_data = {}
+        if customer:
+            initial_checkout_data = {
+                'email': customer.email or (request.user.email if request.user.is_authenticated else ''),
+                'phone': customer.phone,
+                'fullAddress': customer.fullAddress,
+                'city': customer.city,
+                'first_name': customer.first_name or (request.user.first_name if request.user.is_authenticated else ''),
+                'second_name': customer.second_name
+            }
+        # else for guest users, form will be empty
 
-def get_delivery_fee(request):
-    city = request.GET.get('city')  # Get city from the AJAX request
-    if city:
-        try:
-            delivery_fee = DeliveryFees.objects.get(city=city).delivery_fee
-            return JsonResponse({'delivery_fee': delivery_fee})
-        except DeliveryFees.DoesNotExist:
-            return JsonResponse({'error': 'City not found'}, status=404)
-    return JsonResponse({'error': 'City not provided'}, status=400)
-
-from django.core.mail import send_mail, EmailMultiAlternatives
-from django.template.loader import render_to_string
-from django.utils.html import strip_tags
-
-def send_order_confirmation_email(order):
-    customer_email = order.customer.email
-    subject = f"Order Confirmation - #{order.id}"
-    adminSubject = f"Order - #{order.id}"
-    from_email = 'contact@egpolka.store'
-    admin_email = 'contact@sayedibrahim.co'
-    # Render the HTML template and strip to plain text as fallback
-    html_content = render_to_string('order_confirmation.html', {
-        'customer_name': order.customer.first_name,
-        'order_id': order.id,
-        'order_date': order.created_at,
-        'order_items': order.order_items.all(),  # Assuming related name is order_items
-        'order_total': order.total_price,
-    })
-    
-    admin_html_content = render_to_string('admin_order_confirmation.html', {
-        'customer_name': order.customer.first_name,
-        'order_id': order.id,
-        'order_date': order.created_at,
-        'order_items': order.order_items.all(),  # Assuming related name is order_items
-        'order_total': order.total_price,
-        'order' : order,
-    })
-    
-    text_content = strip_tags(html_content)
-    admin_text_content = strip_tags(admin_html_content)
-
-    # Send email
-    email = EmailMultiAlternatives(subject, text_content, from_email, [customer_email])
-    adminEmail = EmailMultiAlternatives(adminSubject, admin_text_content, from_email, [admin_email])
-    email.attach_alternative(html_content, "text/html")
-    adminEmail.attach_alternative(admin_html_content, "text/html")
-    email.send()
-    adminEmail.send()
-
-
-from django.http import JsonResponse
+    context = {
+        'cart': cart,
+        'page_title': 'Checkout',
+        'initial_data': initial_checkout_data # Pass to prefill form if using Django forms
+    }
+    return render(request, 'ecommerce/checkout.html', context)
 
 @login_required
-@admin_required
-def update_order_status(request):
-    # Parse JSON data from the request body
+def order_history(request):
+    # Customer might not exist if user signed up but never made a purchase or filled profile
+    customer = Customer.objects.filter(user=request.user).first()
+    orders = []
+    if customer:
+        orders = Order.objects.filter(Q(customer=customer) | Q(email=request.user.email)).order_by('-created_at')
+    elif request.user.email: # Fallback for users who might have guest orders with their email
+        orders = Order.objects.filter(email=request.user.email).order_by('-created_at')
+        if not orders.exists() and not customer:
+             messages.info(request, "You have no order history. Your past guest orders (if any) might not be linked if placed with a different email.")
+
+    context = {
+        'orders': orders,
+        'page_title': 'My Orders'
+    }
+    return render(request, 'ecommerce/order_history.html', context)
+
+@login_required
+def order_detail(request, order_id):
     try:
-        data = json.loads(request.body)
-        order_id = data.get('order_id')
-        new_status = data.get('new_status')
-        print(order_id)
-        print(new_status)
-    except json.JSONDecodeError:
-        return JsonResponse({'success': False, 'error': 'Invalid JSON data.'})
-
-    # Validate new_status
-    valid_statuses = [choice[0] for choice in Order.ORDER_STATUS_CHOICES]
-    print(valid_statuses)
-    if new_status not in valid_statuses:
-        print("Vaaallllllid")
-        return JsonResponse({'success': False, 'error': 'Invalid status value.'})
-
-    # Get the order
-    order = get_object_or_404(Order, id=order_id)
-    print(order.status)
-    # Update the status
-    order.status = new_status
-    order.save()
-
-    return JsonResponse({'success': True})
-
-from .forms import ImageForm, ProductForm, ImageFormset, SizeForm, SizeFormset
-from .models import Product
-from django.contrib import messages
-from django.db import transaction
-
-def add_product(request):
-    if request.method == 'POST':
-        product_form = ProductForm(request.POST, request.FILES)
-        if product_form.is_valid():
-            try:
-                with transaction.atomic():
-                    product = product_form.save()
-
-                    # image_formset = ImageFormset(request.POST, request.FILES, instance=product, prefix='images')
-                    size_formset = SizeFormset(request.POST, instance=product, prefix='sizes')
-
-                    # if image_formset.is_valid() and size_formset.is_valid():
-                    #     # image_formset.save()
-                    #     size_formset.save()
-                    # else:
-                    #     raise ValueError('Formsets are invalid')
-            except Exception as e:
-                messages.error(request, f'An error occurred: {str(e)}')
-                # Re-initialize formsets without saving
-                # image_formset = ImageFormset(request.POST, request.FILES, prefix='images')
-                size_formset = SizeFormset(request.POST, prefix='sizes')
-                product_form = ProductForm(request.POST, request.FILES)  # Re-initialize form with POST data
-                context = {
-                    'product_form': product_form,
-                    # 'image_formset': image_formset,
-                    'size_formset': size_formset,
-                }
-                return render(request, 'admin/add_product.html', context)
-            else:
-                messages.success(request, 'Product added successfully.')
-                return redirect('store:product_list')
-        else:
-            messages.error(request, 'Please correct the errors in the product form.')
-            # image_formset = ImageFormset(request.POST, request.FILES, prefix='images')
-            size_formset = SizeFormset(request.POST, prefix='sizes')
-    else:
-        # GET request
-        product_form = ProductForm()
-        # image_formset = ImageFormset(prefix='images')
-        size_formset = SizeFormset(prefix='sizes')
-
-    context = {
-        'product_form': product_form,
-        # 'image_formset': image_formset,
-        'size_formset': size_formset,
-    }
-    return render(request, 'admin/add_product.html', context)
-
-@admin_required
-def edit_product(request, pk):
-    product = Product.objects.get(pk=pk)
-    if request.method == 'POST':
-        product_form = ProductForm(request.POST, request.FILES, instance=product)
-        # image_formset = ImageFormset(request.POST, request.FILES, instance=product)
-        size_formset = SizeFormset(request.POST, instance=product)
-
-        if product_form.is_valid() and size_formset.is_valid():
-            product = product_form.save()
-            # image_formset.instance = product
-            # image_formset.save()
-            size_formset.instance = product
-            size_formset.save()
-            messages.success(request, 'Product updated successfully.')
-            return redirect('store:product_list')
-    else:
-        product_form = ProductForm(instance=product)
-        # image_formset = ImageFormset(instance=product)
-        size_formset = SizeFormset(instance=product)
-
-    context = {
-        'product_form': product_form,
-        # 'image_formset': image_formset,
-        'size_formset': size_formset,
-        'product': product,
-    }
-    return render(request, 'admin/edit_product.html', context)
-
-@admin_required
-def product_list(request):
-    products = Product.objects.all()
-    return render(request, 'admin/product_list.html', {'products': products})
-
-@csrf_exempt
-@admin_required
-def remove_product_ajax(request):
-    if request.method == 'POST':
-        product_id = request.POST.get('product_id')
-        print(product_id)
-        try:
-            product = Product.objects.get(id=product_id)
-            product.delete()
-            return JsonResponse({'status': 'success'})
-        except Product.DoesNotExist:
-            return JsonResponse({'status': 'error', 'message': 'Product not found.'})
-        except Exception as e:
-            return JsonResponse({'status': 'error', 'message': str(e)})
-    else:
-        return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
-
-
-@admin_required
-def orders(request):
-    orders_queryset = Order.objects.all()
-
-    # Serialize orders data
-    orders_data = []
-    for order in orders_queryset:
-        orders_data.append({
-            'id': order.id,
-            'name' : f'{order.customer.first_name} {order.customer.second_name}',
-            'phone' : order.phone,
-            'created_at': order.created_at.isoformat(),
-            'total_price': str(order.total_price),  # Convert Decimal to string
-            'status': order.status,
-        })
-
-    orders_json = json.dumps(orders_data)
-
-    # Pass orders_json to the template context
-    return render(request, 'admin/orders.html', {'orders_json': orders_json})
-
-
-@login_required
-def order_details(request, order_id):
-    order = get_object_or_404(Order, id=order_id)
-    customer = order.customer
-    order_items = OrderItem.objects.filter(order = order)
-
+        # Allow access if order is linked to the user's customer profile OR order email matches user's email
+        order = Order.objects.get(id=order_id)
+        is_owner = (order.customer and order.customer.user == request.user) or (order.email == request.user.email)
+        
+        if not is_owner and not request.user.is_staff:
+            messages.error(request, "You do not have permission to view this order.")
+            return redirect('ecommerce:order_history')
+    except Order.DoesNotExist:
+        raise Http404("Order not found.")
+        
     context = {
         'order': order,
-        'customer': customer,
-        'order_items': order_items,
+        'page_title': f'Order #{order.order_id}'
     }
-    return render(request, 'admin/order_details.html', context) 
+    return render(request, 'ecommerce/order_detail.html', context)
 
-@admin_required
-def remove_item(request):
+# --- Reviews and Questions ---
+@login_required
+def add_review(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    # Check if user has purchased this product (optional but good practice)
+    # has_purchased = OrderItem.objects.filter(order__customer__user=request.user, product=product, order__status='delivered').exists()
+    # if not has_purchased:
+    #     messages.error(request, "You can only review products you have purchased and received.")
+    #     return redirect('ecommerce:product_detail', id=product_id)
+
     if request.method == 'POST':
-        item_id = request.POST.get('id')
-        item_type = request.POST.get('type')
+        form = ReviewForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Optional: Check if user already reviewed
+            # existing_review = Review.objects.filter(product=product, user=request.user).exists()
+            # if existing_review:
+            # messages.error(request, "You've already reviewed this product.")
+            # return redirect('ecommerce:product_detail', id=product_id)
 
-        if item_type == 'size':
-            try:
-                size = Size.objects.get(pk=item_id)
-                size.delete()
-                return JsonResponse({'success': True})
-            except Size.DoesNotExist:
-                return JsonResponse({'success': False, 'error': 'Size not found.'})
+            review = form.save(commit=False)
+            review.product = product
+            # review.user = request.user # Add user FK to Review model if desired
+            review.save()
+            messages.success(request, 'Thank you! Your review has been submitted.')
+            return redirect('ecommerce:product_detail', id=product_id)
         else:
-            return JsonResponse({'success': False, 'error': 'Invalid item type.'})
+            messages.error(request, 'There was an error with your review. Please check the details.')
+    else: # Should not happen if form is on product page and submitted via POST
+        form = ReviewForm()
+
+    # If form invalid, re-render product page with errors
+    # This requires product_detail to handle forms passed in context for errors
+    context = product_detail_context_data(product, review_form=form) # Helper function for context
+    return render(request, 'ecommerce/product.html', context)
+
+@login_required
+def add_question(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    if request.method == 'POST':
+        form = QuestionForm(request.POST)
+        if form.is_valid():
+            question = form.save(commit=False)
+            question.product = product
+            # question.user = request.user # Add user FK if desired
+            question.save()
+            messages.success(request, 'Your question has been submitted. We will answer it shortly.')
+            return redirect('ecommerce:product_detail', id=product_id)
+        else:
+            messages.error(request, 'There was an error submitting your question.')
     else:
-        return JsonResponse({'success': False, 'error': 'Invalid request method.'})
+        form = QuestionForm()
+    
+    context = product_detail_context_data(product, question_form=form)
+    return render(request, 'ecommerce/product.html', context)
+
+# Helper for product_detail context to avoid repetition in add_review/add_question error paths
+def product_detail_context_data(product, review_form=None, question_form=None):
+    return {
+        'product': product,
+        'available_variants': product.variants.filter(quantity__gt=0).order_by('size'),
+        'related_products': Product.objects.filter(category=product.category).exclude(id=product.id)[:4],
+        'reviews': product.reviews.all().order_by('-created_at'),
+        'questions': product.questions.all().order_by('-created_at'),
+        'videos': product.videos.all(),
+        'additional_images': product.additional_images.all(),
+        'review_form': review_form or ReviewForm(),
+        'question_form': question_form or QuestionForm(),
+        'page_title': product.name
+    }
+
+# Placeholder views for static pages if needed from base.html links
+def privacy_policy_view(request):
+    # return render(request, 'ecommerce/privacy_policy.html', {'page_title': 'Privacy Policy'})
+    messages.info(request, "Privacy Policy page is not yet implemented.")
+    return redirect('ecommerce:index')
+
+def terms_conditions_view(request):
+    # return render(request, 'ecommerce/terms_conditions.html', {'page_title': 'Terms & Conditions'})
+    messages.info(request, "Terms & Conditions page is not yet implemented.")
+    return redirect('ecommerce:index')
+
+#Make sure every thing is work and competable with the frontend that you will take and copy from frontend/ecommerce after you done the ecommerce should be done and wokring well
