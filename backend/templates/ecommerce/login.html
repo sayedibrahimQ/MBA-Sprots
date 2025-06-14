@@ -1,34 +1,9 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تسجيل الدخول - MBA</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            font-family: 'Cairo', sans-serif;
-            box-sizing: border-box;
-        }
-        
-        html, body {
-            height: 100%;
-            margin: 0;
-            overflow-x: hidden;
-        }
-
-        body {
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d3748 100%);
-            color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-            min-height: 100vh;
-        }
-        
+{% extends "ecommerce/base.html" %}
+{% load static %}
+{% block title %}
+تسجيل الدخول - MBA
+{% endblock title %}
+{% block css %}
         .simple-header {
             width: 100%;
             padding: 25px 0;
@@ -227,26 +202,22 @@
         .simple-footer a:hover {
             text-decoration: underline;
         }
-    </style>
-</head>
-<body>
-    <header class="simple-header">
-        <a class="navbar-brand" href="index.html">MBA</a>
-    </header>
-
+        {% endblock css %}
+{% block content %}
     <main class="auth-main-content">
         <div class="auth-card">
             <h1 class="form-card-title">تسجيل الدخول</h1>
-            <form>
+            <form id="form" method = "POST">
+                {% csrf_token %}
                 <div class="mb-3">
                     <label for="emailInput" class="form-label">البريد الإلكتروني</label>
-                    <input type="email" class="form-control" id="emailInput" placeholder="ادخل بريدك الإلكتروني" required>
+                    <input type="text" class="form-control" name = "username" id="emailInput" placeholder="ادخل بريدك الإلكتروني" required>
                 </div>
                 <div class="mb-3">
                     <label for="passwordInput" class="form-label">كلمة المرور</label>
                     <div class="input-group">
-                        <input type="password" class="form-control" id="passwordInput" placeholder="ادخل كلمة المرور" required>
-                        <span class="password-toggle" onclick="togglePasswordVisibility('passwordInput', this)">
+                        <input type="password" name = "password" class="form-control" id="passwordInput" placeholder="ادخل كلمة المرور" required>
+                        <span class="password-toggle"  onclick="togglePasswordVisibility('passwordInput', this)">
                             <i class="fas fa-eye"></i>
                         </span>
                     </div>
@@ -276,11 +247,8 @@
             </div>
         </div>
     </main>
-
-    <footer class="simple-footer">
-        <p>&copy; 2024 MBA Sports. جميع الحقوق محفوظة. <a href="#">سياسة الخصوصية</a> | <a href="#">شروط الخدمة</a></p>
-    </footer>
-
+{% endblock %}
+    {% block scripts %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script>
         function togglePasswordVisibility(inputId, toggleElement) {
@@ -296,15 +264,6 @@
                 icon.classList.add('fa-eye');
             }
         }
-
-        // Form submission simulation (replace with actual login logic)
-        document.querySelector('form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            // Add your login logic here (e.g., AJAX request)
-            alert('تم إرسال بيانات تسجيل الدخول! (محاكاة)');
-            // Example: Redirect to profile page on successful login
-            // window.location.href = 'profile.html';
-        });
+        
     </script>
-</body>
-</html>
+    {% endblock scripts %}

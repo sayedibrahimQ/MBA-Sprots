@@ -1,33 +1,11 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إنشاء حساب جديد - MBA</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            font-family: 'Cairo', sans-serif;
-            box-sizing: border-box;
-        }
-        
-        html, body {
-            height: 100%;
-            margin: 0;
-            overflow-x: hidden; 
-        }
 
-        body {
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d3748 100%);
-            color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center; 
-            justify-content: space-between; 
-            min-height: 100vh;
-        }
+{% extends "ecommerce/base.html" %}
+{% load static %}
+
+{% block title %}
+إنشاء حساب جديد - MBA
+{% endblock title %}
+{% block css %}
         
         .simple-header {
             width: 100%;
@@ -242,30 +220,31 @@
         .form-check-input:focus {
             box-shadow: 0 0 0 0.2rem rgba(255,193,7,0.25) !important; /* Ensure focus style for checkbox */
         }
-    </style>
-</head>
-<body>
-    <header class="simple-header">
-        <a class="navbar-brand" href="index.html">MBA</a>
-    </header>
-
+{% endblock css %}
+   
+{% block content %}
     <main class="auth-main-content">
         <div class="auth-card">
             <h1 class="form-card-title">إنشاء حساب جديد</h1>
-            <form id="signupForm">
+            <form id="signupForm" method = 'POST'>
+                {% csrf_token %}
                 <div class="mb-3">
-                    <label for="fullNameInput" class="form-label">الاسم الكامل</label>
-                    <input type="text" class="form-control" id="fullNameInput" placeholder="ادخل اسمك الكامل" required>
+                    <label for="fullNameInput" class="form-label">الاسم الاول</label>
+                    <input type="text" name = "first_name" class="form-control" id="fullNameInput" placeholder="ادخل اسمك الكامل" required>
+                </div>
+                <div class="mb-3">
+                    <label for="fullNameInput" class="form-label">الاسم الثاني</label>
+                    <input type="text" name = "second_name" class="form-control" id="fullNameInput" placeholder="ادخل اسمك الكامل" required>
                 </div>
                 <div class="mb-3">
                     <label for="emailInput" class="form-label">البريد الإلكتروني</label>
-                    <input type="email" class="form-control" id="emailInput" placeholder="ادخل بريدك الإلكتروني" required>
+                    <input type="email" name = "email" class="form-control" id="emailInput" placeholder="ادخل بريدك الإلكتروني" required>
                 </div>
                 <div class="mb-3">
                     <label for="passwordInput" class="form-label">كلمة المرور</label>
                     <div class="input-group">
-                        <input type="password" class="form-control" id="passwordInput" placeholder="ادخل كلمة المرور (8+ حروف وارقام ورمز)" required minlength="8" pattern=".*(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&*]).*">
-                        <span class="password-toggle" onclick="togglePasswordVisibility('passwordInput', this)">
+                        <input type="password" name = "password" class="form-control" id="passwordInput" placeholder="ادخل كلمة المرور (8+ حروف وارقام ورمز)" required minlength="8" pattern=".*(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&*]).*">
+                        <span class="password-toggle" name = "password1" onclick="togglePasswordVisibility('passwordInput', this)">
                             <i class="fas fa-eye"></i>
                         </span>
                     </div>
@@ -274,15 +253,15 @@
                     <label for="confirmPasswordInput" class="form-label">تأكيد كلمة المرور</label>
                     <div class="input-group">
                         <input type="password" class="form-control" id="confirmPasswordInput" placeholder="أعد إدخال كلمة المرور" required>
-                        <span class="password-toggle" onclick="togglePasswordVisibility('confirmPasswordInput', this)">
+                        <span class="password-toggle" name = "password2" onclick="togglePasswordVisibility('confirmPasswordInput', this)">
                             <i class="fas fa-eye"></i>
                         </span>
                     </div>
                 </div>
-                <div class="mb-3 form-check">
+                {% comment %} <div class="mb-3 form-check">
                     <input type="checkbox" class="form-check-input" id="termsCheck" required>
                     <label class="form-check-label" for="termsCheck">أوافق على <a href="#" class="auth-links" style="margin:0; display:inline; text-decoration:underline;">الشروط والأحكام</a> و <a href="#" class="auth-links" style="margin:0; display:inline; text-decoration:underline;">سياسة الخصوصية</a>.</label>
-                </div>
+                </div> {% endcomment %}
                 <button type="submit" class="btn btn-gold mb-3">إنشاء حساب</button>
             </form>
             
@@ -292,13 +271,11 @@
             </div>
         </div>
     </main>
+{% endblock content %}
 
-    <footer class="simple-footer">
-        <p>&copy; 2024 MBA Sports. جميع الحقوق محفوظة. <a href="#">سياسة الخصوصية</a> | <a href="#">شروط الخدمة</a></p>
-    </footer>
-
+{% block scripts %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <script>
+    {% comment %} <script>
         function togglePasswordVisibility(inputId, toggleElement) {
             const passwordInput = document.getElementById(inputId);
             const icon = toggleElement.querySelector('i');
@@ -313,10 +290,10 @@
             }
         }
 
-        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            document.getElementById('signupForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const passwordInput = document.getElementById('passwordInput');
-            const confirmPasswordInput = document.getElementById('confirmPasswordInput');
+            const passwordInput = document.getElementById('passwordInputwww');
+            const confirmPasswordInput = document.getElementById('confirmPasswordInputwww');
             const termsChecked = document.getElementById('termsCheck').checked;
 
             // Simple password strength: min 8 chars, at least one letter, one number, one special character
@@ -342,7 +319,6 @@
             // For demo purposes, we can clear the form or redirect
             // this.reset(); 
             // window.location.href = 'login.html';
-        });
-    </script>
-</body>
-</html>
+        }); 
+    </script>{% endcomment %}
+{% endblock scripts %}

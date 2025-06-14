@@ -517,6 +517,10 @@
     {
         width:40%;
     }
+    a 
+    {
+        text-decoration: none;
+    }
 {% endblock %}
 
 
@@ -641,31 +645,32 @@
 
             <!-- Product 1 -->
              {% for product in new_arrival_products %}
-             
-                <div class="product-card-wrapper">
-                    <div class="product-card">
-                        <div class="sale-badge">جديد</div>
-                        <div class="wishlist-icon">
-                            <i class="fas fa-heart"></i>
+             <div class="product-card-wrapper">
+                 <div class="product-card">
+                     <div class="sale-badge">جديد</div>
+                     <div class="wishlist-icon">
+                         <i class="fas fa-heart"></i>
                         </div>
+                        <a href="{% url 'ecommerce:product_detail' product.id %}">
                         <img src="{{ product.img.url }}" class="card-img-top">
+                        
                         <div class="product-info">
                             <h5>{{ product.name }}</h5>
                             <p>{{ product.description|truncatechars:20}}</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 {% if product.discount_active %}
-                                    <span class="price">{{product.new_price}} &nbsp; <del> {{ product.price }} </del></span>
+                                <span class="price">{{product.new_price}} &nbsp; <del> {{ product.price }} </del></span>
                                 {% else %}
-                                    <span class="price"> {{ product.price }} </span>
+                                <span class="price"> {{ product.price }} </span>
                                 {% endif %}
                                 {% comment %} <button class="btn-cart">
                                     <i class="fas fa-shopping-cart"></i>
                                     </button> {% endcomment %}
+                                </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                 </div>
-
             {% endfor %}
 
         </div>
@@ -696,6 +701,7 @@
                     <div class="wishlist-icon">
                         <i class="fas fa-heart"></i>
                     </div>
+                    <a href="{% url 'ecommerce:product_detail' product.id %}">
                     <img src="{{ product.img.url }}" class="card-img-top" alt="Man City Jersey">
                     <div class="product-info">
                         <h5>قميص مانشستر سيتي - موسم 2025</h5>
@@ -708,6 +714,7 @@
                             {% endif %}
                         </div>
                     </div>
+                    </a>
                 </div>
             </div>
 
@@ -777,10 +784,11 @@
             {% for team in teams %}
 
                 <div class="col-4 col-md-2">
-
-                    <div class="team-logo">
-                        <img src="{{ team.img.url }}" alt="{{ team.name }}">
-                    </div>
+                    <a href = "{% url 'ecommerce:team' team.id %}">
+                        <div class="team-logo">
+                            <img src="{{ team.img.url }}" alt="{{ team.name }}">
+                        </div>
+                    </a>
                 
                 </div>
             
@@ -790,7 +798,9 @@
         
         <div class="view-all-btn">
             <button class="btn-outline-gold">
-                عرض كل الفرق <i class="fas fa-arrow-left ms-2"></i>
+                <a href = "{% url "ecommerce:teams" %}" style = "text-decoration:none; color: white;">
+                    عرض كل الفرق <i class="fas fa-arrow-left ms-2"></i>
+                </a>
             </button>
         </div>
     </div>

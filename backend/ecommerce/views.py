@@ -41,7 +41,7 @@ def teams(request):
     return render(request, 'ecommerce/team.html', context)
 
 def about_us(request):
-    return render(request, 'about.html',{})
+    return render(request, 'ecommerce/about.html',{})
 
 def product_list(request):
     query = request.GET.get('q')
@@ -96,6 +96,9 @@ def product_list(request):
     }
     return render(request, 'ecommerce/categories.html', context) # Using categories.html for product listing
 
+
+# Products Pages
+
 def products_by_category(request, category_name): # category_name could be slug from URL
     category = get_object_or_404(Category, category__iexact=category_name.replace('-',' '))
     products = Product.objects.filter(category=category).filter(Q(quantity__gt=0) | Q(variants__quantity__gt=0)).distinct()
@@ -109,13 +112,44 @@ def products_by_category(request, category_name): # category_name could be slug 
     }
     return render(request, 'ecommerce/categories.html', context)
 
+
 def category_list(request):
     categories = Category.objects.annotate(num_products=Count('product')).filter(num_products__gt=0).order_by('category')
     context = {
         'categories': categories,
         'page_title': 'Product Categories'
     }
-    return render(request, 'ecommerce/category_list_page.html', context) # Create this template if needed
+    return render(request, 'ecommerce/categories.html', context) # Create this template if needed
+
+def best_selling(request):
+    products = Product.objects.filter(best_selling=True).order_by('-updated_at')
+
+    context = {
+        'products': products,
+        'page_title': 'Best Selling - MBA'
+    }
+    return render(request, 'ecommerce/categories.html', context) # Create this template if needed
+
+from django.utils.timezone import now, timedelta
+def new_arrivals(request):
+    _30days = now() - timedelta(days=30)
+    products = Product.objects.filter(created_at = _30days).order_by('-created_at')
+    context = {
+        'products': products,
+        'page_title': 'New Arrivals - MBA'
+    }
+    return render(request, 'ecommerce/categories.html', context) 
+
+
+def team(request, team_id):
+    team = Team.objects.get(id = team_id)
+    products = Product.objects.filter(team = team).order_by('-created_at')
+    context = {
+        'products': products,
+        'page_title': f' {team.name} Products - MBA'
+    }
+    return render(request, 'ecommerce/categories.html', context) 
+
 
 def product_detail(request, id):
     product = get_object_or_404(Product, id=id)
@@ -141,7 +175,7 @@ def product_detail(request, id):
         'question_form': question_form,
         'page_title': product.name
     }
-    return render(request, 'ecommerce/product.html', context)
+    return render(request, 'ecommerce/product_detail.html', context)
 
 # --- Cart Views ---
 def cart_detail(request):

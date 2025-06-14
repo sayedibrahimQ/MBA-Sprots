@@ -1,5 +1,10 @@
 {% extends "ecommerce/base.html" %}
 {% load static %}
+
+{% block title %}
+{{page_title}}
+{% endblock title %}
+
 {% block css %}
 
 .hero-section {
@@ -462,6 +467,9 @@
                 </div>
 
                 <div class="row">
+                   
+                    {% for product in products %}
+                    
                     <!-- Product 1 -->
                     <div class="col-md-4 col-sm-6 mb-4">
                         <div class="product-card">
@@ -469,172 +477,30 @@
                                 <i class="far fa-heart"></i>
                             </div>
                             <span class="sale-badge">خصم 25%</span>
-                            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%23ff6b35' d='M50 100 Q150 50 250 100 Q150 150 50 100'/><circle fill='%23ffffff' cx='100' cy='80' r='15'/><circle fill='%23ffffff' cx='200' cy='120' r='15'/></svg>" class="product-card-img" alt="حذاء نايك ميركوريال سوبرفلاي 9 إليت">
-                            <div class="product-info">
-                                <h5>حذاء نايك ميركوريال سوبرفلاي 9 إليت</h5>
-                                <div class="price-area">
-                                    <span class="price">745 ج.م</span>
-                                    <span class="old-price">995 ج.م</span>
-                                </div>
-                                <button class="btn-add-to-cart-card" onclick="handleAddToCart(this)">
-                                    <i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                            <a href = "{% url 'ecommerce:product_detail' product.id %}" style = "text-decoration:none;">
 
-                    <!-- Product 2 -->
-                    <div class="col-md-4 col-sm-6 mb-4">
-                        <div class="product-card">
-                            <div class="wishlist-icon" onclick="toggleWishlistCard(this)">
-                                <i class="far fa-heart"></i>
-                            </div>
-                            <span class="sale-badge" style="background-color: #007bff; color: white;">جديد</span>
-                            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%2300aaff' d='M50 100 Q150 60 250 100 Q150 140 50 100'/><circle fill='%23ffffff' cx='90' cy='90' r='12'/><circle fill='%23ffffff' cx='210' cy='110' r='12'/></svg>" class="product-card-img" alt="حذاء كرة قدم أديداس">
-                            <div class="product-info">
-                                <h5>حذاء أديداس إكس سبيدبورتال.1</h5>
-                                <div class="price-area">
-                                    <span class="price">850 ج.م</span>
-                                </div>
-                                <button class="btn-add-to-cart-card" onclick="handleAddToCart(this)">
-                                    <i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة
-                                </button>
-                            </div>
+                                <img src="{{ product.img.url }}" class="product-card-img" alt="{{ product.name }}">
+                                <div class="product-info">
+                                    <h5>{{ product.name }}</h5>
+                                    <div class="price-area">
+                                        {% if discount_active is true %}
+                                        <span class="price">{{ product.new_price }}ج.م</span>
+                                        <span class="old-price">{{ product.price }} ج.م</span>
+                                        
+                                        {% else %}
+                                        <span class="price">{{ product.price }}ج.م</span>
+                                        {% endif %}
+                                    </div>
+                                    {% comment %} <button class="btn-add-to-cart-card" onclick="handleAddToCart(this)">
+                                        <i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة
+                                        </button> {% endcomment %}
+                                    </div>
+                                </a>
                         </div>
                     </div>
-                    <!-- Product 2 -->
-                    <div class="col-md-4 col-sm-6 mb-4">
-                        <div class="product-card">
-                            <div class="wishlist-icon" onclick="toggleWishlistCard(this)">
-                                <i class="far fa-heart"></i>
-                            </div>
-                            <span class="sale-badge" style="background-color: #007bff; color: white;">جديد</span>
-                            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%2300aaff' d='M50 100 Q150 60 250 100 Q150 140 50 100'/><circle fill='%23ffffff' cx='90' cy='90' r='12'/><circle fill='%23ffffff' cx='210' cy='110' r='12'/></svg>" class="product-card-img" alt="حذاء كرة قدم أديداس">
-                            <div class="product-info">
-                                <h5>حذاء أديداس إكس سبيدبورتال.1</h5>
-                                <div class="price-area">
-                                    <span class="price">850 ج.م</span>
-                                </div>
-                                <button class="btn-add-to-cart-card" onclick="handleAddToCart(this)">
-                                    <i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Product 2 -->
-                    <div class="col-md-4 col-sm-6 mb-4">
-                        <div class="product-card">
-                            <div class="wishlist-icon" onclick="toggleWishlistCard(this)">
-                                <i class="far fa-heart"></i>
-                            </div>
-                            <span class="sale-badge" style="background-color: #007bff; color: white;">جديد</span>
-                            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%2300aaff' d='M50 100 Q150 60 250 100 Q150 140 50 100'/><circle fill='%23ffffff' cx='90' cy='90' r='12'/><circle fill='%23ffffff' cx='210' cy='110' r='12'/></svg>" class="product-card-img" alt="حذاء كرة قدم أديداس">
-                            <div class="product-info">
-                                <h5>حذاء أديداس إكس سبيدبورتال.1</h5>
-                                <div class="price-area">
-                                    <span class="price">850 ج.م</span>
-                                </div>
-                                <button class="btn-add-to-cart-card" onclick="handleAddToCart(this)">
-                                    <i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Product 2 -->
-                    <div class="col-md-4 col-sm-6 mb-4">
-                        <div class="product-card">
-                            <div class="wishlist-icon" onclick="toggleWishlistCard(this)">
-                                <i class="far fa-heart"></i>
-                            </div>
-                            <span class="sale-badge" style="background-color: #007bff; color: white;">جديد</span>
-                            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%2300aaff' d='M50 100 Q150 60 250 100 Q150 140 50 100'/><circle fill='%23ffffff' cx='90' cy='90' r='12'/><circle fill='%23ffffff' cx='210' cy='110' r='12'/></svg>" class="product-card-img" alt="حذاء كرة قدم أديداس">
-                            <div class="product-info">
-                                <h5>حذاء أديداس إكس سبيدبورتال.1</h5>
-                                <div class="price-area">
-                                    <span class="price">850 ج.م</span>
-                                </div>
-                                <button class="btn-add-to-cart-card" onclick="handleAddToCart(this)">
-                                    <i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Product 2 -->
-                    <div class="col-md-4 col-sm-6 mb-4">
-                        <div class="product-card">
-                            <div class="wishlist-icon" onclick="toggleWishlistCard(this)">
-                                <i class="far fa-heart"></i>
-                            </div>
-                            <span class="sale-badge" style="background-color: #007bff; color: white;">جديد</span>
-                            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%2300aaff' d='M50 100 Q150 60 250 100 Q150 140 50 100'/><circle fill='%23ffffff' cx='90' cy='90' r='12'/><circle fill='%23ffffff' cx='210' cy='110' r='12'/></svg>" class="product-card-img" alt="حذاء كرة قدم أديداس">
-                            <div class="product-info">
-                                <h5>حذاء أديداس إكس سبيدبورتال.1</h5>
-                                <div class="price-area">
-                                    <span class="price">850 ج.م</span>
-                                </div>
-                                <button class="btn-add-to-cart-card" onclick="handleAddToCart(this)">
-                                    <i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Product 2 -->
-                    <div class="col-md-4 col-sm-6 mb-4">
-                        <div class="product-card">
-                            <div class="wishlist-icon" onclick="toggleWishlistCard(this)">
-                                <i class="far fa-heart"></i>
-                            </div>
-                            <span class="sale-badge" style="background-color: #007bff; color: white;">جديد</span>
-                            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%2300aaff' d='M50 100 Q150 60 250 100 Q150 140 50 100'/><circle fill='%23ffffff' cx='90' cy='90' r='12'/><circle fill='%23ffffff' cx='210' cy='110' r='12'/></svg>" class="product-card-img" alt="حذاء كرة قدم أديداس">
-                            <div class="product-info">
-                                <h5>حذاء أديداس إكس سبيدبورتال.1</h5>
-                                <div class="price-area">
-                                    <span class="price">850 ج.م</span>
-                                </div>
-                                <button class="btn-add-to-cart-card" onclick="handleAddToCart(this)">
-                                    <i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Product 2 -->
-                    <div class="col-md-4 col-sm-6 mb-4">
-                        <div class="product-card">
-                            <div class="wishlist-icon" onclick="toggleWishlistCard(this)">
-                                <i class="far fa-heart"></i>
-                            </div>
-                            <span class="sale-badge" style="background-color: #007bff; color: white;">جديد</span>
-                            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%2300aaff' d='M50 100 Q150 60 250 100 Q150 140 50 100'/><circle fill='%23ffffff' cx='90' cy='90' r='12'/><circle fill='%23ffffff' cx='210' cy='110' r='12'/></svg>" class="product-card-img" alt="حذاء كرة قدم أديداس">
-                            <div class="product-info">
-                                <h5>حذاء أديداس إكس سبيدبورتال.1</h5>
-                                <div class="price-area">
-                                    <span class="price">850 ج.م</span>
-                                </div>
-                                <button class="btn-add-to-cart-card" onclick="handleAddToCart(this)">
-                                    <i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Product 2 -->
-                    <div class="col-md-4 col-sm-6 mb-4">
-                        <div class="product-card">
-                            <div class="wishlist-icon" onclick="toggleWishlistCard(this)">
-                                <i class="far fa-heart"></i>
-                            </div>
-                            <span class="sale-badge" style="background-color: #007bff; color: white;">جديد</span>
-                            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f8f9fa' width='300' height='200'/><path fill='%2300aaff' d='M50 100 Q150 60 250 100 Q150 140 50 100'/><circle fill='%23ffffff' cx='90' cy='90' r='12'/><circle fill='%23ffffff' cx='210' cy='110' r='12'/></svg>" class="product-card-img" alt="حذاء كرة قدم أديداس">
-                            <div class="product-info">
-                                <h5>حذاء أديداس إكس سبيدبورتال.1</h5>
-                                <div class="price-area">
-                                    <span class="price">850 ج.م</span>
-                                </div>
-                                <button class="btn-add-to-cart-card" onclick="handleAddToCart(this)">
-                                    <i class="fas fa-cart-plus"></i> &nbsp;أضف للسلة
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                
+                    {% endfor %}
+
                 </div>
 
                 <!-- Pagination -->
